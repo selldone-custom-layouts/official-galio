@@ -1,123 +1,94 @@
 <!--
-  Bakini Noir — the account's Overview (bakio-design/account-b.html): the
-  last order (its photos, number and date, the way · window and how it is
-  paid, and the mockup's four steps with a label under each; "View order"),
-  then the saved address and the profile side by side, then "Order again"
-  with the last order's products (compact rows with their + box). No order
-  yet: the mockup's "No orders yet" card. Nothing shows as an empty box: a
-  card without data is left out (no address: a line that asks for one).
+  Galio Sundae — the account's Overview (galio-design/account-b.html): the last order on a lemon card
+  (its code and state, the four steps, up to three of its pieces, what it costs and how it is paid,
+  the way and window); then the saved address and the profile side by side; then "Order again" with
+  the last order's pastries as the shop sells them now. All of it Selldone's own data.
 -->
 <template>
-  <div class="nx-ahome">
-    <!-- The last order -->
-    <div v-if="latest" class="gcard last">
-      <div class="gc-hd">
-        <h2>{{ t("bakini.n.acc.lastOrder", "Last order") }}</h2>
-        <router-link :to="orderRoute(latest)" class="link">{{ t("bakini.n.acc.viewOrder", "View order") }}<nx-icon name="arrow" cls="flip-rtl" /></router-link>
-      </div>
-      <div class="last-in">
-        <div v-if="thumbs.length" class="last-thumbs">
-          <span v-for="th in thumbs" :key="th.key" :style="{ '--bk-hue': hueOf(th.category) }" class="th"><img v-if="th.src" :src="th.src" alt="" class="cut" loading="lazy" /></span>
+  <div class="gl-ahome">
+    <article v-if="latest" class="panel lastord">
+      <div class="panel-head">
+        <div>
+          <span class="pk">{{ t("galio.acc.lastOrder", "Last order · {code}", { code: code(latest) }) }}</span>
+          <h2>{{ tone.word }}</h2>
         </div>
-        <div class="last-t">
-          <b>{{ t("bakini.n.acc.orderOn", "Order {code} · {date}", { code: code(latest), date: longDate(latest.reserved_at || latest.created_at) }) }}</b>
-          <span class="muted">{{ lastLine }}</span>
-        </div>
+        <router-link :to="orderRoute(latest)" class="btn btn--ghost">{{ t("galio.acc.viewOrder", "View order") }}</router-link>
       </div>
-      <ol v-if="tone.tone !== 'off'" :aria-label="t('bakini.n.ord.progress', 'Order progress')" class="tl">
-        <li v-for="(s, i) in steps" :key="s.key" :aria-current="i === stepAt ? 'step' : undefined" :class="stepClass(i)">
-          <span class="tl-dot"><nx-icon :name="stepClass(i) === 'done' ? 'check' : s.icon" /></span>
-          <span class="tl-l">{{ s.label }}</span>
+      <ol v-if="tone.tone !== 'off'" :aria-label="t('galio.ord.progress', 'Order progress')" class="track track--sm">
+        <li v-for="(s, i) in steps" :key="s.key" :aria-current="stepState(i) === 'now' ? 'step' : undefined" :class="['tk', 'tk--' + stepState(i)]">
+          <span class="tk-dot"><gl-icon :name="s.icon" /></span><span class="tk-l">{{ s.label }}</span>
         </li>
       </ol>
-      <p v-else class="nx-ahome__off"><nx-icon name="close" />{{ tone.word }}</p>
-      <div v-if="tone.tone === 'pay'" class="nx-ahome__pay">
-        <span>{{ t("bakini.n.acc.waitingPay", "This order is waiting for payment.") }}</span>
-        <router-link :to="orderRoute(latest)" class="btn sm"><nx-icon name="lock" />{{ t("bakini.n.acc.payNow", "Pay now") }}</router-link>
+      <div v-if="tone.tone === 'pay'" class="lo-pay">
+        <span>{{ t("galio.acc.waitingPay", "This order is waiting for payment.") }}</span>
+        <router-link :to="orderRoute(latest)" class="btn"><gl-icon name="lock" />{{ t("galio.acc.payNow", "Pay now") }}</router-link>
       </div>
-    </div>
+      <div class="lo-foot">
+        <ul v-if="thumbs.length" :aria-label="t('galio.acc.inOrder', 'In this order')" class="lo-thumbs">
+          <li v-for="th in thumbs" :key="th.key" :style="{ '--gl-tint': tintOf(th.category) }" :title="th.title" class="mthumb"><img v-if="th.src" :alt="th.title" :src="th.src" height="400" width="400" /></li>
+        </ul>
+        <p>
+          <b class="tab-num">{{ pay.amount }}</b>{{ pay.words ? " " + pay.words : "" }}<template v-if="way"><br /><small>{{ way }}</small></template>
+        </p>
+      </div>
+    </article>
 
-    <div v-else-if="account.loaded" class="empty">
-      <span class="ec"><nx-icon name="box" /></span>
-      <h3>{{ t("bakini.n.acc.noOrders", "No orders yet") }}</h3>
-      <p>{{ t("bakini.n.acc.noOrdersP", "When you place an order, it appears here with its delivery window and progress.") }}</p>
-      <div class="acts">
-        <router-link :to="{ path: '/' }" class="btn">{{ t("bakini.n.acc.startShopping", "Start shopping") }}</router-link>
-      </div>
-    </div>
-    <div v-else aria-busy="true" class="gcard last nx-ahome__wait"><span></span><span></span></div>
+    <gl-empty
+      v-else-if="account.loaded"
+      :text="t('galio.acc.noOrdersP', 'When you place an order, it appears here with its delivery window and progress.')"
+      :title="t('galio.acc.noOrders', 'No orders yet')"
+      icon="box"
+    >
+      <router-link :to="shopTo" class="btn">{{ t("galio.acc.startShopping", "Start shopping") }}</router-link>
+    </gl-empty>
+    <div v-else aria-busy="true" class="panel lastord gl-wait"></div>
 
     <div class="desk-two">
-      <!-- The saved address -->
-      <div class="gcard">
-        <div class="gc-hd">
-          <h2>{{ t("bakini.n.acc.address", "Saved address") }}</h2>
-          <router-link :to="sectionRoute('USER_ADDRESSES_PAGE')" class="link">{{ address ? t("bakini.n.acc.manage", "Manage") : t("bakini.n.acc.add", "Add") }}</router-link>
+      <article class="panel">
+        <div class="panel-head">
+          <h2>{{ t("galio.acc.addresses", "Saved addresses") }}</h2>
+          <router-link :to="sectionRoute('USER_ADDRESSES_PAGE')" class="link link--sm">{{ address ? t("galio.acc.manage", "Manage") : t("galio.acc.add", "Add") }}<gl-icon name="arrow" /></router-link>
         </div>
-        <div class="ilines">
-          <template v-if="address">
-            <div class="iline">
-              <nx-icon name="home" />
-              <div>
-                <b>{{ address.name || address.title || t("bakini.n.acc.addressUntitled", "Address") }}</b><span>{{ addressLine(address) }}</span>
-              </div>
+        <ul v-if="address" class="abooks">
+          <li class="abook">
+            <div class="ab-h">
+              <span class="ab-ic"><gl-icon name="home" /></span><b><bdi>{{ address.title || address.name || t("galio.acc.addressUntitled", "Address") }}</bdi></b>
             </div>
-            <div v-if="address.phone" class="iline">
-              <nx-icon name="phone" />
-              <div>
-                <b>{{ address.phone }}</b><span>{{ t("bakini.n.acc.receiverPhone", "Receiver phone") }}</span>
-              </div>
-            </div>
-          </template>
-          <div v-else class="iline">
-            <nx-icon name="pin" />
-            <div>
-              <b>{{ account.addresses ? t("bakini.n.acc.noAddress", "No saved address yet") : t("bakini.n.acc.moment", "One moment…") }}</b
-              ><span>{{ t("bakini.n.acc.noAddressP", "Save one and pick it at checkout in a tap.") }}</span>
-            </div>
-          </div>
+            <p>
+              <bdi>{{ [address.name, address.phone].filter(Boolean).join(" · ") }}</bdi><br /><bdi>{{ addressLine(address) }}</bdi>
+            </p>
+          </li>
+        </ul>
+        <p v-else class="gl-none">{{ account.addresses ? t("galio.acc.noAddress", "No saved address yet. Save one and pick it at checkout in a tap.") : t("galio.acc.moment", "One moment…") }}</p>
+      </article>
+      <article class="panel">
+        <div class="panel-head">
+          <h2>{{ t("galio.acc.profile", "Profile") }}</h2>
+          <router-link :to="sectionRoute('USER_PROFILE_PAGE')" class="link link--sm">{{ t("galio.acc.edit", "Edit") }}<gl-icon name="arrow" /></router-link>
         </div>
-      </div>
-
-      <!-- The profile -->
-      <div class="gcard">
-        <div class="gc-hd">
-          <h2>{{ t("bakini.n.acc.profile", "Profile") }}</h2>
-          <router-link :to="sectionRoute('USER_PROFILE_PAGE')" class="link">{{ t("bakini.n.acc.edit", "Edit") }}</router-link>
-        </div>
-        <div class="ilines">
-          <div class="iline">
-            <nx-icon name="user" />
-            <div>
-              <b>{{ user?.name }}</b><span>{{ t("bakini.n.acc.name", "Name") }}</span>
-            </div>
+        <dl class="prof">
+          <div>
+            <dt>{{ t("galio.acc.name", "Name") }}</dt>
+            <dd>{{ user?.name || "—" }}</dd>
           </div>
-          <div v-if="user?.email" class="iline">
-            <nx-icon name="mail" />
-            <div>
-              <b>{{ user.email }}</b><span>{{ t("bakini.n.acc.emailFor", "Email for order updates") }}</span>
-            </div>
+          <div v-if="user?.email">
+            <dt>{{ t("galio.acc.email", "Email") }}</dt>
+            <dd>{{ user.email }}</dd>
           </div>
-          <div v-if="user?.phone" class="iline">
-            <nx-icon name="phone" />
-            <div>
-              <b>{{ user.phone }}</b><span>{{ t("bakini.n.acc.phone", "Phone") }}</span>
-            </div>
+          <div v-if="user?.phone">
+            <dt>{{ t("galio.acc.phone", "Phone") }}</dt>
+            <dd dir="ltr">{{ user.phone }}</dd>
           </div>
-        </div>
-      </div>
+        </dl>
+      </article>
     </div>
 
-    <!-- Order again -->
-    <div v-if="again.length" class="gcard">
-      <div class="gc-hd">
-        <h2>{{ t("bakini.n.acc.again", "Order again") }}</h2>
-        <span class="muted">{{ t("bakini.n.acc.fromLast", "From your last order") }}</span>
+    <article v-if="again.length" class="panel">
+      <div class="panel-head">
+        <h2>{{ t("galio.acc.again", "Order again") }}</h2>
       </div>
-      <div class="again">
-        <nx-mini v-for="p in again" :key="p.id" :product="p" />
-      </div>
-    </div>
+      <ul class="minis minis--3"><gl-mini v-for="p in again" :key="p.id" :product="p" /></ul>
+    </article>
   </div>
 </template>
 
@@ -127,10 +98,11 @@ import CurrencyMixin from "@selldone/components-vue/mixin/currency/CurrencyMixin
 import { reorder } from "../kalio-basket";
 import { t } from "../i18n/kalio-i18n";
 import { productImage, productsById, vendors } from "../kalio-catalog";
-import NxIcon from "../../bakini/noir/NxIcon.vue";
-import NxMini from "../../bakini/noir/NxMini.vue";
-import { hueOf } from "../../bakini/noir/noir";
-import { longDate, noirStepAt, noirStepClass, noirSteps, orderLine } from "../../bakini/noir/account/noir-account";
+import GlIcon from "../../galio/GlIcon.vue";
+import GlMini from "../../galio/GlMini.vue";
+import GlEmpty from "../../galio/GlEmpty.vue";
+import { shopAllTo, tintOf } from "../../galio/galio";
+import { glStepAt, glStepState, glSteps, longDate, orderPay, orderWay } from "../../galio/account/gl-account";
 import {
   STATES,
   account,
@@ -151,7 +123,7 @@ const LINES = 4;
 
 export default {
   name: "KalioAccountHome",
-  components: { NxIcon, NxMini },
+  components: { GlIcon, GlMini, GlEmpty },
   mixins: [CurrencyMixin],
   inject: ["$shop"],
 
@@ -167,15 +139,24 @@ export default {
   },
 
   computed: {
-    // ▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅ Bakini Noir ▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅
+    // ▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅ Galio Sundae ▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅▅
     user() {
       return this.USER();
     },
     steps() {
-      return noirSteps();
+      return glSteps();
     },
     stepAt() {
-      return noirStepAt((this.detail || this.latest)?.delivery_state);
+      return glStepAt((this.detail || this.latest)?.delivery_state);
+    },
+    shopTo() {
+      return shopAllTo();
+    },
+    pay() {
+      return orderPay(this.latest);
+    },
+    way() {
+      return orderWay(this.$shop, this.latest, this.detail);
     },
     /* Up to three of the last order's photos. */
     thumbs() {
@@ -186,11 +167,9 @@ export default {
           key: i,
           src: this.detail ? this.image(item) : (product && productImage(product, true)) || this.getProductImage(item.product_id),
           category: product?.category_id,
+          title: product?.title || item.product?.title || "",
         };
       });
-    },
-    lastLine() {
-      return orderLine(this.$shop, this.latest, this.detail);
     },
     address() {
       return (account.addresses || [])[0] || null;
@@ -315,7 +294,7 @@ export default {
 
   methods: {
     t,
-    hueOf,
+    tintOf,
     longDate,
     when,
     code(order) {
@@ -327,14 +306,14 @@ export default {
     sectionRoute(name) {
       return { name: window.$storefront.routes[name] };
     },
-    stepClass(i) {
-      return noirStepClass(i, this.stepAt, this.steps.length - 1);
+    stepState(i) {
+      return glStepState(i, this.stepAt, this.steps.length - 1);
     },
     /** The times Selldone records: placed, sent, delivered. */
     stepTime(i) {
       const trip = this.detail?.transportation_order;
       const at = i === 0 ? this.latest.reserved_at : i === 3 ? trip?.send_at : i === 4 ? this.detail?.delivery_at || trip?.deliver_at : null;
-      if (!at || this.stepClass(i) !== "-done") return null;
+      if (!at || this.stepState(i) !== "done") return null;
       return new Date(at).toLocaleTimeString(document.documentElement.lang || "en", { hour: "numeric", minute: "2-digit" });
     },
     image(item) {

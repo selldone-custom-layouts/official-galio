@@ -1,154 +1,87 @@
 <!--
-  Kalio — the shopper's grocery orders (4 November 2026).
-
-  In place of Selldone's order table (SOrdersList) for physical orders.
-  Two looks, one per account design:
-    table (B): a row per order — code and messages, the things in it,
-               total, where it stands;
-    cards (A): a card per order — code, date, where it stands, total and
-               how it is paid, the things in it, a line on where it is with
-               the five steps as a bar, and what to do next (pay, view,
-               buy again, track, messages).
-  Filters (All, On the way, To pay, Delivered, Cancelled) count the orders
-  read so far; ten show at first and "Show older orders" reads on. The
-  label ("SM-1"), the sellers and the payment come from each order on
-  screen as it is read (kalio-account.ts).
+  Galio Sundae — the order list (the account's Orders; account-b.html's last-order card for each
+  order): filter chips (All, On the way, To pay, Delivered, Cancelled), then a card per order with
+  its code, date and state, the four steps, up to three of its pieces, what it costs and how it is
+  paid, the way and window; "View order" (or "Pay now"), "Buy again" once it is over, and the
+  messages. Selldone's orders, read by kalio-account.ts.
 -->
 <template>
-  <section :class="[`-${mode}`, { '-compact': compact }]" class="k-board">
-    <header v-if="!compact" class="k-board__head">
-      <div class="k-board__titles">
-        <h2 class="nx-sr">{{ title }}</h2>
-        <p v-if="line">{{ line }}</p>
-      </div>
-      <kalio-order-kinds current="PHYSICAL" />
-    </header>
-
-    <div v-if="!compact && account.orders.length" :aria-label="t('orders.filter.label', 'Show')" class="k-board__filters" role="tablist">
-      <button
-        v-for="f in filters"
-        :key="f.key"
-        :aria-selected="filter === f.key"
-        :class="{ '-on': filter === f.key }"
-        role="tab"
-        type="button"
-        @click="pick(f.key)"
-      >
-        {{ f.word }}<small v-if="counts[f.key]">{{ counts[f.key] }}</small>
+  <section :class="{ '-compact': compact }" class="gl-orders">
+    <div v-if="!compact && account.orders.length" :aria-label="t('galio.acc.show', 'Show')" class="chips gl-ord-filters" role="tablist">
+      <button v-for="f in filters" :key="f.key" :aria-selected="filter === f.key ? 'true' : 'false'" class="chip" role="tab" type="button" @click="pick(f.key)">
+        {{ f.word }}<span v-if="counts[f.key]" class="fcount">{{ counts[f.key] }}</span>
       </button>
     </div>
 
     <!-- Waiting for the first read -->
-    <div v-if="!account.loaded && !account.failed" aria-busy="true" class="k-board__wait">
-      <span v-for="n in compact ? 2 : 3" :key="n" class="k-board__ghost"></span>
-    </div>
+    <div v-if="!account.loaded && !account.failed" aria-busy="true" class="panel lastord gl-wait"></div>
 
-    <!-- Bakini: a guest whose device holds no order is not an error (Selldone
-         refuses the read when the shop takes no guest orders). -->
-    <div v-else-if="account.failed && !account.orders.length && !USER()" class="empty">
-      <span class="ec"><nx-icon name="box" /></span>
-      <h3>{{ t("bakini.n.acc.noOrders", "No orders yet") }}</h3>
-      <p>{{ t("bakini.n.acc.deviceP", "No orders on this device yet. Sign in to see the orders on your account.") }}</p>
-      <div class="acts">
-        <button class="btn" type="button" @click="askSignIn">{{ t("bakini.n.acc.signIn", "Sign in") }}</button>
-      </div>
-    </div>
+    <!-- A guest whose device holds no order is not an error (Selldone refuses the read when the shop
+         takes no guest orders). -->
+    <gl-empty
+      v-else-if="account.failed && !account.orders.length && !USER()"
+      :text="t('galio.acc.deviceP', 'No orders on this device yet. Sign in to see the orders on your account.')"
+      :title="t('galio.acc.noOrders', 'No orders yet')"
+      icon="box"
+    >
+      <button class="btn" type="button" @click="askSignIn">{{ t("galio.acc.signIn", "Sign in") }}</button>
+    </gl-empty>
 
-    <div v-else-if="account.failed && !account.orders.length" class="empty">
-      <span class="ec"><nx-icon name="info" /></span>
-      <h3>{{ t("bakini.n.acc.loadFailed", "Your orders did not load.") }}</h3>
-      <div class="acts">
-        <button class="btn ghost" type="button" @click="retry">{{ t("bakini.n.acc.tryAgain", "Try again") }}</button>
-      </div>
-    </div>
+    <gl-empty v-else-if="account.failed && !account.orders.length" :title="t('galio.acc.loadFailed', 'Your orders did not load.')" icon="info">
+      <button class="btn btn--ghost" type="button" @click="retry">{{ t("galio.acc.tryAgain", "Try again") }}</button>
+    </gl-empty>
 
-    <div v-else-if="!visible.length" class="empty">
-      <span class="ec"><nx-icon :name="filter === 'all' ? 'box' : 'filter'" /></span>
-      <h3>{{ filter === "all" ? t("bakini.n.acc.noOrders", "No orders yet") : emptyWords }}</h3>
-      <p v-if="filter === 'all'">{{ t("bakini.n.acc.noOrdersP", "When you place an order, it appears here with its delivery window and progress.") }}</p>
-      <div class="acts">
-        <router-link v-if="filter === 'all'" :to="{ path: '/' }" class="btn">{{ t("bakini.n.acc.startShopping", "Start shopping") }}</router-link>
-        <button v-else class="btn ghost" type="button" @click="pick('all')">{{ t("bakini.n.acc.showAll", "Show all orders") }}</button>
-      </div>
-    </div>
+    <gl-empty
+      v-else-if="!visible.length"
+      :icon="filter === 'all' ? 'box' : 'filter'"
+      :text="filter === 'all' ? t('galio.acc.noOrdersP', 'When you place an order, it appears here with its delivery window and progress.') : ''"
+      :title="filter === 'all' ? t('galio.acc.noOrders', 'No orders yet') : emptyWords"
+    >
+      <router-link v-if="filter === 'all'" :to="{ path: '/' }" class="btn">{{ t("galio.acc.startShopping", "Start shopping") }}</router-link>
+      <button v-else class="btn btn--ghost" type="button" @click="pick('all')">{{ t("galio.acc.showAll", "Show all orders") }}</button>
+    </gl-empty>
 
-    <!-- ━━━━━━━━ B: rows ━━━━━━━━ -->
-    <div v-else-if="mode === 'table'" class="k-board__table">
-      <div aria-hidden="true" class="k-board__row -head">
-        <span>{{ t("orders.table.order", "Order") }}</span><span>{{ t("orders.table.items", "Items") }}</span><span>{{ t("orders.table.total", "Total") }}</span><span>{{ t("orders.table.status", "Status") }}</span><span></span>
-      </div>
-      <router-link v-for="order in visible" :key="order.id" :to="orderRoute(order)" class="k-board__row">
-        <span class="k-board__code">
-          <b>
-            {{ code(order) }}
-            <span v-if="chatCount(order)" :title="t('orders.messageCount', { one: '{n} message', other: '{n} messages' }, { n: chatCount(order) })" class="k-board__chat"><v-icon size="15">chat_bubble_outline</v-icon>{{ chatCount(order) }}</span>
-          </b>
-          <small>{{ when(order.reserved_at) }}</small>
-        </span>
-        <span class="k-board__thumbs">
-          <span v-for="pic in thumbs(order, 5)" :key="pic.id" class="k-board__thumb">
-            <img v-if="pic.src" :src="pic.src" alt="" loading="lazy" />
-            <em v-if="pic.count > 1">×{{ pic.count }}</em>
-          </span>
-          <span v-if="productIds(order).length > 5" class="k-board__thumb -more">+{{ productIds(order).length - 5 }}</span>
-        </span>
-        <span class="k-board__money">
-          <u-price :amount="order.price" :currency="order.currency" />
-          <small>{{ t("orders.items", { one: "{n} item", other: "{n} items" }, { n: units(order) }) }}</small>
-        </span>
-        <span class="k-board__status">
-          <span :class="`-${standing(order).tone}`" class="k-tag">
-            <span v-if="standing(order).tone === 'go'" class="k-tag__beat"></span>
-            <v-icon v-else-if="standing(order).icon" size="15">{{ standing(order).icon }}</v-icon>
-            {{ standing(order).word }}
-          </span>
-        </span>
-        <v-icon class="k-flip k-board__go" size="20">chevron_right</v-icon>
-      </router-link>
-    </div>
-
-    <!-- ━━━━━━━━ Bakini Noir: a card per order (account-b's last order) ━━━━━━━━ -->
-    <div v-else class="k-board__cards nx-orders">
-      <article v-for="order in visible" :key="order.id" class="gcard last">
-        <div class="gc-hd">
-          <h2>{{ t("bakini.n.acc.orderCode", "Order {code}", { code: code(order) }) }}</h2>
-          <span :class="`-${standing(order).tone}`" class="nx-orders__tag">{{ standing(order).word }}</span>
+    <template v-else>
+      <article v-for="order in visible" :key="order.id" :class="['panel', 'gl-ord', { lastord: order === visible[0] && filter === 'all' }]">
+        <div class="panel-head">
+          <div>
+            <span class="pk">{{ t("galio.acc.codeDate", "{code} · {date}", { code: code(order), date: longDate(order.reserved_at || order.created_at) }) }}</span>
+            <h2>{{ standing(order).word }}</h2>
+          </div>
+          <router-link v-if="standing(order).tone === 'pay'" :to="orderRoute(order)" class="btn"><gl-icon name="lock" />{{ t("galio.acc.payNow", "Pay now") }}</router-link>
+          <router-link v-else :to="orderRoute(order)" class="btn btn--ghost">{{ t("galio.acc.viewOrder", "View order") }}</router-link>
         </div>
-        <router-link :to="orderRoute(order)" class="last-in">
-          <span class="last-thumbs" aria-hidden="true">
-            <span v-for="pic in thumbs(order, 3)" :key="pic.id" class="th"><img v-if="pic.src" :src="pic.src" alt="" class="cut" loading="lazy" /></span>
-          </span>
-          <span class="last-t">
-            <b>{{ longDate(order.reserved_at || order.created_at) }}{{ " · " + t("bakini.n.acc.pieces", { one: "{n} piece", other: "{n} pieces" }, { n: units(order) }) }}</b>
-            <span class="muted">{{ lineOf(order) }}</span>
-          </span>
-        </router-link>
-        <ol v-if="standing(order).tone !== 'off'" :aria-label="t('bakini.n.ord.progress', 'Order progress')" class="tl">
-          <li v-for="(s, i) in noirSteps" :key="s.key" :aria-current="i === noirAt(order) ? 'step' : undefined" :class="noirClass(order, i)">
-            <span class="tl-dot"><nx-icon :name="noirClass(order, i) === 'done' ? 'check' : s.icon" /></span>
-            <span class="tl-l">{{ s.label }}</span>
+        <ol v-if="standing(order).tone !== 'off'" :aria-label="t('galio.ord.progress', 'Order progress')" class="track track--sm">
+          <li v-for="(s, i) in glSteps" :key="s.key" :aria-current="stepState(order, i) === 'now' ? 'step' : undefined" :class="['tk', 'tk--' + stepState(order, i)]">
+            <span class="tk-dot"><gl-icon :name="s.icon" /></span><span class="tk-l">{{ s.label }}</span>
           </li>
         </ol>
-        <div class="nx-orders__acts">
-          <router-link v-if="standing(order).tone === 'pay'" :to="orderRoute(order)" class="btn sm"><nx-icon name="lock" />{{ t("bakini.n.acc.payNow", "Pay now") }}</router-link>
-          <router-link v-else :to="orderRoute(order)" class="btn sm">{{ t("bakini.n.acc.viewOrder", "View order") }}</router-link>
-          <button v-if="['ok', 'off'].includes(standing(order).tone)" :disabled="busy[order.id]" class="btn ghost sm" type="button" @click="buyAgain(order)">
-            <nx-icon :name="done[order.id] ? 'check' : 'bag'" />{{ done[order.id] ? t("bakini.n.acc.inBag", "In your bag") : t("bakini.n.acc.buyAgain", "Buy again") }}
+        <div class="lo-foot">
+          <ul :aria-label="t('galio.acc.inOrder', 'In this order')" class="lo-thumbs">
+            <li v-for="pic in thumbs(order, 3)" :key="pic.id" class="mthumb"><img v-if="pic.src" :src="pic.src" alt="" height="400" loading="lazy" width="400" /></li>
+          </ul>
+          <p>
+            <b class="tab-num">{{ payOf(order).amount }}</b>{{ payOf(order).words ? " " + payOf(order).words : "" }}<br /><small>{{ footOf(order) }}</small>
+          </p>
+        </div>
+        <div class="gl-ord-acts">
+          <button v-if="['ok', 'off'].includes(standing(order).tone)" :disabled="busy[order.id]" class="link link--sm" type="button" @click="buyAgain(order)">
+            <gl-icon :name="done[order.id] ? 'check' : 'bag'" />{{ done[order.id] ? t("galio.acc.inBag", "In your bag") : t("galio.acc.buyAgain", "Buy again") }}
           </button>
-          <router-link :to="orderRoute(order)" class="link">
-            <nx-icon name="chat" />{{ chatCount(order) ? t("bakini.n.acc.messages", { one: "{n} message", other: "{n} messages" }, { n: chatCount(order) }) : t("bakini.n.acc.ask", "Write to the bakery") }}
+          <router-link :to="orderRoute(order)" class="link link--sm">
+            <gl-icon name="chat" />{{ chatCount(order) ? t("galio.acc.messages", { one: "{n} message", other: "{n} messages" }, { n: chatCount(order) }) : t("galio.acc.ask", "Write to the bakery") }}
           </router-link>
         </div>
       </article>
-    </div>
+    </template>
 
-    <div v-if="canShowMore" class="k-board__more">
-      <button :disabled="account.loading" class="k-btn -line" type="button" @click="more">
-        <v-progress-circular v-if="account.loading" indeterminate size="16" width="2" />{{ t("orders.showOlder", "Show older orders") }}
+    <div v-if="canShowMore" class="gl-ord-more">
+      <button :disabled="account.loading" class="btn btn--ghost" type="button" @click="more">
+        <span v-if="account.loading" aria-hidden="true" class="gl-spin gl-spin--ink"></span>{{ t("galio.acc.older", "Show older orders") }}
       </button>
     </div>
-    <router-link v-if="compact && filtered.length > limit" :to="allRoute" class="k-board__all">
-      {{ t("orders.seeAll", { one: "See all {n} orders", other: "See all {n} orders" }, { n: account.total }) }}<v-icon class="k-flip" size="18">chevron_right</v-icon>
+    <router-link v-if="compact && filtered.length > limit" :to="allRoute" class="link">
+      {{ t("galio.acc.seeAll", { one: "See all {n} orders", other: "See all {n} orders" }, { n: account.total }) }}<gl-icon name="arrow" />
     </router-link>
   </section>
 </template>
@@ -159,9 +92,9 @@ import { EventBus } from "@selldone/components-vue/utils/events/EventBus.ts";
 import { reorder } from "../kalio-basket";
 import { t } from "../i18n/kalio-i18n";
 import { productImage, vendors } from "../kalio-catalog";
-import KalioOrderKinds from "./KalioOrderKinds.vue";
-import NxIcon from "../../bakini/noir/NxIcon.vue";
-import { longDate, noirStepAt, noirStepClass, noirSteps, orderLine } from "../../bakini/noir/account/noir-account";
+import GlIcon from "../../galio/GlIcon.vue";
+import GlEmpty from "../../galio/GlEmpty.vue";
+import { glStepAt, glStepState, glSteps, longDate, orderPay, orderWay } from "../../galio/account/gl-account";
 import {
   ORDERS_DESK,
   FILTERS,
@@ -188,7 +121,7 @@ const STEP = 10;
 
 export default {
   name: "KalioOrdersBoard",
-  components: { KalioOrderKinds, NxIcon },
+  components: { GlIcon, GlEmpty },
   inject: ["$shop"],
 
   props: {
@@ -212,8 +145,8 @@ export default {
   },
 
   computed: {
-    noirSteps() {
-      return noirSteps();
+    glSteps() {
+      return glSteps();
     },
     title() {
       return ORDERS_DESK ? t("account.yourOrders", "Your orders") : t("orders.history", "Order history");
@@ -293,15 +226,16 @@ export default {
     },
     /** One picture per product, with how many, from the full order when read. */
     longDate,
-    /* Bakini Noir: B's four steps and the order's one line. */
-    noirAt(order) {
-      return noirStepAt((account.details[order.id] || order).delivery_state);
+    /* Galio Sundae: B's four steps; the amount and how it is paid; the way and the pieces. */
+    stepState(order, i) {
+      return glStepState(i, glStepAt((account.details[order.id] || order).delivery_state), 3);
     },
-    noirClass(order, i) {
-      return noirStepClass(i, this.noirAt(order), 3);
+    payOf(order) {
+      return orderPay(order);
     },
-    lineOf(order) {
-      return orderLine(this.$shop, order, account.details[order.id]);
+    footOf(order) {
+      const pieces = t("galio.acc.pieces", { one: "{n} piece", other: "{n} pieces" }, { n: unitsOf(order) });
+      return [orderWay(this.$shop, order, account.details[order.id]), pieces].filter(Boolean).join(" · ");
     },
     thumbs(order, max) {
       const full = account.details[order.id];

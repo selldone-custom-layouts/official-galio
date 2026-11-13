@@ -13,65 +13,62 @@
   -->
 
 <!--
-  Bakini Noir — the address book (bakio-design/addresses-b.html): each
-  saved address as the mockup's card (its name in the serif with an icon,
-  who receives it, the address in lines, the phone; Edit and Delete —
-  Delete asks once, in the card), and the dashed "Add an address" card.
+  Galio Sundae — the address book (galio-design/addresses-b.html): the saved addresses as the
+  mockup's sky cards (an icon from the address's name, who receives it and the phone, the address
+  in lines; Edit and Remove, which asks once, in the card) and "Add an address".
   Add and Edit open Kalio's address sheet (KalioAddressSheet, `titled`,
   dressed like map-b), the same fields as the checkout's: the name of the
   address, the map with its pin when the shop uses maps, every field,
   saved in one step. Selldone keeps no "default" address, so none is shown.
 -->
 <template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
-  <div class="nx-abook">
-    <div v-if="busy && !loaded" aria-busy="true" class="ab-grid">
-      <div class="gcard ab-card nx-abook__wait"></div>
-    </div>
-    <div v-else class="ab-grid">
-      <div v-for="address in addresses" :key="address.id" class="gcard ab-card">
-        <div class="ab-top">
-          <span class="dm-ic"><nx-icon :name="iconOf(address)" /></span><b>{{ address.title || t("bakini.n.acc.addressUntitled", "Address") }}</b>
-        </div>
-        <p>
-          <b v-if="address.name">{{ address.name }}</b
-          ><template v-for="(line, i) in linesOf(address)" :key="i"><br v-if="i || address.name" />{{ line }}</template>
-        </p>
-        <p v-if="address.phone" class="muted">{{ address.phone }}</p>
-        <p v-if="address.message" class="muted nx-abook__note">“{{ address.message }}”</p>
-        <div class="ab-acts">
-          <template v-if="confirming === address.id">
-            <span class="nx-abook__ask">{{ t("bakini.n.acc.deleteAsk", "Delete this address?") }}</span>
-            <button :disabled="busy_delete" class="btn sm nx-abook__del" type="button" @click="remove(address)">{{ t("bakini.n.acc.delete", "Delete") }}</button>
-            <button class="btn ghost sm" type="button" @click="confirming = null">{{ t("bakini.n.acc.keep", "Keep") }}</button>
-          </template>
-          <template v-else>
-            <button class="btn ghost sm" type="button" @click="showEdit(address)"><nx-icon name="edit" />{{ t("bakini.n.acc.edit", "Edit") }}</button>
-            <button
-              :aria-label="address.title ? t('bakini.n.acc.deleteNamed', 'Delete {name}', { name: address.title }) : t('bakini.n.acc.deleteThis', 'Delete this address')"
-              class="btn quiet sm"
-              type="button"
-              @click="confirming = address.id"
-            >
-              <nx-icon name="trash" />
-            </button>
-          </template>
-        </div>
+  <div class="gl-abook">
+    <article class="panel">
+      <div class="panel-head">
+        <h2>{{ t("galio.acc.book", "Address book") }}</h2>
+        <button class="btn" type="button" @click="showAdd"><gl-icon name="plus" />{{ t("galio.acc.addAddress", "Add an address") }}</button>
       </div>
-
-      <button class="ab-add" type="button" @click="showAdd">
-        <span class="ch-plus"><nx-icon name="plus" /></span>
-        <b>{{ t("bakini.n.acc.addAddress", "Add an address") }}</b>
-        <span class="muted">{{ noMap ? t("bakini.n.acc.addTyped", "Type it in, as at checkout") : t("bakini.n.acc.addMap", "Set it on the map or type it in") }}</span>
-      </button>
-    </div>
+      <div v-if="busy && !loaded" aria-busy="true" class="abook gl-wait"></div>
+      <ul v-else-if="addresses.length" class="abooks abooks--2">
+        <li v-for="(address, i) in addresses" :key="address.id" class="abook">
+          <div class="ab-h">
+            <span class="ab-ic"><gl-icon :name="iconOf(address)" /></span><b><bdi>{{ address.title || t("galio.acc.addressUntitled", "Address") }}</bdi></b>
+          </div>
+          <p>
+            <bdi>{{ [address.name, address.phone].filter(Boolean).join(" · ") }}</bdi
+            ><template v-for="(line, j) in linesOf(address)" :key="j"><br /><bdi>{{ line }}</bdi></template>
+          </p>
+          <p v-if="address.message" class="ab-note">“{{ address.message }}”</p>
+          <div class="ab-acts">
+            <template v-if="confirming === address.id">
+              <span class="ab-ask">{{ t("galio.acc.deleteAsk", "Delete this address?") }}</span>
+              <button :disabled="busy_delete" class="link link--sm" type="button" @click="remove(address)"><gl-icon name="trash" />{{ t("galio.acc.delete", "Delete") }}</button>
+              <button class="link link--sm" type="button" @click="confirming = null">{{ t("galio.acc.keep", "Keep") }}</button>
+            </template>
+            <template v-else>
+              <button class="link link--sm" type="button" @click="showEdit(address)"><gl-icon name="edit" />{{ t("galio.acc.edit", "Edit") }}</button>
+              <button
+                :aria-label="address.title ? t('galio.acc.removeNamed', 'Remove {name}', { name: address.title }) : t('galio.acc.removeThis', 'Remove this address')"
+                class="link link--sm"
+                type="button"
+                @click="confirming = address.id"
+              >
+                <gl-icon name="trash" />{{ t("galio.acc.remove", "Remove") }}
+              </button>
+            </template>
+          </div>
+        </li>
+      </ul>
+      <p v-else class="gl-none">{{ noMap ? t("galio.acc.noBookTyped", "No saved address yet. Add one here, typed in as at checkout.") : t("galio.acc.noBook", "No saved address yet. Set one on the map or type it in.") }}</p>
+    </article>
 
     <kalio-address-sheet
       v-model="sheet"
       :busy="busy_save"
       :center="center"
       :countries="$shop?.countries?.length ? $shop.countries : null"
-      :heading="editing ? t('bakini.n.acc.editTitle', 'Edit address') : t('bakini.n.acc.addAddress', 'Add an address')"
-      :lede="t('bakini.n.acc.sameFields', 'Same fields as checkout')"
+      :heading="editing ? t('galio.acc.editTitle', 'Edit address') : t('galio.acc.addAddress', 'Add an address')"
+      :lede="t('galio.acc.sameFields', 'Same fields as checkout')"
       :no-map="noMap"
       :phone-required="false"
       :receiver-info="editing"
@@ -90,14 +87,14 @@ import { MapHelper } from "@selldone/core-js/helper";
 import { ShopOptionsHelper } from "@selldone/core-js/helper/shop/ShopOptionsHelper";
 import KalioAddressSheet from "@app-storefront/components/kalio/checkout/KalioAddressSheet.vue";
 import { t } from "../../../components/kalio/i18n/kalio-i18n";
-import NxIcon from "../../../components/bakini/noir/NxIcon.vue";
+import GlIcon from "../../../components/galio/GlIcon.vue";
 
 /* The fields an address keeps (Selldone's address book). */
 const FIELDS = ["country", "state", "state_code", "city", "address", "location", "no", "unit", "name", "phone", "message", "postal"];
 
 export default {
   name: "StorefrontUserAddresses",
-  components: { KalioAddressSheet, NxIcon },
+  components: { KalioAddressSheet, GlIcon },
   inject: ["$shop"],
 
   data() {
@@ -133,7 +130,7 @@ export default {
 
   methods: {
     t,
-    /* Bakini Noir: the card's icon from the address's own name. */
+    /* Galio Sundae: the card's icon from the address's own name. */
     iconOf(address) {
       const title = (address.title || "").toLowerCase();
       if (/work|office|shop|store|studio/.test(title)) return "store";

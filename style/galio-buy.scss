@@ -358,13 +358,17 @@
   min-width: 0;
   overflow-wrap: anywhere;
 }
-.gl .k-odel__body:not(.-nomap) > .k-odel__lines,
-.gl .k-odel__body:not(.-nomap) > .k-odel__list {
-  grid-column: 1;
+@media (min-width: 701px) {
+  .gl .k-odel__body:not(.-nomap) > .k-odel__lines,
+  .gl .k-odel__body:not(.-nomap) > .k-odel__list {
+    grid-column: 1;
+  }
+  .gl .k-odel__body:not(.-nomap) > .k-odel__map {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
 }
-.gl .k-odel__body:not(.-nomap) > .k-odel__map {
-  grid-column: 2;
-  grid-row: 1 / span 2;
+.gl .k-odel__map {
   border-radius: 18px;
   box-shadow: inset 0 0 0 1px var(--gl-line);
 }
@@ -804,4 +808,196 @@ html.gl-dark .s--storefront-master-payment-dialog,
   min-width: 0;
   max-width: 100%;
   overflow: hidden;
+}
+
+/* ── The account desk, the order list and the order page (account-b, order-b, addresses-b) ── */
+.gl .gl-wait {
+  min-height: 180px;
+  background: var(--gl-band-lemon);
+  animation: gl-skel 1.4s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .gl .gl-wait {
+    animation: none;
+  }
+}
+.gl .gl-none {
+  font-size: 14.5px;
+  color: var(--gl-muted);
+  line-height: 1.5;
+}
+.gl .av .gl-av-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.gl .dn-more a {
+  min-height: 40px;
+  font-size: 14px;
+}
+.gl .lo-pay {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 16px;
+  padding: 12px 14px 12px 18px;
+  border-radius: 20px;
+  background: var(--gl-surface);
+  font-weight: 600;
+}
+.gl .gl-orders {
+  display: grid;
+  gap: 16px;
+}
+.gl .gl-ord-filters .chip[aria-selected="true"] {
+  background: var(--gl-act);
+  color: var(--gl-act-on);
+  box-shadow: none;
+}
+.gl .gl-ord-filters .fcount {
+  margin-inline-start: 6px;
+  font-weight: 700;
+}
+.gl .gl-ord {
+  gap: 18px;
+}
+.gl .gl-ord:not(.lastord) .lo-thumbs .mthumb {
+  background: var(--gl-plate);
+}
+.gl .gl-ord-acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+}
+.gl .gl-ord-more {
+  display: flex;
+  justify-content: center;
+}
+.gl .gl-spin--ink {
+  box-shadow: inset 0 0 0 2px var(--gl-line);
+  border-top-color: var(--gl-ink);
+}
+.gl .ot-off {
+  font-size: 15px;
+  color: var(--gl-muted);
+}
+.gl .gl-ord-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 22px;
+  margin: -6px 0 22px;
+}
+.gl .gl-ord-tools .gl-share .v-btn {
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  font: 600 14px/1 var(--gl-f-body) !important;
+  color: var(--gl-act-text) !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  min-width: 0 !important;
+  height: auto !important;
+}
+.gl .gl-ord-side {
+  position: sticky;
+  top: 24px;
+  min-width: 0;
+}
+@media (max-width: 1023.98px) {
+  .gl .gl-ord-side {
+    position: static;
+  }
+}
+.gl .ab-note {
+  font-style: italic;
+}
+.gl .ab-ask {
+  font-weight: 600;
+  font-size: 14px;
+}
+.gl .gl-guest-orders {
+  margin-top: 28px;
+}
+.gl .gl-ord-stepper {
+  padding-top: 24px;
+}
+.gl .gl-ord-wait {
+  padding-block: 40px;
+}
+.gl .gl-ord-wait .gl-wait {
+  display: block;
+}
+/* Kalio's delivery card lines (the way, who receives it, the address) in Galio's type. */
+.gl .ilines {
+  display: grid;
+  gap: 14px;
+}
+.gl .iline {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+.gl .iline > svg.i {
+  width: 20px;
+  height: 20px;
+  margin: 1px 2px;
+  color: var(--gl-act-text);
+}
+.gl .iline b {
+  display: block;
+  font: 600 15px/1.35 var(--gl-f-body);
+}
+.gl .iline span,
+.gl .iline small {
+  display: block;
+  color: var(--gl-muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+/* The chat (order-b): the straw card, the shop's mark beside its bubbles, yours in the act colour. */
+.gl .gl-ord-chat.k-chat {
+  background: var(--gl-band-straw) !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  border-radius: 28px !important;
+}
+.gl .gl-ord-chat .k-ocard__head h2 {
+  font: 400 20px/1.15 var(--gl-f-display) !important;
+}
+.gl .gl-ord-chat .k-chat__empty {
+  background: var(--gl-surface) !important;
+  border-radius: 20px !important;
+}
+.gl .gl-ord-chat .k-chat__bubble {
+  background: var(--gl-surface) !important;
+  color: var(--gl-ink) !important;
+  border-radius: 18px 18px 18px 6px !important;
+}
+.gl .gl-ord-chat .k-chat__msg.-mine .k-chat__bubble {
+  background: var(--gl-act) !important;
+  color: var(--gl-act-on) !important;
+  border-radius: 18px 18px 6px 18px !important;
+}
+.gl .gl-ord-chat .k-chat__box {
+  background: var(--gl-surface) !important;
+  border-radius: 26px !important;
+  box-shadow: none !important;
+  border: 0 !important;
+  padding: 4px 4px 4px 16px !important;
+}
+.gl .gl-ord-chat .k-chat__box:focus-within {
+  box-shadow: inset 0 0 0 2px var(--gl-ring) !important;
+}
+.gl .gl-ord-chat .k-chat__send {
+  background: var(--gl-act) !important;
+  color: var(--gl-act-on) !important;
+}
+.gl .gl-ord-chat .k-chat__start {
+  background: var(--gl-surface) !important;
+  color: var(--gl-act-text) !important;
+  box-shadow: inset 0 0 0 1.5px var(--gl-line) !important;
 }

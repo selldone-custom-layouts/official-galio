@@ -20,7 +20,7 @@
   <section :class="{ '-pickup': is_pickup }" class="k-ocard k-odel">
     <header class="k-ocard__head">
       <div class="k-ocard__titles">
-        <h2>{{ is_pickup ? t("bakini.n.ord.pickupT", "Pickup") : t("bakini.n.ord.deliveryT", "Delivery") }}</h2>
+        <h2>{{ is_pickup ? t("galio.ord.pickupT", "Pickup") : t("galio.ord.deliveryT", "Delivery") }}</h2>
       </div>
     </header>
 
@@ -46,36 +46,36 @@
     </p>
 
     <div :class="{ '-nomap': !mapImage }" class="k-odel__body">
-      <!-- Bakini Noir: the mockup's lines — the way · window and its reach,
+      <!-- Galio Sundae: the lines — the way · window and its reach,
            who receives it, the address (or the counter for a pickup). -->
       <div class="ilines k-odel__lines">
         <div v-if="methodLine" class="iline">
-          <nx-icon :name="wayIcon(delivery_info.type)" />
+          <gl-icon :name="wayIcon(delivery_info.type)" />
           <div>
             <b>{{ methodLine }}</b>
             <span v-if="reach">{{ reach }}</span>
           </div>
         </div>
         <div v-if="!is_pickup && (receiver.name || receiver.phone)" class="iline">
-          <nx-icon name="user" />
+          <gl-icon name="user" />
           <div>
             <b>{{ receiver.name || receiver.phone }}</b>
             <span v-if="receiver.name && receiver.phone">{{ receiver.phone }}</span>
           </div>
         </div>
         <div class="iline">
-          <nx-icon :name="is_pickup ? 'store' : 'pin'" />
+          <gl-icon :name="is_pickup ? 'store' : 'pin'" />
           <div>
-            <b>{{ is_pickup ? t("bakini.n.ord.pickAt", "Pick it up at") : t("bakini.n.ord.address", "Delivery address") }}</b>
+            <b>{{ is_pickup ? t("galio.ord.pickAt", "Pick it up at") : t("galio.ord.address", "Delivery address") }}</b>
             <span v-if="addressLines.length">{{ addressLines.join(", ") }}</span>
-            <span v-else>{{ t("bakini.n.ord.noAddress", "No address on this order.") }}</span>
+            <span v-else>{{ t("galio.ord.noAddress", "No address on this order.") }}</span>
             <span v-if="receiver.message" class="k-odel__note">“{{ receiver.message }}”</span>
             <span v-if="canEditAddress || (is_pickup && directions)" class="k-odel__links">
               <button v-if="canEditAddress" :disabled="busy_address" class="k-odel__link" type="button" @click="address_sheet = true">
                 <v-progress-circular v-if="busy_address" indeterminate size="14" width="2" />
-                {{ t("bakini.n.ord.changeAddress", "Change address") }}
+                {{ t("galio.ord.changeAddress", "Change address") }}
               </button>
-              <a v-if="is_pickup && directions" :href="directions" class="k-odel__link" rel="noopener" target="_blank">{{ t("bakini.n.ord.directions", "Directions") }}</a>
+              <a v-if="is_pickup && directions" :href="directions" class="k-odel__link" rel="noopener" target="_blank">{{ t("galio.ord.directions", "Directions") }}</a>
             </span>
           </div>
         </div>
@@ -200,8 +200,8 @@ import NotificationService from "@selldone/components-vue/plugins/notification/N
 import SOrderDeliveryAutoComplete from "@selldone/components-vue/storefront/order/auto-complete/SOrderDeliveryAutoComplete.vue";
 import { ShopTransportations } from "@selldone/core-js/enums/logistic/ShopTransportations";
 import { TimeSpans } from "@selldone/core-js/enums/logistic/TimeSpans";
-import NxIcon from "../../bakini/noir/NxIcon.vue";
-import { wayIcon, wayReach, wayWindowLine } from "../../bakini/noir/buy/noir-cart";
+import GlIcon from "../../galio/GlIcon.vue";
+import { wayIcon, wayReach, wayWindowLine } from "../../galio/buy/gl-cart";
 import { MapHelper } from "@selldone/core-js/helper/map/MapHelper";
 import { Basket, ShopOptionsHelper } from "@selldone/core-js";
 import KalioAddressSheet from "../checkout/KalioAddressSheet.vue";
@@ -242,7 +242,7 @@ function hour(h) {
 
 export default {
   name: "KalioOrderDelivery",
-  components: { KalioAddressSheet, SOrderDeliveryAutoComplete, NxIcon },
+  components: { KalioAddressSheet, SOrderDeliveryAutoComplete, GlIcon },
   inject: ["$shop"],
 
   props: {

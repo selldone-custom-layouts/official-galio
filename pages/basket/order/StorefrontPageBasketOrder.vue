@@ -13,58 +13,42 @@
   -->
 
 <!--
-  Kalio — an order's page: a light page with the way back to the orders,
-  then the order itself (the router's child; a physical order draws its
-  own steps, KalioOrder in physical/dashbaord). Other kinds of order keep
-  Selldone's steps above theirs. Fetching the order is Selldone's, below.
+  Galio Sundae — an order's page: a physical order draws its own title band, track and cards
+  (physical/dashbaord); other kinds of order keep Selldone's steps above theirs. An order that cannot
+  be opened says why and where to go. Fetching the order is Selldone's, below.
 -->
 <template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
-  <div class="k-order nx nx-orderpage">
-    <div class="wrap">
-      <nav :aria-label="t('bakini.n.ord.crumbs', 'Breadcrumb')" class="crumbs nx-ord-crumbs">
-        <router-link
-          :to="
-            buildReturnRoute(
-              $route.query.return_id
-                ? window.$storefront.routes.USER_RETURN_REQUESTS
-                : history_list_page_name,
-            )
-          "
-          >{{ $route.query.return_id ? t("bakini.n.ord.returns", "Your returns") : t("bakini.n.ord.yourOrders", "Your orders") }}</router-link
-        ><nx-icon name="right" /><span aria-current="page">{{ t("bakini.n.ord.orderWord", "Order") }}</span>
-      </nav>
-
+  <div class="gl gl-orderpage">
+    <div v-if="orders_states && basket && !isPhysical" class="wrap gl-ord-stepper">
       <s-order-delivery-status-stepper
-        v-if="orders_states && basket && !isPhysical"
         :has-subscription="isSubscription"
         :is-subscribed="isSubscription && basket.status === 'Payed'"
         :state="basket.delivery_state"
         :states="orders_states"
-        class="k-order__stepper"
-      />
-
-      <!-- Kalio (5 November 2026): an order that cannot be opened says why
-           and where to go, where Selldone kept the loading dots and a
-           "Basket not found" toast. -->
-      <div v-if="!basket && failed" class="empty nx-ord-missing">
-        <span class="ec"><nx-icon :name="USER() ? 'doc' : 'lock'" /></span>
-        <h3>{{ t("order.missing.title", "We can’t open this order") }}</h3>
-        <p v-if="USER()">{{ t("order.missing.user", "It isn’t in your account. The link may be wrong, or the order belongs to someone else.") }}</p>
-        <p v-else>{{ t("order.missing.guest", "If you placed it, sign in to see it, or open the link in your order email on the device you ordered from.") }}</p>
-        <div class="acts">
-          <button v-if="!USER()" class="btn" type="button" @click="signIn">{{ t("common.signIn", "Sign in") }}</button>
-          <router-link :to="buildReturnRoute(history_list_page_name)" :class="USER() ? 'btn' : 'btn ghost'">{{ t("account.yourOrders", "Your orders") }}</router-link>
-        </div>
-      </div>
-      <div v-else-if="!basket" class="k-order__loading">
-        <u-loading-ellipsis css-mode></u-loading-ellipsis>
-      </div>
-      <router-view
-        v-else
-        :basket="basket"
-        @request:refresh="fetchOrderInfo()"
       />
     </div>
+
+    <template v-if="!basket && failed">
+      <gl-ptitle :crumbs="[[t('galio.crumb.home', 'Home'), { path: '/' }], [t('galio.ord.orderWord', 'Order')]]" :h1="t('galio.ord.missingH', 'Order')" band="sky" cls="ptitle--short" />
+      <section class="sec sec--tight bg-white">
+        <div class="wrap">
+          <gl-empty
+            :icon="USER() ? 'doc' : 'lock'"
+            :text="
+              USER()
+                ? t('order.missing.user', 'It isn’t in your account. The link may be wrong, or the order belongs to someone else.')
+                : t('order.missing.guest', 'If you placed it, sign in to see it, or open the link in your order email on the device you ordered from.')
+            "
+            :title="t('order.missing.title', 'We can’t open this order')"
+          >
+            <button v-if="!USER()" class="btn" type="button" @click="signIn">{{ t("common.signIn", "Sign in") }}</button>
+            <router-link :class="USER() ? 'btn' : 'btn btn--ghost'" :to="buildReturnRoute(history_list_page_name)">{{ t("account.yourOrders", "Your orders") }}</router-link>
+          </gl-empty>
+        </div>
+      </section>
+    </template>
+    <div v-else-if="!basket" aria-busy="true" class="wrap gl-ord-wait"><span class="panel lastord gl-wait"></span></div>
+    <router-view v-else :basket="basket" @request:refresh="fetchOrderInfo()" />
   </div>
 </template>
 
@@ -81,13 +65,14 @@ import ULoadingEllipsis from "@selldone/components-vue/ui/loading/ellipsis/ULoad
 import TemplateMixin from "@selldone/components-vue/mixin/template/TemplateMixin.ts";
 import {EventBus} from "@selldone/components-vue/utils/events/EventBus.ts";
 import { t } from "../../../components/kalio/i18n/kalio-i18n";
-import NxIcon from "../../../components/bakini/noir/NxIcon.vue";
+import GlEmpty from "../../../components/galio/GlEmpty.vue";
+import GlPtitle from "../../../components/galio/GlPtitle.vue";
 
 export default {
   name: "StorefrontPageBasketOrder",
   mixins: [RouteMixin, TemplateMixin],
 
-  components: { ULoadingEllipsis, SOrderDeliveryStatusStepper, NxIcon },
+  components: { ULoadingEllipsis, SOrderDeliveryStatusStepper, GlEmpty, GlPtitle },
   inject: ["$shop"],
   props: {},
 

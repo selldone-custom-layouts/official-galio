@@ -7,66 +7,11 @@
  * outside, a route change) are the same live state the inner pages read (noir.ts, until those pages
  * are ported too), so the bag drawer, the cards and the pages count the same bag.
  */
-import {
-  bySells,
-  catImage,
-  catOf,
-  catTitle,
-  catTo,
-  closeLayer,
-  closeOnRoute,
-  fmtDate,
-  inCat,
-  isModal,
-  layer,
-  loadNoir,
-  money,
-  noir,
-  openLayer,
-  priceView,
-  productImage,
-  productTo,
-  prosOf,
-  scrollBehavior,
-  shopFacts,
-  specGroups,
-  specValue,
-  toggleLayer,
-  unitOf,
-  wayTitle,
-  wireLayers,
-} from "../bakini/noir/noir";
+import { inCat, loadNoir, noir, priceView, prosOf, specGroups, unitOf, bySells } from "./gl-data";
 import { t } from "../kalio/i18n/kalio-i18n";
 
-export {
-  bySells,
-  catImage,
-  catOf,
-  catTitle,
-  catTo,
-  closeLayer,
-  closeOnRoute,
-  fmtDate,
-  inCat,
-  isModal,
-  layer,
-  loadNoir as loadShop,
-  money,
-  noir as shopData,
-  openLayer,
-  priceView,
-  productImage,
-  productTo,
-  prosOf,
-  scrollBehavior,
-  shopFacts,
-  specGroups,
-  specValue,
-  toggleLayer,
-  unitOf,
-  wayTitle,
-  wireLayers,
-};
+export * from "./gl-data";
+export { loadNoir as loadShop, noir as shopData };
 
 declare const window: any;
 

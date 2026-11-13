@@ -178,7 +178,7 @@ export default {
         ),
     ),
     KalioSignIn: defineAsyncComponent(
-      () => import("./components/kalio/shell/KalioSignIn.vue"),
+      () => import("./components/galio/shell/GlSignIn.vue"),
     ),
     SCookieConsent: defineAsyncComponent(
       () =>
@@ -576,6 +576,11 @@ export default {
      They hold both modes, so the dark build step leaves them alone. -->
 <style src="./style/galio/core.css"></style>
 <style src="./style/galio/b.css"></style>
+<style src="./style/galio/shell.css"></style>
+<style src="./style/galio/shop.css"></style>
+<style src="./style/galio/product.css"></style>
+<style src="./style/galio/buy.css"></style>
+<style src="./style/galio/read.css"></style>
 <style lang="scss" src="./style/galio.scss"></style>
 
 <style lang="scss">

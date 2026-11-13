@@ -1,4 +1,5 @@
-// galio-css.cjs: ports the B "Sundae" mockup's stylesheets (galio-design/g/core.css and b.css) into
+// galio-css.cjs: ports the B "Sundae" mockup's stylesheets (galio-design/g/core.css, b.css and the inner
+// pages' shell.css, shop.css, product.css, buy.css, read.css) into
 // the Layout as style/galio/*.css, unchanged in look:
 //
 //   node scripts/galio-css.cjs [<path to galio-design/g>]
@@ -26,7 +27,7 @@ const sp = require("postcss-selector-parser");
 
 const SRC = process.argv[2] || path.resolve(__dirname, "../../galio-design/g");
 const OUT = path.resolve(__dirname, "../style/galio");
-const FILES = ["core", "b"];
+const FILES = ["core", "b", "shell", "shop", "product", "buy", "read"];
 const KEYFRAMES = new Map();
 const DROP = /^(\.ph-tag|\.ph-cam|\.note-bar)\b/;
 

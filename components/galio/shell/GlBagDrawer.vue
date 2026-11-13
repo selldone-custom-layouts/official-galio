@@ -1,112 +1,81 @@
 <!--
-  Galio Sundae — the bag drawer, in the mockup's sheet: "Your bag" from the inline end, a row per line
-  (the piece on its round tinted plate, the name, the price with the was-price and the saving, the
-  line total and − n +); "Often added" (best sellers from collections not in the bag, each with its
-  round "+"); the receipt (items at full price, savings, delivery chosen at checkout, the total) with
-  "View bag" and "Checkout". Empty: a calm card, "Shop all pastries" and "Start with a favourite".
-  The lines are Selldone's own basket (every count through kalio-basket's queue), the amounts in the
-  visitor's currency.
+  Galio Sundae — the bag drawer (galio-design/g/shell.js drawerInner()): "Your bag · n pieces" from the
+  inline end; a row per line (GlBagRow); the receipt on the lemon card (the pieces at full price, the
+  saving, a shop offer as its own line, the delivery, the total) with the way to pay; "Often added"
+  (best sellers from collections not in the bag); the total, "View bag" and "Checkout" at its foot.
+  Empty: the empty state with "Continue shopping" and the collections, then "Often added". The lines
+  are Selldone's own basket, the amounts in the visitor's currency.
 -->
 <template>
-  <div v-if="open" class="sheet-scrim" @click="close"></div>
-  <aside v-if="open" id="drawer" :aria-label="t('galio.bag.title', 'Your bag')" aria-modal="true" class="sheet gl-drawer" role="dialog">
-    <div class="sheet-head">
-      <h2 class="gl-drawer-h">{{ t("galio.bag.title", "Your bag") }}<span v-if="units" class="count">{{ units }}</span></h2>
-      <button ref="x" :aria-label="t('galio.bag.close', 'Close bag')" class="x" type="button" @click="close"><gl-icon name="x" /></button>
-    </div>
-    <div class="gl-drawer-body">
-      <template v-if="lines.length">
-        <ul class="gl-bag-rows">
-          <li v-for="it in lines" :key="it.id" :style="{ '--gl-tint': tintOf(it.product?.category_id) }" class="gl-bag-row">
-            <router-link :to="productTo(it)" aria-hidden="true" class="mthumb" tabindex="-1" @click="close"><img :src="image(it)" alt="" loading="lazy" /></router-link>
-            <div class="gl-bag-txt">
-              <router-link :to="productTo(it)" class="mname" @click="close">{{ it.product?.title }}</router-link>
-              <span class="msub"
-                ><span class="tab-num">{{ amount(it.price, it) }}</span
-                ><template v-if="it.dis > 0">{{ " " }}<s class="tab-num">{{ amount(it.price + it.dis, it) }}</s></template
-                >{{ " · " }}{{ t("galio.card.per", "per {unit}", { unit: unitOfLine(it) }) }}</span
-              >
-            </div>
-            <div class="gl-bag-end">
-              <span class="gl-bag-lt tab-num">{{ amount(it.price * shown(it), it) }}</span>
-              <gl-line-step :item="it" />
-            </div>
-          </li>
-        </ul>
-      </template>
-      <div v-else class="gl-empty">
-        <span class="gl-empty-ic"><gl-icon name="bag" /></span>
-        <h3>{{ t("galio.bag.emptyT", "Your bag is empty") }}</h3>
-        <p>{{ t("galio.bag.emptyP", "Every pastry is sold on its own, so add exactly the pieces you want.") }}</p>
-        <router-link :to="shopTo" class="btn" @click="close">{{ t("galio.bag.shopAll", "Shop all pastries") }}</router-link>
+  <template v-if="open">
+    <div class="scrim scrim--drawer" @click="close"></div>
+    <aside id="drawer" :aria-label="t('galio.bag.title', 'Your bag')" aria-modal="true" class="lay lay--drawer drawer" role="dialog">
+      <div class="dr-head">
+        <h2>
+          {{ t("galio.bag.title", "Your bag") }}<span v-if="lines.length" class="dr-n">{{ t("galio.bag.pieces", { one: "{n} piece", other: "{n} pieces" }, { n: units }) }}</span>
+        </h2>
+        <button ref="x" :aria-label="t('galio.bag.close', 'Close the bag')" class="x" type="button" @click="close"><gl-icon name="x" /></button>
       </div>
-      <div v-if="often.length" class="gl-often">
-        <h3>{{ lines.length ? t("galio.bag.often", "Often added") : t("galio.bag.favourite", "Start with a favourite") }}</h3>
-        <ul class="mlist gl-often-list">
-          <li v-for="p in often" :key="p.id" :style="{ '--gl-tint': tintOf(p.category_id) }" class="mrow">
-            <router-link :to="productTo2(p)" aria-hidden="true" class="mthumb" tabindex="-1" @click="close"><img :src="thumb(p)" alt="" loading="lazy" /></router-link>
-            <div class="mtext">
-              <router-link :to="productTo2(p)" class="mname" @click="close">{{ p.title }}</router-link>
-              <span class="msub"
-                ><span class="tab-num">{{ money(pv(p).now) }}</span><template v-if="pv(p).was">{{ " " }}<s class="tab-num">{{ money(pv(p).was) }}</s></template>{{ " · " }}{{ t("galio.card.per", "per {unit}", { unit: unitOf(p) }) }}</span
-              >
-            </div>
-            <gl-qb :product="p" kind="round" />
-          </li>
+      <div v-if="lines.length" class="dr-body">
+        <ul class="brows">
+          <gl-bag-row v-for="it in lines" :key="it.id" :currency="sum.currency" :item="it" @go="close" />
         </ul>
+        <div class="dr-rc">
+          <gl-receipt
+            :delivery-label="deliveryLabel"
+            :delivery-value="deliveryValue"
+            :format="moneyIn"
+            :full="sum.full"
+            :offer="sum.offer"
+            :pieces="units"
+            :save="sum.save"
+            :save-label="saveLabel"
+            :total="sum.total"
+          />
+          <p v-if="payNote" class="dr-note"><gl-icon name="cash" /><span>{{ payNote }}</span></p>
+        </div>
+        <div v-if="often.length" class="dr-often">
+          <h3>{{ t("galio.bag.often", "Often added") }}</h3>
+          <ul class="minis"><gl-mini v-for="p in often" :key="p.id" :product="p" /></ul>
+        </div>
       </div>
-    </div>
-    <div v-if="lines.length" class="gl-drawer-ft">
-      <dl class="gl-rcpt">
-        <div>
-          <dt>{{ t("galio.rc.full", "Items at full price") }}</dt>
-          <dd class="tab-num">{{ moneyIn(sum.full) }}</dd>
+      <div v-else class="dr-body dr-body--empty">
+        <gl-empty :text="t('galio.bag.emptyP', 'Every pastry is sold on its own, so start with one you like and add more as you go.')" :title="t('galio.bag.emptyT', 'Your bag is empty')" cls="empty--bag" icon="bag">
+          <router-link :to="shopTo" class="btn" @click="close">{{ t("galio.bag.continue", "Continue shopping") }}</router-link>
+          <div v-if="cats.length" class="chips">
+            <router-link v-for="c in cats" :key="c.id" :to="catTo(c)" class="chip" @click="close"><bdi>{{ catTitle(c) }}</bdi></router-link>
+          </div>
+        </gl-empty>
+        <div v-if="often.length" class="dr-often">
+          <h3>{{ t("galio.bag.often", "Often added") }}</h3>
+          <ul class="minis"><gl-mini v-for="p in often" :key="p.id" :product="p" /></ul>
         </div>
-        <div v-if="sum.save > 0" class="-save">
-          <dt>{{ saveLabel }}</dt>
-          <dd class="tab-num">−{{ moneyIn(sum.save) }}</dd>
+      </div>
+      <div v-if="lines.length" class="dr-foot">
+        <div class="dr-tot">
+          <span>{{ t("galio.rc.total", "Total") }}</span><b class="tab-num">{{ moneyIn(sum.total) }}</b>
         </div>
-        <div v-if="sum.offer > 0" class="-save">
-          <dt>{{ t("galio.rc.offer", "Offer") }}</dt>
-          <dd class="tab-num">−{{ moneyIn(sum.offer) }}</dd>
-        </div>
-        <div>
-          <template v-if="freeWay">
-            <dt>{{ t("galio.rc.deliveryOf", "Delivery · {way}", { way: freeWay }) }}</dt>
-            <dd>{{ t("galio.rc.free", "Free") }}</dd>
-          </template>
-          <template v-else>
-            <dt>{{ t("galio.rc.delivery", "Delivery") }}</dt>
-            <dd>{{ t("galio.rc.atCheckout", "Chosen at checkout") }}</dd>
-          </template>
-        </div>
-        <div class="-tot">
-          <dt>{{ t("galio.rc.total", "Total") }}</dt>
-          <dd class="tab-num">{{ moneyIn(sum.total) }}</dd>
-        </div>
-      </dl>
-      <div class="gl-drawer-acts">
-        <router-link :to="bagTo" class="btn btn--ghost" @click="close">{{ t("galio.bag.view", "View bag") }}</router-link>
+        <router-link :to="bagTo" class="link" @click="close">{{ t("galio.bag.view", "View bag") }}</router-link>
         <router-link :to="checkoutTo" class="btn" @click="close">{{ t("galio.bag.checkout", "Checkout") }}<gl-icon name="arrow" /></router-link>
       </div>
-    </div>
-  </aside>
+    </aside>
+  </template>
 </template>
 
 <script>
 import GlIcon from "../GlIcon.vue";
-import GlQb from "../GlQb.vue";
-import GlLineStep from "./GlLineStep.vue";
-import { bagPageTo, bySells, closeLayer, layer, priceView, productImage as productThumb, productTo, shopAllTo, shopData, tintOf, unitOf, wayTitle } from "../galio";
+import GlMini from "../GlMini.vue";
+import GlEmpty from "../GlEmpty.vue";
+import GlReceipt from "../GlReceipt.vue";
+import GlBagRow from "./GlBagRow.vue";
+import { bagPageTo, bySells, catTitle, catTo, closeLayer, inCat, layer, shopAllTo, shopData, shopFacts, wayTitle } from "../galio";
 import { shownCount } from "../../kalio/kalio-basket";
-import { productImage } from "../../kalio/kalio-catalog";
-import { currentCurrency, money as regionMoney } from "../../region-switcher/region";
-import { money } from "../galio";
+import { money } from "../../region-switcher/region";
 import { t } from "../../kalio/i18n/kalio-i18n";
 
 export default {
   name: "GlBagDrawer",
-  components: { GlIcon, GlQb, GlLineStep },
+  components: { GlIcon, GlMini, GlEmpty, GlReceipt, GlBagRow },
   data: () => ({ layer, data: shopData }),
   computed: {
     open() {
@@ -114,6 +83,9 @@ export default {
     },
     shop() {
       return this.$store.getters.getShop;
+    },
+    cats() {
+      return this.data.cats.filter((c) => inCat(c.id).length || !this.data.ready);
     },
     basket() {
       return this.getBaskets().find((b) => b?.type === "PHYSICAL") || this.getBaskets().find((b) => b?.items?.length) || null;
@@ -133,25 +105,41 @@ export default {
         full += (it.price + (it.dis || 0)) * n;
         save += (it.dis || 0) * n;
       }
-      /* A shop offer (Selldone's offers: a share off when the line qualifies) is its own line of the receipt. */
+      /* A shop offer (Selldone's offers: a share off when the line qualifies) is its own line. */
       const offer = this.lines.reduce((s, it) => s + (Number(it.offer_amount) || 0), 0);
       return { full, save, offer, total: full - save - offer, currency: b.bill?.currency || b.currency };
     },
-    /* The bag's chosen way when it costs nothing (pickup, no fee, or over its free-shipping amount):
-       the receipt names it. Otherwise the checkout says. */
-    freeWay() {
+    /* The bag's chosen way, when the bag has one: free (pickup, no fee, or over its free amount) or at checkout. */
+    way() {
       const type = this.basket?.delivery_info?.type;
-      const way = type && (this.shop?.transportations || []).find((w) => w && w.type === type && w.enable !== false);
-      if (!way) return "";
+      return (type && (this.shop?.transportations || []).find((w) => w && w.type === type && w.enable !== false)) || null;
+    },
+    wayFree() {
+      const way = this.way;
+      if (!way) return false;
       const noFee = !(Number(way.const) > 0) && !(Number(way.distance_rate) > 0) && !(Number(way.weight_rate) > 0);
       const overLimit = !!way.free_shipping && (!(Number(way.free_shipping_limit) > 0) || this.sum.total >= Number(way.free_shipping_limit));
-      return type === "Pickup" || noFee || overLimit ? wayTitle(way, this.shop) : "";
+      return way.type === "Pickup" || noFee || overLimit;
+    },
+    deliveryLabel() {
+      if (!this.way) return t("galio.rc.delivery", "Delivery");
+      return this.way.type === "Pickup" ? t("galio.rc.pickupCounter", "Pickup at the counter") : wayTitle(this.way, this.shop);
+    },
+    deliveryValue() {
+      return this.way && this.wayFree ? t("galio.rc.free", "Free") : t("galio.rc.atCheckout", "Chosen at checkout");
     },
     /* "Savings · 25% off" when every line saves the same percent. */
     saveLabel() {
       const offs = this.lines.filter((it) => it.dis > 0).map((it) => Math.round((it.dis / (it.price + it.dis)) * 100));
-      if (offs.length && offs.length === this.lines.length && offs.every((x) => x === offs[0])) return t("galio.rc.savingsOff", "Savings · {off}% off", { off: offs[0] });
-      return t("galio.rc.savings", "Savings");
+      if (offs.length && offs.length === this.lines.length && offs.every((x) => x === offs[0])) return t("galio.rc.youSaveOff", "You save {off}%", { off: offs[0] });
+      return t("galio.rc.youSave", "You save");
+    },
+    /* "Cash on delivery: pay $5.06 when the order arrives. Pickup and shipping are chosen at checkout." */
+    payNote() {
+      const g = shopFacts(this.shop).gateway;
+      const later = t("galio.bag.chosenLater", "Pickup and shipping are chosen at checkout.");
+      if (g?.cod) return t("galio.bag.payNote", "{gateway}: pay {amount} when the order arrives.", { gateway: g.name, amount: this.moneyIn(this.sum.total) }) + " " + later;
+      return later;
     },
     /* Three best sellers, one per collection not already in the bag. */
     often() {
@@ -186,39 +174,16 @@ export default {
   },
   methods: {
     t,
-    money,
-    tintOf,
-    unitOf,
+    catTitle,
+    catTo,
     close() {
       closeLayer();
     },
     shown(it) {
       return shownCount(it.product || { id: it.product_id }, it);
     },
-    amount(n, it) {
-      return regionMoney(n, it.currency || this.sum.currency);
-    },
     moneyIn(n) {
-      return regionMoney(n, this.sum.currency);
-    },
-    pv(p) {
-      void currentCurrency();
-      return priceView(this.shop, p);
-    },
-    image(it) {
-      return productImage(it.product || {}, true);
-    },
-    thumb(p) {
-      return productThumb(p, 128);
-    },
-    unitOfLine(it) {
-      return unitOf(it.product || {});
-    },
-    productTo(it) {
-      return productTo({ id: it.product_id });
-    },
-    productTo2(p) {
-      return productTo(p);
+      return money(n, this.sum.currency);
     },
   },
 };

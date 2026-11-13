@@ -18,10 +18,10 @@
   (StorefrontSeo) and never starts on Selldone's Insta view.
 -->
 <template>
-  <div :class="['nx-shop-page', { 'gl-home-page': show_home }]">
+  <div :class="['gl-shop-page', { 'gl-home-page': show_home }]">
     <slot name="header" :center="true"></slot>
     <gl-home v-if="show_home" />
-    <nx-listing
+    <gl-listing
       v-else
       :key="'ls-' + (category_name || '') + '|' + search_query + '|' + (deals_page ? 1 : 0)"
       :category-name="category_name"
@@ -35,7 +35,7 @@
 
 <script lang="ts">
 import GlHome from "../../components/galio/home/GlHome.vue";
-import NxListing from "../../components/bakini/noir/shop/NxListing.vue";
+import GlListing from "../../components/galio/shop/GlListing.vue";
 import { StorefrontSeo } from "../../helpers/StorefrontSeo";
 
 /* The query keys that ask for the listing. Anything else in the address
@@ -52,7 +52,7 @@ function filterOf(query: any): any {
 
 export default {
   name: "StorefrontPageProducts",
-  components: { GlHome, NxListing },
+  components: { GlHome, GlListing },
   inject: ["$shop"],
 
   data: () => ({

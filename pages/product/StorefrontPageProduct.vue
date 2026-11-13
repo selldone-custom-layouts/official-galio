@@ -14,108 +14,27 @@
 
 <template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
   <!--
-    Bakini Noir — the product page (bakio-design/product-b.html,
-    b/pages-product.js): the breadcrumb (Home › collection › product); the
-    gallery and the sticky buy column (NxProductOverview); "Why you'll love
-    it" (the product's own pros, numbered); the product's own description
-    when it has one; "Product information" (the spec in the shop's groups,
-    the SKU); "Buy together" (this and the best seller of two other
-    collections); the reviews (an honest empty state with the rating
-    criteria until there is one); "More <collection>" (never this product).
-    Selldone's own sections for other kinds of product (offers, includes,
-    files, membership, a product landing page) follow when the product has
-    them.
+    Galio Sundae — the product page (galio-design/product-b.html, g/pages-product.js), Glace's single
+    product: the crumb strip (Home · Shop · the collection · the product); the gallery with the tabs
+    under it and the sticky buy column (GlProductOverview); "Buy together" (this and the best seller
+    of two other collections); "More <collection>" (never this product). Selldone's own sections for
+    other kinds of product (offers, includes, files, membership, a product landing page) follow when
+    the product has them.
   -->
-  <div class="nx nx-pdp s--product">
+  <div class="gl gl-pdp s--product">
     <slot name="header" :center="true"></slot>
-    <div class="wrap pd-crumbs">
-      <nav :aria-label="t('bakini.n.pd.crumbs', 'Breadcrumb')" class="crumbs">
-        <router-link :to="{ path: '/' }">{{ t("bakini.n.pd.home", "Home") }}</router-link>
-        <template v-if="cat">
-          <nx-icon name="right" />
-          <router-link :to="catTo(cat)"><bdi>{{ catTitle(cat) }}</bdi></router-link>
-        </template>
-        <template v-if="product">
-          <nx-icon name="right" />
-          <span aria-current="page"><bdi>{{ product.title }}</bdi></span>
-        </template>
-        <span class="nx-pd-admin"><s-product-admin-button v-if="$vuetify.display.mdAndUp"></s-product-admin-button></span>
-      </nav>
-    </div>
-
-    <nx-product-overview v-if="product" :key="product.id" can-buy show-cover />
-    <section v-else aria-hidden="true" class="wrap pd nx-pd-skel">
-      <div class="pd-gal">
-        <div class="pd-stage"><div class="pd-ph"></div></div>
-      </div>
-      <div class="pd-buy">
-        <div class="pd-buy-in"><i class="-a"></i><i class="-b"></i><i class="-c"></i><i class="-d"></i><i class="-e"></i></div>
+    <span class="gl-pd-admin"><s-product-admin-button v-if="$vuetify.display.mdAndUp"></s-product-admin-button></span>
+    <gl-ptitle :crumbs="crumbs" band="straw" crumbs-only />
+    <gl-product-overview v-if="product" :key="product.id" can-buy show-cover />
+    <section v-else aria-hidden="true" class="pd bg-white gl-pd-skel">
+      <div class="wrap pd-in">
+        <div class="pd-left"><div class="gal"><div class="gal-main"><div class="gal-plate"></div></div></div></div>
+        <div class="pbuy"><i></i><i></i><i></i><i></i></div>
       </div>
     </section>
 
     <template v-if="product">
-      <!-- Why you'll love it -->
-      <section v-if="pros.length" class="sec">
-        <div class="wrap">
-          <div class="sec-hd">
-            <div>
-              <p class="eyebrow">{{ t("bakini.n.pd.prosEyebrow", "Why you’ll love it") }}</p>
-              <h2>
-                {{ numberWord(pros.length) }}{{ " " }}<em>{{ pros.length === 1 ? t("bakini.n.pd.prosHemOne", "good reason.") : t("bakini.n.pd.prosHem", "good reasons.") }}</em>
-              </h2>
-            </div>
-          </div>
-          <div class="pros">
-            <div v-for="(x, i) in pros" :key="i" class="pro">
-              <span class="pro-n serif">{{ String(i + 1).padStart(2, "0") }}</span>
-              <h3>{{ x[0] }}</h3>
-              <p>{{ x[1] }}</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- The product's own description -->
-      <section v-if="articleBody" class="sec tight">
-        <div class="wrap">
-          <div class="sec-hd">
-            <div>
-              <p class="eyebrow">{{ t("bakini.n.pd.storyEyebrow", "The story") }}</p>
-              <h2>{{ t("bakini.n.pd.storyH", "About this") }}{{ " " }}<em>{{ unit }}.</em></h2>
-            </div>
-          </div>
-          <div class="nx-pd-article" v-html="articleBody"></div>
-        </div>
-      </section>
-
-      <!-- The details -->
-      <section v-if="groups.length || product.sku" class="sec tight">
-        <div class="wrap">
-          <div class="sec-hd">
-            <div>
-              <p class="eyebrow">{{ t("bakini.n.pd.detailsEyebrow", "The details") }}</p>
-              <h2>{{ t("bakini.n.pd.detailsH", "Product") }}{{ " " }}<em>{{ t("bakini.n.pd.detailsHem", "information.") }}</em></h2>
-            </div>
-          </div>
-          <div class="spec">
-            <div v-for="g in groups" :key="g.group" class="spec-g">
-              <h3 v-if="g.group">{{ g.group }}</h3>
-              <dl>
-                <div v-for="r in g.rows" :key="r[0]">
-                  <dt>{{ r[0] }}</dt>
-                  <dd>{{ r[1] }}</dd>
-                </div>
-              </dl>
-            </div>
-            <p v-if="product.sku" class="spec-sku muted">{{ t("bakini.n.pd.sku", "SKU {sku}", { sku: product.sku }) }}</p>
-          </div>
-        </div>
-      </section>
-
-      <nx-together :product="product" :variant="current_variant" />
-      <nx-reviews :product="product" />
-
-      <div class="wrap nx-pd-sd">
+      <div v-if="hasSd" class="wrap gl-pd-sd">
         <s-product-offers class="s--product-section"></s-product-offers>
         <s-product-includes></s-product-includes>
         <s-product-files-list></s-product-files-list>
@@ -123,28 +42,29 @@
       </div>
       <s-product-landing></s-product-landing>
 
-      <nx-row
-        v-if="more.length"
-        :accent="catTitle(cat).toLowerCase() + '.'"
-        :eyebrow="t('bakini.n.pd.moreEyebrow', 'From the same case')"
-        :items="more"
-        :more-label="t('bakini.n.pd.moreAll', 'All {name}', { name: catTitle(cat).toLowerCase() })"
-        :more-to="catTo(cat)"
-        :title="t('bakini.n.pd.moreH', 'More')"
-      />
+      <gl-together :product="product" :variant="current_variant" />
+
+      <section v-if="more.length" aria-labelledby="gl-h-more" class="sec sec--tight bg-mint">
+        <div class="wrap">
+          <div class="head head--left">
+            <span aria-hidden="true" class="kick">{{ t("galio.pd.moreKick", "from the same tray") }}</span>
+            <h2 id="gl-h-more" class="h2">{{ t("galio.pd.moreH", "More {name}", { name: catTitle(cat).toLowerCase() }) }}</h2>
+          </div>
+          <ul class="grid-cards row-cards"><gl-card v-for="p in more" :key="p.id" :product="p" /></ul>
+          <div v-if="cat" class="sec-foot"><router-link :to="catTo(cat)" class="btn btn--ghost">{{ t("galio.pd.shopAll", "Shop all {name}", { name: catTitle(cat).toLowerCase() }) }}</router-link></div>
+        </div>
+      </section>
     </template>
   </div>
 </template>
 
 <script lang="ts">
 import NotificationService from "@selldone/components-vue/plugins/notification/NotificationService.ts";
-import NxIcon from "../../components/bakini/noir/NxIcon.vue";
-import NxRow from "../../components/bakini/noir/NxRow.vue";
-import NxProductOverview from "../../components/bakini/noir/product/NxProductOverview.vue";
-import NxTogether from "../../components/bakini/noir/product/NxTogether.vue";
-import NxReviews from "../../components/bakini/noir/product/NxReviews.vue";
-import { numberWord } from "../../components/bakini/noir/product/pd";
-import { bySells, catOf, catTitle, catTo, loadNoir, noir, prosOf, specGroups, unitOf } from "../../components/bakini/noir/noir";
+import GlPtitle from "../../components/galio/GlPtitle.vue";
+import GlCard from "../../components/galio/GlCard.vue";
+import GlProductOverview from "../../components/galio/product/GlProductOverview.vue";
+import GlTogether from "../../components/galio/product/GlTogether.vue";
+import { bySells, catOf, catTitle, catTo, loadShop, shopAllTo, shopData } from "../../components/galio/galio";
 import { rememberViewed } from "../../components/bakini/bakini";
 import { t } from "../../components/kalio/i18n/kalio-i18n";
 import { GtagEcommerce } from "@selldone/components-vue/plugins/gtag/GtagEcommerce";
@@ -166,11 +86,10 @@ export default {
   inject: ["$shop"],
   props: {},
   components: {
-    NxIcon,
-    NxRow,
-    NxProductOverview,
-    NxTogether,
-    NxReviews,
+    GlPtitle,
+    GlCard,
+    GlProductOverview,
+    GlTogether,
     SProductLanding,
     SProductAdminButton,
     SProductOffers,
@@ -191,7 +110,7 @@ export default {
     return {
       product: null,
       busy: false,
-      noir,
+      data: shopData,
     };
   },
 
@@ -202,23 +121,21 @@ export default {
     cat() {
       return this.product ? this.product.category || catOf(this.product.category_id) : null;
     },
-    unit() {
-      return unitOf(this.product).toLowerCase();
+    crumbs() {
+      const out = [[t("galio.crumb.home", "Home"), { path: "/" }], [t("galio.crumb.shop", "Shop"), shopAllTo()]];
+      if (this.cat) out.push([catTitle(this.cat), catTo(this.cat)]);
+      if (this.product) out.push([this.product.title]);
+      return out;
     },
-    pros() {
-      return prosOf(this.product).filter((x) => x[0] || x[1]);
-    },
-    groups() {
-      return specGroups(this.product);
-    },
-    articleBody() {
-      const body = this.product?.article_pack?.article?.body;
-      return body && String(body).replace(/<[^>]*>/g, "").trim() ? body : null;
+    /* Selldone's own sections for other kinds of product. */
+    hasSd() {
+      const p = this.product;
+      return !!p && ((p.type && p.type !== "PHYSICAL") || (p.includes && p.includes.length) || (p.files && p.files.length) || (p.offers && p.offers.length));
     },
     /* More of the same collection, best sellers first, never this one. */
     more() {
       if (!this.product) return [];
-      return bySells(this.noir.products.filter((p) => p.category_id === this.product.category_id && p.id !== this.product.id));
+      return bySells(this.data.products.filter((p) => p.category_id === this.product.category_id && p.id !== this.product.id)).slice(0, 4);
     },
   },
 
@@ -229,7 +146,7 @@ export default {
   },
 
   created() {
-    loadNoir();
+    loadShop();
     this.getProduct();
   },
 
@@ -237,7 +154,6 @@ export default {
     t,
     catTitle,
     catTo,
-    numberWord,
 
     getProduct() {
       const seoNavigation = StorefrontSeo.captureNavigation();

@@ -1,117 +1,88 @@
 <!--
-  Bakini Noir — a journal story (bakio-design/article-b.html, b/pages-read.js
-  N.pages.article): one centred reading column (744px), the breadcrumb, the
-  date, the title and the story's own description; the cover wider than the
-  column; the story's text (body 18px, line-height 1.72; its links are the
-  only underlined words on the site); then, under the text, ONE panel with
-  the pastries the story links to (its /product/<id> links, read live; at
-  most four, in a row, "Add all" in the panel's head; two by two on a
-  phone); the Share row; the comments (Selldone's) with the sign-in in the
-  same column; "More from the journal" last.
+  Galio Sundae — a journal post (galio-design/article-b.html): the sky crumb strip; one reading column
+  with the kicker, date, title and lede; the cover with its date roundel; the shop's own text; "Shop
+  this post" (the pastries the post links to or names, else four to try) with "Add all"; share; the
+  comments (Selldone's, an honest empty state); then "Read next" on lemon. Only published posts.
 -->
 <template>
-  <div class="nx nx-article">
-    <article v-if="article" class="ar">
-      <div class="ar-col">
-        <header class="ar-hd">
-          <nx-crumbs :items="[{ label: t('bakini.n.rd.journal', 'Journal'), to: journalRoute() }, { label: t('bakini.n.rd.story', 'Story') }]" />
-          <p v-if="article.created_at" class="eyebrow">
-            <time :datetime="article.created_at">{{ fmtDate(article.created_at) }}</time>
-          </p>
-          <h1 class="serif">{{ article.title }}</h1>
-          <p v-if="lede" class="ar-lede">{{ lede }}</p>
-        </header>
+  <div class="gl gl-article">
+    <gl-ptitle :crumbs="crumbs" band="sky" crumbs-only />
+    <article v-if="article" class="art bg-white">
+      <header class="art-head">
+        <span aria-hidden="true" class="kick">{{ t("galio.rd.jrKick", "the journal") }}</span>
+        <time v-if="article.created_at" :datetime="article.created_at">{{ fmtDate(article.created_at) }}</time>
+        <h1>{{ article.title }}</h1>
+        <p v-if="lede" class="art-lede">{{ lede }}</p>
+      </header>
+      <figure v-if="cover" class="art-cover"><gl-cover :post="article" cls="jcov--art" sizes="(max-width: 1160px) 96vw, 1000px" /></figure>
+      <div v-if="body" class="art-body" @click="bodyClick" v-html="body"></div>
+      <div v-else class="art-body">
+        <p v-if="article.description">{{ article.description }}</p>
+        <p class="no-body">{{ t("galio.rd.soon", "Only this summary is published so far.") }}</p>
       </div>
-      <figure v-if="cover" class="ar-cover">
-        <img :src="cover" :srcset="coverSrcset" alt="" fetchpriority="high" height="900" sizes="(max-width: 1160px) 96vw, 1120px" width="1600" @error="dropSrcset" />
-      </figure>
-      <div class="ar-col">
-        <div v-if="body" class="ar-body prose" @click="bodyClick" v-html="body"></div>
-        <div v-else class="ar-body">
-          <div class="ar-soon">
-            <span class="ec"><nx-icon name="book" /></span>
-            <div>
-              <b>{{ t("bakini.n.rd.soonT", "The full story is not published yet") }}</b>
-              <p class="muted">{{ t("bakini.n.rd.soonP", "Only this summary is in the shop for now. Browse the other stories in the meantime.") }}</p>
-              <router-link :to="journalRoute()" class="link">{{ t("bakini.n.rd.backJournal", "Back to the journal") }}<nx-icon name="arrow" /></router-link>
-            </div>
+
+      <section v-if="products.list.length" aria-labelledby="gl-h-shop" class="art-shop">
+        <div class="as-head">
+          <div>
+            <span class="pk">{{ products.named ? t("galio.rd.named", "Named in this post") : t("galio.rd.toTry", "Pastries to try") }}</span>
+            <h2 id="gl-h-shop">{{ products.named ? t("galio.rd.shopPost", "Shop this post") : t("galio.rd.orderWith", "Order with this read") }}</h2>
           </div>
+          <button :disabled="adding" class="btn" type="button" @click="addAll"><gl-icon :name="added ? 'check' : 'bag'" />{{ t("galio.rd.addAll", "Add all {n}", { n: products.list.length }) }}</button>
         </div>
-
-        <section v-if="products.length" aria-labelledby="ar-p" class="ar-panel">
-          <div class="ar-panel-hd">
-            <div>
-              <p class="eyebrow">{{ t("bakini.n.rd.fromStory", "From this story") }}</p>
-              <h2 id="ar-p" class="serif">{{ t("bakini.n.rd.mentionedH", "The pastries") }} <em>{{ t("bakini.n.rd.mentionedHem", "mentioned.") }}</em></h2>
+        <ul class="as-list">
+          <li v-for="p in products.list" :key="p.id" class="ascard">
+            <router-link :style="{ '--gl-tint': tintOf(p.category_id) }" :to="productTo(p)" aria-hidden="true" class="as-plate" tabindex="-1"
+              ><img :src="productImage(p, 128) || productImage(p)" alt="" height="400" loading="lazy" width="400"
+            /></router-link>
+            <router-link :to="productTo(p)" class="as-n">{{ p.title }}</router-link>
+            <div class="as-b">
+              <span class="as-p tab-num"
+                >{{ money(pv(p).now) }}<template v-if="pv(p).was">{{ " " }}<s>{{ money(pv(p).was) }}</s></template></span
+              >
+              <gl-qb :product="p" kind="round" />
             </div>
-            <button :disabled="adding" class="btn" type="button" @click="addAll">
-              <nx-icon :name="added ? 'check' : 'bag'" />{{ added ? t("bakini.n.rd.inBag", "In your bag") : t("bakini.n.rd.addAll", "Add all") }}
-            </button>
-          </div>
-          <div class="ar-cards">
-            <article v-for="p in products" :key="p.id" :style="{ '--bk-hue': hueOf(p.category_id) }" class="arc">
-              <router-link :to="productTo(p)" aria-hidden="true" class="arc-ph" tabindex="-1"><img :src="productImage(p)" alt="" class="cut" loading="lazy" /></router-link>
-              <router-link :to="productTo(p)" class="arc-n">{{ p.title }}</router-link>
-              <p class="arc-p">
-                <span class="money">{{ money(pv(p).now) }}</span>{{ " " }}<span v-if="pv(p).was" class="was money">{{ money(pv(p).was) }}</span>
-              </p>
-              <nx-qb :label="t('bakini.n.rd.add', 'Add')" :product="p" size="mid" />
-            </article>
-          </div>
-        </section>
+          </li>
+        </ul>
+        <p aria-live="polite" class="as-note">
+          <template v-if="added">{{ t("galio.rd.allIn", "All in your bag.") }} <button class="link link--sm" type="button" @click="openBag">{{ t("galio.bt.openBag", "Open the bag") }}</button></template>
+        </p>
+      </section>
 
-        <div class="ar-share">
-          <span class="eyebrow">{{ t("bakini.n.rd.share", "Share") }}</span>
-          <button class="btn ghost sm" type="button" @click="copyLink">
-            <nx-icon :name="copied ? 'check' : 'link'" />{{ copied ? t("bakini.n.rd.copied", "Link copied") : t("bakini.n.rd.copy", "Copy link") }}
-          </button>
-          <a :href="mailto" class="btn ghost sm"><nx-icon name="mail" />{{ t("bakini.n.rd.email", "Email") }}</a>
-        </div>
-
-        <section aria-labelledby="ar-c" class="ar-com">
-          <h2 id="ar-c" class="serif">{{ t("bakini.n.rd.comments", "Comments") }}</h2>
-          <s-article-comments :article-id="article.id" :article-user-id="article.user_id" class="nx-comments" is-selldone is-shop>
-            <template v-slot:login>
-              <div class="ar-com-empty">
-                <span class="ec"><nx-icon name="chat" /></span>
-                <div>
-                  <b>{{ t("bakini.n.rd.comFirstT", "Join the conversation") }}</b>
-                  <p class="muted">{{ t("bakini.n.rd.comFirstP", "Sign in to leave a comment.") }}</p>
-                </div>
-                <button class="btn" type="button" @click="signIn">{{ t("bakini.n.rd.comSignIn", "Sign in to comment") }}</button>
-              </div>
-            </template>
-          </s-article-comments>
-        </section>
+      <div class="art-share">
+        <span>{{ t("galio.rd.share", "Share this post") }}</span>
+        <button class="chip" type="button" @click="copyLink"><gl-icon :name="copied ? 'check' : 'link'" />{{ copied ? t("galio.rd.copied", "Link copied") : t("galio.rd.copy", "Copy link") }}</button>
+        <a :href="mailto" class="chip"><gl-icon name="mail" />{{ t("galio.rd.email", "Email") }}</a>
       </div>
+
+      <section aria-labelledby="gl-h-com" class="art-com">
+        <h2 id="gl-h-com">{{ t("galio.rd.comments", "Comments") }}</h2>
+        <s-article-comments :article-id="article.id" :article-user-id="article.user_id" class="gl-comments" is-selldone is-shop>
+          <template v-slot:login>
+            <gl-empty :text="t('galio.rd.comP', 'Sign in to write the first one. Comments show here once the shop approves them.')" :title="t('galio.rd.comT', 'No comments yet')" cls="empty--com" icon="chat">
+              <button class="btn" type="button" @click="signIn">{{ t("galio.rd.comSignIn", "Sign in to comment") }}</button>
+            </gl-empty>
+          </template>
+        </s-article-comments>
+      </section>
     </article>
 
-    <div v-else-if="busy" aria-hidden="true" class="ar nx-skel">
-      <div class="ar-col">
-        <div class="nx-skel__line -t"></div>
-        <div class="nx-skel__line"></div>
-      </div>
-      <div class="ar-cover"></div>
+    <div v-else-if="busy" aria-hidden="true" class="art bg-white gl-art-skel">
+      <header class="art-head"><i></i><i></i></header>
+      <div class="art-cover"><span class="jcov jcov--art"></span></div>
     </div>
 
-    <section v-else class="wrap nx-gone">
-      <nx-empty :text="t('bakini.n.rd.goneP', 'The link may be old, or the story has moved. Every other story is in the journal.')" :title="t('bakini.n.rd.goneT', 'We can’t find this story')" icon="book">
-        <router-link :to="journalRoute()" class="btn">{{ t("bakini.n.rd.backJournal", "Back to the journal") }}</router-link>
-      </nx-empty>
+    <section v-else class="sec sec--tight bg-white">
+      <div class="wrap">
+        <gl-empty :text="t('galio.rd.goneP', 'The link may be old, or the post has moved. Every other post is in the journal.')" :title="t('galio.rd.goneT', 'We can’t find this post')" icon="doc">
+          <router-link :to="journalRoute()" class="btn">{{ t("galio.rd.backJournal", "Back to the journal") }}</router-link>
+        </gl-empty>
+      </div>
     </section>
 
-    <section v-if="more.length" class="sec tight">
+    <section v-if="more.length" aria-labelledby="gl-h-next" class="sec sec--tight bg-lemon">
       <div class="wrap">
-        <div class="sec-hd">
-          <div>
-            <p class="eyebrow">{{ t("bakini.n.rd.keepReading", "Keep reading") }}</p>
-            <h2>{{ t("bakini.n.rd.moreH", "More from") }} <em>{{ t("bakini.n.rd.moreHem", "the journal.") }}</em></h2>
-          </div>
-          <router-link :to="journalRoute()" class="link">{{ t("bakini.n.rd.allStories", "All stories") }}<nx-icon name="arrow" /></router-link>
-        </div>
-        <div class="jr-next">
-          <nx-post v-for="b in more" :key="b.id" :post="b" />
-        </div>
+        <h2 id="gl-h-next" class="h3x">{{ t("galio.rd.readNext", "Read next") }}</h2>
+        <ul class="pgrid"><gl-post v-for="b in more" :key="b.id" :post="b" /></ul>
       </div>
     </section>
   </div>
@@ -121,15 +92,15 @@
 import SArticleComments from "@selldone/components-vue/article/comment/SArticleComments.vue";
 import { EventBus } from "@selldone/components-vue/utils/events/EventBus.ts";
 import { StorefrontSeo } from "../../../helpers/StorefrontSeo";
-import NxIcon from "@app-storefront/components/bakini/noir/NxIcon.vue";
-import NxQb from "@app-storefront/components/bakini/noir/NxQb.vue";
-import NxPost from "@app-storefront/components/bakini/noir/NxPost.vue";
-import NxCrumbs from "@app-storefront/components/bakini/noir/read/NxCrumbs.vue";
-import NxEmpty from "@app-storefront/components/bakini/noir/read/NxEmpty.vue";
-import { fmtDate, hueOf, loadNoir, money, noir, priceView, productImage, productTo } from "@app-storefront/components/bakini/noir/noir";
-import { plainText } from "@app-storefront/components/bakini/noir/read/rd";
+import GlIcon from "@app-storefront/components/galio/GlIcon.vue";
+import GlQb from "@app-storefront/components/galio/GlQb.vue";
+import GlEmpty from "@app-storefront/components/galio/GlEmpty.vue";
+import GlPtitle from "@app-storefront/components/galio/GlPtitle.vue";
+import GlPost from "@app-storefront/components/galio/read/GlPost.vue";
+import GlCover from "@app-storefront/components/galio/read/GlCover.vue";
+import { bySells, fmtDate, loadShop, mixed, money, openLayer, priceView, productImage, productTo, shopData, tintOf } from "@app-storefront/components/galio/galio";
+import { plainText } from "@app-storefront/components/galio/gl-read";
 import { addCount, basketLine, mayBuy } from "@app-storefront/components/kalio/kalio-basket";
-import { dropSrcset, photoSrcset } from "@app-storefront/components/kalio/kalio-catalog";
 import { journalPage, journalPost, journalRoute, productsIn } from "@app-storefront/components/kalio/pages/kalio-journal";
 import { currentCurrency } from "@app-storefront/components/region-switcher/region";
 import { t } from "@app-storefront/components/kalio/i18n/kalio-i18n";
@@ -146,7 +117,7 @@ function linkedIds(html: string): number[] {
 
 export default {
   name: "StorefrontPageBlogsView",
-  components: { SArticleComments, NxIcon, NxQb, NxPost, NxCrumbs, NxEmpty },
+  components: { SArticleComments, GlIcon, GlQb, GlEmpty, GlPtitle, GlPost, GlCover },
   inject: ["$shop"],
 
   data: () => ({
@@ -156,7 +127,7 @@ export default {
     adding: false,
     added: false,
     copied: false,
-    noir,
+    data: shopData,
     seoNavigation: StorefrontSeo.captureNavigation(),
   }),
 
@@ -182,8 +153,13 @@ export default {
       if (first && file && first[1].includes(file)) return null;
       return window.CDN.GET_SHOP_IMAGE_PATH(image, null);
     },
-    coverSrcset() {
-      return photoSrcset(this.cover);
+    crumbs() {
+      const out = [
+        [t("galio.crumb.home", "Home"), { path: "/" }],
+        [t("galio.rd.journal", "Journal"), journalRoute()],
+      ];
+      if (this.article) out.push([this.article.title]);
+      return out;
     },
     /* The description, unless it is only the first words of the text. */
     lede() {
@@ -192,16 +168,20 @@ export default {
       const start = plainText(this.article?.body).slice(0, 40);
       return start && d.startsWith(start) ? "" : d;
     },
-    /* The pastries the story links to (else the ones it names), at most four. */
+    /* The pastries the post links to (else the ones it names), at most four; with none, four best
+       sellers from different collections to try ("Pastries to try"). */
     products() {
-      if (!this.article) return [];
-      const byId = new Map(this.noir.products.map((p: any) => [p.id, p]));
+      if (!this.article) return { list: [], named: false };
+      const all = this.data.products;
+      const byId = new Map(all.map((p: any) => [p.id, p]));
       const linked = linkedIds(this.article.body)
         .map((id) => byId.get(id))
         .filter(Boolean)
         .slice(0, 4);
-      if (linked.length) return linked;
-      return productsIn(this.article.body, this.noir.products, 4);
+      if (linked.length) return { list: linked, named: true };
+      const named = productsIn(this.article.body, all, 4);
+      if (named.length) return { list: named, named: true };
+      return { list: mixed(bySells(all.filter((p: any) => p.quantity > 0))).slice(0, 4), named: false };
     },
     mailto() {
       return `mailto:?subject=${encodeURIComponent(this.article?.title || "")}&body=${encodeURIComponent(location.href)}`;
@@ -218,7 +198,7 @@ export default {
   },
 
   created() {
-    loadNoir();
+    loadShop();
     this.load();
   },
 
@@ -226,11 +206,13 @@ export default {
     t,
     money,
     fmtDate,
-    hueOf,
+    tintOf,
+    openBag(e: any) {
+      openLayer("drawer", e?.currentTarget || null);
+    },
     productImage,
     productTo,
     journalRoute,
-    dropSrcset,
     pv(p: any) {
       void currentCurrency();
       return priceView(this.shop, p);
@@ -243,6 +225,8 @@ export default {
       journalPost(asked)
         .then((data: any) => {
           if (asked !== this.blogId) return;
+          /* only a published post */
+          if (data.article?.published === false) throw new Error("unpublished");
           this.article = data.article;
           this.setPageTitle?.(data.article.title);
           StorefrontSeo.updateArticle(data.article, this.$store.getters.getShop, this.seoNavigation);
@@ -283,7 +267,6 @@ export default {
           await addCount(this, p, null, 1);
         }
         this.added = true;
-        setTimeout(() => (this.added = false), 1500);
       } finally {
         this.adding = false;
       }

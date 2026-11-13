@@ -569,16 +569,16 @@ html body {
 }
 
 /* The collections' grid leaves no row half full (GlHome sets the column counts). */
-.gl-home .colls.gl-cols {
+.gl .colls.gl-cols {
   grid-template-columns: repeat(var(--gl-cols-d, 6), minmax(0, 1fr));
 }
 @media (max-width: 1279.98px) {
-  .gl-home .colls.gl-cols {
+  .gl .colls.gl-cols {
     grid-template-columns: repeat(var(--gl-cols-t, 3), minmax(0, 1fr));
   }
 }
 @media (max-width: 640px) {
-  .gl-home .colls.gl-cols {
+  .gl .colls.gl-cols {
     grid-template-columns: repeat(var(--gl-cols-p, 2), minmax(0, 1fr));
   }
 }
@@ -895,4 +895,93 @@ html:not(.gl-dark) .gl .gl-map-img {
 html:root .gl .bg-white:not(.gl-x),
 html:root .gl.bg-white:not(.gl-x) {
   background-color: var(--gl-bg) !important;
+}
+
+/* ── Journal post: Selldone's comments in Galio's dress ── */
+.gl .gl-comments > div {
+  padding: 0 !important;
+}
+.gl .gl-comments .mb-16 {
+  margin-bottom: 0 !important;
+}
+/* Selldone's grey "Write first comment..." line under the empty state says it twice. */
+.gl .gl-comments .text-subtitle-2.text-uppercase.text-center {
+  display: none;
+}
+.gl .gl-comments .v-btn {
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  font-family: var(--gl-f-body) !important;
+  border-radius: 999px !important;
+  box-shadow: none !important;
+}
+.gl .gl-comments textarea,
+.gl .gl-comments .v-field {
+  border-radius: 20px !important;
+}
+.gl .gl-more {
+  display: flex;
+  justify-content: center;
+  margin-top: 26px;
+}
+.gl .gl-art-skel .art-head i {
+  display: block;
+  height: 22px;
+  margin: 0 0 14px;
+  border-radius: 11px;
+  background: var(--gl-plate);
+}
+.gl .gl-art-skel .art-head i:first-child {
+  height: 56px;
+  width: 70%;
+}
+.gl .gl-skel-posts .jcov,
+.gl .gl-art-skel .jcov {
+  animation: gl-skel 1.4s ease-in-out infinite;
+}
+.gl .jcov-fb {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--gl-muted);
+}
+.gl .jcov-fb svg.i {
+  width: 40px;
+  height: 40px;
+}
+
+/* ── About and Contact: the real map in the mockup's frames ── */
+.gl .cmap .map {
+  height: clamp(380px, 38vw, 520px);
+}
+.gl .v2-map .map {
+  height: auto;
+  aspect-ratio: 4 / 3;
+}
+@media (max-width: 760px) {
+  .gl .cmap .map {
+    height: 300px;
+    border-radius: 24px;
+  }
+  .gl .v2-map .map {
+    border-radius: 24px;
+  }
+}
+.gl .gl-own {
+  max-width: 760px;
+  margin: 0 auto;
+  font-size: 16px;
+  line-height: 1.7;
+}
+.gl .cform .gl-own {
+  margin: 0;
+}
+.gl .gl-fq-skel i {
+  display: block;
+  height: 64px;
+  margin-bottom: 12px;
+  border-radius: 22px;
+  background: var(--gl-plate);
+  animation: gl-skel 1.4s ease-in-out infinite;
 }

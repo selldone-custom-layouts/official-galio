@@ -13,14 +13,14 @@
   -->
 
 <!--
-  Bakini Noir: About, Terms, Privacy and Contact in the Layout's own frame;
-  each page draws its own head (b/pages-read.js), so the frame is only the
+  Galio Sundae: About, Terms, Privacy and Contact in the Layout's own frame;
+  each page draws its own title band (g/pages-read.js), so the frame is only the
   slot Selldone fills above it and the page.
 -->
 <template>
-  <div class="k-official">
+  <div class="gl-official">
     <slot name="header"></slot>
-    <router-view class="k-official__body" />
+    <router-view />
   </div>
 </template>
 

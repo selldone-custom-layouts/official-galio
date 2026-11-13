@@ -1,16 +1,16 @@
 <!--
-  Bakini Noir: the shop's terms page (NxLegal: the shop's own text when it has
+  Galio Sundae: the shop's terms page (GlLegal: the shop's own text when it has
   written one, else sample copy from its facts, labelled as sample).
 -->
 <template>
-  <nx-legal kind="terms" />
+  <gl-legal kind="terms" />
 </template>
 
 <script lang="ts">
-import NxLegal from "@app-storefront/components/bakini/noir/read/NxLegal.vue";
+import GlLegal from "@app-storefront/components/galio/read/GlLegal.vue";
 
 export default {
   name: "StorefrontPageOfficialTerms",
-  components: { NxLegal },
+  components: { GlLegal },
 };
 </script>

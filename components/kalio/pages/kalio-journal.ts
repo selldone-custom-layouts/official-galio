@@ -52,7 +52,8 @@ export function journalPage(q: JournalQuery): Promise<{ articles: any[]; total: 
     })
     .then(({ data }: any) => {
       if (data?.error) throw new Error(data.error_msg);
-      const all = data.articles || [];
+      /* only the shop's published posts */
+      const all = (data.articles || []).filter((a: any) => a && a.published !== false);
       const kept = withoutSamples(all);
       return { articles: kept, total: Math.max(kept.length, (data.total || 0) - (all.length - kept.length)) };
     });

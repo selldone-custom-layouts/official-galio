@@ -1,147 +1,224 @@
 <!--
-  Bakini Noir — About (bakio-design/about-b.html, b/pages-read.js
-  N.pages.about): the story beside a collage of nine pastries; "The counter"
-  (address, hours, the courier's windows, the way to pay); the collections;
-  how an order works in three steps; the counter on the map.
-
-  The story is the shop's own About page (Selldone dashboard › Shop ›
-  Profile) when it has written one; until then sample copy built only from
-  the shop's facts (its address, collections, delivery ways and way to
-  pay), with the label "Sample text — the shop has not written this page
-  yet". Never invented history, awards, names or counts.
+  Galio Sundae — About (galio-design/about-b.html): the banner (its photo slot, else the collections'
+  own cut-outs) with the script line and the plate ("About Bakio", one line from the shop's facts); the
+  story in three rows (the counter, the collections as a collage of round plates, how it reaches you);
+  the collections; the quote band; "Visit the counter" with the real map; the newest posts. The shop's
+  own "about us" text, when it has one, takes the place of the story; the story written from the
+  shop's facts carries the label "Sample text — the shop has not written this page yet".
 -->
 <template>
-  <div class="nx nx-about">
-    <section class="ab-hero">
-      <div class="wrap ab-hero-in">
-        <div class="ab-copy">
-          <nx-sample-tag v-if="!own" />
-          <h1 v-if="own" class="serif">{{ t("bakini.n.rd.aboutOwnH", "About") }} <em>{{ name }}.</em></h1>
-          <h1 v-else class="serif">{{ t("bakini.n.rd.aboutH", "A pâtisserie counter") }} <em>{{ headEm }}</em></h1>
-          <div v-if="own" class="prose nx-own" v-html="ownHtml"></div>
-          <template v-else>
-            <p>{{ storyP1 }}</p>
-            <p v-if="storyP2">{{ storyP2 }}</p>
-          </template>
-          <div class="ab-acts">
-            <router-link :to="shopTo" class="btn">{{ t("bakini.n.rd.shopCollections", "Shop the collections") }}</router-link>
-            <router-link :to="contactTo" class="btn ghost">{{ t("bakini.n.rd.visitCounter", "Visit the counter") }}</router-link>
-          </div>
-        </div>
-        <div aria-hidden="true" class="ab-col">
-          <span v-for="(p, i) in collage" :key="p.id" :class="['abc', 'abc' + i]" :style="{ '--bk-hue': hueOf(p.category_id) }"><img :src="productImage(p)" alt="" class="cut" /></span>
-        </div>
-      </div>
-    </section>
-
-    <section v-if="factCards.length" class="sec tight">
+  <div class="gl gl-about">
+    <section aria-labelledby="gl-ab-h" class="ab-hero">
       <div class="wrap">
-        <div class="sec-hd">
-          <div>
-            <p class="eyebrow">{{ t("bakini.n.rd.theCounter", "The counter") }}</p>
-            <h2 v-if="f.everyDay">{{ t("bakini.n.rd.openH", "Open") }} <em>{{ t("bakini.n.rd.openHem", "every day.") }}</em></h2>
-            <h2 v-else>{{ t("bakini.n.rd.findH", "Find") }} <em>{{ t("bakini.n.rd.findHem", "the counter.") }}</em></h2>
+        <div class="ab-box">
+          <div :class="['ph', 'ph--wide-only', { '-photo': banner.wide }]">
+            <img v-if="banner.wide" :src="banner.wide" alt="" class="ph-img" decoding="async" />
+            <gl-cuts v-else :items="bannerPicks" class="-banner" />
           </div>
-        </div>
-        <div class="ab-facts">
-          <div v-for="c in factCards" :key="c.key" class="gcard">
-            <span class="dm-ic"><nx-icon :name="c.icon" /></span><b>{{ c.title }}</b><span>{{ c.line }}</span>
+          <div :class="['ph', 'ph--square-only', { '-photo': banner.square }]">
+            <img v-if="banner.square" :src="banner.square" alt="" class="ph-img" decoding="async" />
+            <gl-cuts v-else :items="bannerPicks" class="-banner -square" />
+          </div>
+          <span ref="script" aria-hidden="true" class="ab-script">{{ t("galio.ab.script", "a few words") }}</span>
+          <div class="ab-plate">
+            <h1 id="gl-ab-h">{{ t("galio.ab.h1", "About {shop}", { shop: name }) }}</h1>
+            <p>{{ heroLine }}</p>
+            <gl-sample v-if="!own" />
           </div>
         </div>
       </div>
     </section>
 
-    <section v-if="noir.cats.length" class="sec tight">
-      <div class="wrap">
-        <div class="sec-hd">
-          <div>
-            <p class="eyebrow">{{ t("bakini.n.rd.theCollections", "The collections") }}</p>
-            <h2>{{ t("bakini.n.rd.caseH", "What is") }} <em>{{ t("bakini.n.rd.caseHem", "in the case.") }}</em></h2>
+    <section :aria-label="t('galio.ab.storyAria', 'Our story')" class="sec sec--tight bg-white">
+      <div v-if="own" class="wrap">
+        <div class="gl-own prose" v-html="ownHtml"></div>
+      </div>
+      <div v-else class="wrap story">
+        <div v-if="f.address" class="srow">
+          <div class="srow-m">
+            <div :class="['ph', 'srow-ph', { '-photo': photos.counter }]">
+              <img v-if="photos.counter" :src="photos.counter" alt="" class="ph-img" loading="lazy" />
+              <gl-cuts v-else :items="picks.slice(0, 3)" class="-banner -square" />
+            </div>
+          </div>
+          <div class="srow-t">
+            <span aria-hidden="true" class="kick">{{ t("galio.ab.counterKick", "the counter") }}</span>
+            <h2>{{ f.pickup ? t("galio.ab.counterH", "One counter, open to visit") : t("galio.ab.shopH", "Where the bakery is") }}</h2>
+            <p>{{ counterP1 }}</p>
+            <p v-if="counterP2">{{ counterP2 }}</p>
+            <router-link :to="contactTo" class="link">{{ t("galio.ab.planVisit", "Plan a visit") }}<gl-icon name="arrow" /></router-link>
           </div>
         </div>
-        <div class="ab-cats">
-          <router-link v-for="c in noir.cats" :key="c.id" :style="{ '--bk-hue': hueOf(c.id) }" :to="catTo(c)" class="ab-cat">
-            <span class="ab-cat-ph"><img v-if="catImage(c, 256)" :src="catImage(c, 256)" alt="" class="cut" /></span>
-            <span
-              ><b><bdi>{{ catTitle(c) }}</bdi></b><small v-if="c.description"><bdi>{{ c.description }}</bdi></small></span
-            >
-            <nx-icon cls="k-flip" name="arrow" />
+        <div v-if="plates.length" class="srow srow--flip">
+          <div class="srow-m">
+            <ul class="collage">
+              <li v-for="x in plates" :key="x.c.id">
+                <router-link :aria-label="catTitle(x.c)" :style="{ '--gl-tint': tintOf(x.c.id) }" :to="catTo(x.c)"><img :src="productImage(x.p)" alt="" height="400" loading="lazy" width="400" /></router-link>
+              </li>
+            </ul>
+          </div>
+          <div class="srow-t">
+            <span aria-hidden="true" class="kick">{{ t("galio.ab.collsKick", "the collections") }}</span>
+            <h2>{{ t("galio.ab.pieceH", "Sold by the piece") }}</h2>
+            <p>{{ collsP }}</p>
+            <router-link :to="shopTo" class="link">{{ t("galio.ab.shopAll", "Shop all pastries") }}<gl-icon name="arrow" /></router-link>
+          </div>
+        </div>
+        <div v-if="wayP1" class="srow">
+          <div class="srow-m">
+            <div :class="['ph', 'srow-ph', { '-photo': photos.courier }]">
+              <img v-if="photos.courier" :src="photos.courier" alt="" class="ph-img" loading="lazy" />
+              <gl-cuts v-else :items="picks.slice(3, 6)" class="-banner -square" />
+            </div>
+          </div>
+          <div class="srow-t">
+            <span aria-hidden="true" class="kick">{{ t("galio.ab.doorKick", "to your door") }}</span>
+            <h2>{{ t("galio.ab.howH", "How it reaches you") }}</h2>
+            <p>{{ wayP1 }}</p>
+            <p v-if="payP">{{ payP }}</p>
+            <router-link :to="faqTo" class="link">{{ t("galio.ab.faqDelivery", "Questions about delivery") }}<gl-icon name="arrow" /></router-link>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section v-if="cats.length" aria-labelledby="gl-h-cols" class="sec sec--tight bg-lemon">
+      <div class="wrap">
+        <div class="head">
+          <span aria-hidden="true" class="kick">{{ collsKick }}</span>
+          <h2 id="gl-h-cols" class="h2">{{ t("galio.ab.colsH", "What's on the counter") }}</h2>
+        </div>
+        <div class="colls gl-cols" :style="colsStyle">
+          <router-link v-for="c in cats" :key="c.id" :style="{ '--gl-tint': tintOf(c.id) }" :to="catTo(c)" class="coll">
+            <span class="coll-ic"><gl-icon :coll="c" /></span>
+            <h3><bdi>{{ catTitle(c) }}</bdi></h3>
+            <span v-if="fromOf(c)" class="from">{{ t("galio.home.from", "From {price}", { price: money(fromOf(c).now) }) }}</span>
+            <span aria-hidden="true" class="link">{{ t("galio.home.shopNow", "Shop now") }}<gl-icon name="arrow" /></span>
           </router-link>
         </div>
       </div>
     </section>
 
-    <section class="sec tight">
+    <section v-if="quote" :aria-label="t('galio.ab.quoteAria', 'Statement')" class="sec sec--tight bg-cocoa quote">
       <div class="wrap">
-        <div class="ab-how">
-          <nx-sample-tag />
-          <div class="ab-steps">
-            <div v-for="(s, i) in steps" :key="i">
-              <span class="pro-n serif">{{ "0" + (i + 1) }}</span>
-              <h3>{{ s.title }}</h3>
-              <p>{{ s.text }}</p>
-            </div>
-          </div>
-        </div>
+        <p class="q-txt">{{ quote }}</p>
+        <span aria-hidden="true" class="q-sig"><gl-mark /></span>
       </div>
     </section>
 
-    <section v-if="f.address" class="sec tight">
-      <div class="wrap">
-        <div class="visit">
-          <div class="visit-map"><nx-map :line="[street, f.hours].filter(Boolean).join(' · ')" :location="f.location" :title="name" /></div>
-          <div class="visit-txt">
-            <p class="eyebrow">{{ t("bakini.n.rd.findUs", "Find us") }}</p>
-            <h2 class="serif">{{ t("bakini.n.rd.comeH", "Come to") }} <em>{{ t("bakini.n.rd.comeHem", "the counter.") }}</em></h2>
-            <div class="ilines">
-              <div class="iline">
-                <nx-icon name="pin" />
-                <div>
-                  <b><bdi>{{ street }}</bdi></b><span><bdi>{{ city }}</bdi></span>
-                </div>
-              </div>
-              <div v-if="open" class="iline">
-                <nx-icon name="clock" />
-                <div>
-                  <b>{{ f.everyDay ? t("bakini.n.rd.openEvery", "Open every day") : t("bakini.n.rd.openDays", "Open") }}</b><span>{{ f.hours || f.days.join(", ") }}</span>
-                </div>
-              </div>
-              <div v-if="f.phone || f.email" class="iline">
-                <nx-icon name="phone" />
-                <div>
-                  <b v-if="f.phone"><a :href="'tel:' + f.phone.replace(/[^\d+]/g, '')" dir="ltr">{{ f.phone }}</a></b><span v-if="f.email">{{ f.email }}</span>
-                </div>
-              </div>
-            </div>
-            <div class="visit-acts">
-              <router-link :to="contactTo" class="btn">{{ t("bakini.n.rd.contact", "Contact") }}</router-link>
-            </div>
+    <section v-if="f.address || f.location" aria-labelledby="gl-h-visit" class="sec sec--tight bg-straw">
+      <div class="wrap visit2">
+        <div class="v2-t">
+          <span aria-hidden="true" class="kick">{{ t("galio.home.visitKick", "come by") }}</span>
+          <h2 id="gl-h-visit" class="h3x">{{ f.pickup ? t("galio.home.visitH", "Visit the counter") : t("galio.home.visitHShop", "Visit the shop") }}</h2>
+          <ul class="facts">
+            <li v-if="f.address">
+              <gl-icon name="pin" /><span
+                ><bdi>{{ f.address }}</bdi><small v-if="counterNote">{{ counterNote }}</small></span
+              >
+            </li>
+            <li v-if="openText">
+              <gl-icon name="clock" /><span>{{ openText }}<small v-if="f.pickup && f.pickup.fee === 0">{{ t("galio.home.pickupFree", "Pickup is free") }}</small></span>
+            </li>
+            <li v-if="f.phone">
+              <gl-icon name="phone" /><span><a :href="telOf(f.phone)" dir="ltr">{{ f.phone }}</a></span>
+            </li>
+            <li v-if="f.email">
+              <gl-icon name="mail" /><span><a :href="'mailto:' + f.email">{{ f.email }}</a></span>
+            </li>
+          </ul>
+          <div class="v2-acts">
+            <a v-if="directions" :href="directions" class="btn" rel="noopener" target="_blank">{{ t("galio.home.directions", "Get directions") }}</a>
+            <router-link :to="contactTo" class="btn btn--ghost">{{ t("galio.ab.contact", "Contact the bakery") }}</router-link>
           </div>
         </div>
+        <div class="v2-map"><gl-map :location="f.location" :place="mapPlace" /></div>
+      </div>
+    </section>
+
+    <section v-if="posts.length" aria-labelledby="gl-h-jr" class="sec sec--tight bg-sky">
+      <div class="wrap">
+        <h2 id="gl-h-jr" class="h3x">{{ t("galio.rd.jrH", "From the journal") }}</h2>
+        <ul class="pgrid pgrid--4"><gl-post v-for="b in posts" :key="b.id" :post="b" /></ul>
       </div>
     </section>
   </div>
 </template>
 
 <script lang="ts">
-import NxIcon from "@app-storefront/components/bakini/noir/NxIcon.vue";
-import NxMap from "@app-storefront/components/bakini/noir/NxMap.vue";
-import NxSampleTag from "@app-storefront/components/bakini/noir/read/NxSampleTag.vue";
-import { bySells, catImage, catTitle, catTo, hueOf, loadNoir, mixed, noir, productImage, shopFacts, unitOf } from "@app-storefront/components/bakini/noir/noir";
-import { cityLine, listWords, openLine, ownText, paySentence, shopName, shopProfile, shortAddress, streetOf } from "@app-storefront/components/bakini/noir/read/rd";
-import { catalogueRoute } from "@app-storefront/components/kalio/kalio-catalog";
+import GlIcon from "@app-storefront/components/galio/GlIcon.vue";
+import GlMark from "@app-storefront/components/galio/GlMark.vue";
+import GlCuts from "@app-storefront/components/galio/home/GlCuts.vue";
+import GlMap from "@app-storefront/components/galio/home/GlMap.vue";
+import GlPost from "@app-storefront/components/galio/read/GlPost.vue";
+import GlSample from "@app-storefront/components/galio/read/GlSample.vue";
+import {
+  bySells,
+  catTitle,
+  catTo,
+  catsBySells,
+  directionsTo,
+  fitLine,
+  fromPrice,
+  inCat,
+  loadShop,
+  money,
+  openLine,
+  productImage,
+  shopAllTo,
+  shopData,
+  shopFacts,
+  shortAddress,
+  streetOf,
+  telOf,
+  tintOf,
+  unitOf,
+} from "@app-storefront/components/galio/galio";
+import { photo } from "@app-storefront/components/galio/gl-photos";
+import { listWords, ownText, paySentence, shopName, shopProfile } from "@app-storefront/components/galio/gl-read";
+import { journalPage } from "@app-storefront/components/kalio/pages/kalio-journal";
+import { currentCurrency } from "@app-storefront/components/region-switcher/region";
 import { t } from "@app-storefront/components/kalio/i18n/kalio-i18n";
+
+/** A count in words up to twelve ("six collections"), else the number. */
+function countWord(n: number): string {
+  const words = [
+    "",
+    t("galio.n.one", "one"),
+    t("galio.n.two", "two"),
+    t("galio.n.three", "three"),
+    t("galio.n.four", "four"),
+    t("galio.n.five", "five"),
+    t("galio.n.six", "six"),
+    t("galio.n.seven", "seven"),
+    t("galio.n.eight", "eight"),
+    t("galio.n.nine", "nine"),
+    t("galio.n.ten", "ten"),
+    t("galio.n.eleven", "eleven"),
+    t("galio.n.twelve", "twelve"),
+  ];
+  return words[n] || String(n);
+}
+
+function fullCols(n: number, max: number) {
+  if (n <= max) return Math.max(1, n);
+  for (let c = max; c >= 2; c--) if (n % c === 0) return c;
+  return max;
+}
 
 export default {
   name: "StorefrontPageOfficialAboutUs",
-  components: { NxIcon, NxMap, NxSampleTag },
+  components: { GlIcon, GlMark, GlCuts, GlMap, GlPost, GlSample },
   inject: ["$shop"],
 
-  data: () => ({ noir, profile: null as any }),
+  data: () => ({ data: shopData, profile: null as any, posts: [] as any[] }),
 
   computed: {
     shop() {
       return this.$store.getters.getShop;
+    },
+    currency() {
+      return currentCurrency();
     },
     f() {
       return shopFacts(this.shop);
@@ -155,94 +232,166 @@ export default {
     ownHtml() {
       return String(this.profile?.body || "").replace(/\scontenteditable="[^"]*"/g, "");
     },
-    street() {
-      return streetOf(this.f);
+    cats() {
+      void this.data.cats.length;
+      return catsBySells();
     },
-    city() {
-      return cityLine(this.f);
-    },
-    open() {
-      return openLine(this.f);
-    },
-    headEm() {
-      return this.f.city ? t("bakini.n.rd.aboutHemCity", "in {city}.", { city: this.f.city }) : t("bakini.n.rd.aboutHem", "near you.");
-    },
-    collectionsWords() {
-      return listWords(this.noir.cats.map((c: any) => catTitle(c).toLowerCase()));
-    },
-    storyP1() {
-      const where = shortAddress(this.f);
-      const lead = where
-        ? t("bakini.n.rd.storyAt", "{shop} is a pâtisserie at {address}.", { shop: this.name, address: where })
-        : t("bakini.n.rd.storyIs", "{shop} is a pâtisserie.", { shop: this.name });
-      const units = this.units;
-      const small = units[0] ? t("bakini.n.rd.storySmall", ", so an order can be as small as one {unit}", { unit: units[0] }) : "";
-      const hold = this.collectionsWords ? t("bakini.n.rd.storyCase", "The counter holds its collections — {names} — and every piece is sold on its own{small}.", { names: this.collectionsWords, small }) : "";
-      return [lead, hold].filter(Boolean).join(" ");
-    },
-    storyP2() {
-      const kinds: string[] = [];
-      if (this.f.courier) kinds.push(t("bakini.n.rd.byCourier", "travel by the {name} across the city", { name: this.f.courier.title }));
-      if (this.f.shipping) kinds.push(t("bakini.n.rd.byShipping", "ship further away"));
-      if (this.f.pickup) kinds.push(t("bakini.n.rd.byPickup", "wait at the counter for pickup"));
-      const how = kinds.length ? t("bakini.n.rd.ordersHow", "Orders {kinds}.", { kinds: listWords(kinds, "disjunction") }) : "";
-      const pay = this.f.gateway?.cod ? t("bakini.n.rd.payEasy", "Payment is simple: cash when the order arrives.") : "";
-      return [how, pay].filter(Boolean).join(" ");
+    colsStyle() {
+      const n = this.cats.length;
+      return { "--gl-cols-d": fullCols(n, 6), "--gl-cols-t": fullCols(n, 3), "--gl-cols-p": fullCols(n, 2) };
     },
     units() {
-      return [...new Set(this.noir.cats.map((c: any) => unitOf(this.noir.products.find((p: any) => p.category_id === c.id) || {}).toLowerCase()))];
+      return [...new Set(this.cats.map((c: any) => unitOf(inCat(c.id)[0] || {}).toLowerCase()).filter(Boolean))] as string[];
     },
-    collage() {
-      return mixed(bySells(this.noir.products)).slice(0, 9);
-    },
-    factCards() {
-      const f = this.f;
-      const out: any[] = [];
-      if (f.address) out.push({ key: "pin", icon: "pin", title: this.street, line: [this.city, f.pickupNote ? f.pickupNote.split(".")[0] : ""].filter(Boolean).join(" · ") });
-      if (f.hours || f.days.length) out.push({ key: "clock", icon: "clock", title: f.hours || t("bakini.n.rd.openDays", "Open"), line: f.everyDay ? t("bakini.n.rd.monSun", "Monday to Sunday, every day of the week") : f.days.join(", ") });
-      if (f.courier && f.courier.windows.length) {
-        const n = f.courier.windows.length;
-        out.push({
-          key: "bike",
-          icon: "bike",
-          title: t("bakini.n.rd.windowsT", { one: "{n} delivery window", other: "{n} delivery windows" }, { n }),
-          line: f.courier.distance ? t("bakini.n.rd.windowsL", "{windows}, within {km} km", { windows: listWords(f.courier.windows), km: f.courier.distance }) : listWords(f.courier.windows),
-        });
-      }
-      if (f.gateway) out.push({ key: "cash", icon: "cash", title: f.gateway.name, line: f.gateway.description || paySentence(f) });
-      return out.slice(0, 4);
-    },
-    steps() {
-      const f = this.f;
-      const u = this.units;
-      const ex = u.length >= 3 ? t("bakini.n.rd.s1ex", " — one {a}, one {b}, a single {c}", { a: u[0], b: u[1], c: u[2] }) : "";
+    /* "A pâtisserie at 1 The Embarcadero, San Francisco, selling individual pastries for delivery and pickup." */
+    heroLine() {
+      const where = shortAddress(this.f);
       const ways: string[] = [];
-      if (f.courier) ways.push(f.courier.windows.length ? t("bakini.n.rd.wCourier", "courier in a window that suits you") : t("bakini.n.rd.wCourierPlain", "courier delivery"));
-      if (f.shipping) ways.push(t("bakini.n.rd.wShipping", "{name}", { name: f.shipping.title.toLowerCase() }));
-      if (f.pickup) ways.push(t("bakini.n.rd.wPickup", "pickup at the counter"));
-      const w = listWords(ways, "disjunction");
-      return [
-        { title: t("bakini.n.rd.s1T", "Choose piece by piece"), text: t("bakini.n.rd.s1", "Add exactly the pastries you want{ex}.", { ex }) },
-        { title: t("bakini.n.rd.s2T", "Pick how it reaches you"), text: w ? w.charAt(0).toUpperCase() + w.slice(1) + "." : t("bakini.n.rd.s2", "Choose how it reaches you at checkout.") },
-        f.gateway?.cod
-          ? { title: t("bakini.n.rd.s3T", "Pay when it arrives"), text: t("bakini.n.rd.s3", "Cash on delivery — nothing is charged online.") }
-          : { title: t("bakini.n.rd.s3Tb", "Pay at checkout"), text: paySentence(f) },
-      ];
+      if (this.f.courier || this.f.shipping) ways.push(t("galio.ab.delivery", "delivery"));
+      if (this.f.pickup) ways.push(t("galio.ab.pickup", "pickup"));
+      const how = ways.length ? t("galio.ab.forWays", " for {ways}", { ways: listWords(ways) }) : "";
+      return where
+        ? t("galio.ab.heroAt", "A pâtisserie at {address}, selling individual pastries{how}.", { address: where, how })
+        : t("galio.ab.hero", "A pâtisserie selling individual pastries{how}.", { how });
+    },
+    counterP1() {
+      const street = streetOf(this.f);
+      const open = this.f.hours ? (this.f.everyDay ? t("galio.ab.openEvery", " It is open every day from {hours}", { hours: this.f.hours }) : t("galio.ab.openHours", " It is open {hours}", { hours: this.f.hours })) : "";
+      const lead = street ? t("galio.ab.counterAt", "{shop} has one counter, at {street}.", { shop: this.name, street }) : t("galio.ab.counterIs", "{shop} has one counter.", { shop: this.name });
+      return lead + (open ? open + t("galio.ab.andOnline", ", and every pastry on the shelves is also on the website.") : "");
+    },
+    counterP2() {
+      const p = this.f.pickup;
+      if (!p) return "";
+      const wins = p.windows.length ? t("galio.ab.pickWin", ", pick a {windows} window", { windows: listWords(p.windows, "disjunction") }) : "";
+      return p.fee
+        ? t("galio.ab.pickupPaid", "Choose pickup at checkout{wins} and collect your order at the counter.", { wins })
+        : t("galio.ab.pickupFree", "Pickup is free: choose it at checkout{wins} and collect your order at the counter.", { wins });
+    },
+    /* The best seller of each collection on its plate. */
+    plates() {
+      return this.cats.map((c: any) => ({ c, p: bySells(inCat(c.id))[0] })).filter((x: any) => x.p).slice(0, 9);
+    },
+    collsP() {
+      const names = listWords(this.cats.map((c: any) => catTitle(c)));
+      const u = this.units;
+      const one = u[0] ? t("galio.ab.fromOne", ", from a single {unit} to a mixed tray", { unit: u[0] }) : "";
+      return t("galio.ab.colls", "{names}. Each pastry is sold on its own, so one order can hold exactly the pieces you want{one}.", { names, one });
+    },
+    wayP1() {
+      const parts: string[] = [];
+      const c = this.f.courier;
+      if (c) {
+        const near = c.distance && c.distance < 1000 ? t("galio.ab.within", " within {km} km of the bakery", { km: c.distance }) : "";
+        const days = c.days.length >= 7 ? t("galio.ab.everyDay", " every day") : "";
+        const win = c.windows.length ? t("galio.ab.inWin", ", in the {windows} window", { windows: listWords(c.windows, "disjunction") }) : "";
+        parts.push(t("galio.ab.courier", "The {name} delivers{near}{days}{win}.", { name: c.title, near, days, win }));
+      }
+      const s = this.f.shipping;
+      if (s) {
+        const fee = s.fee ? t("galio.ab.forFee", " for {fee}", { fee: money(s.fee) }) : "";
+        const free = s.freeOver ? t("galio.ab.freeOver", ", free on orders over {amount}", { amount: money(s.freeOver, true) }) : "";
+        parts.push(t("galio.ab.shipping", "{name} covers the rest{fee}{free}.", { name: s.title, fee, free }));
+      }
+      return parts.join(" ");
+    },
+    payP() {
+      return this.f.gateway?.cod ? t("galio.ab.payCod", "Whichever you choose, you pay in cash when the order arrives.") : this.f.gateway ? paySentence(this.f) : "";
+    },
+    collsKick() {
+      const n = this.cats.length;
+      return n === 1 ? t("galio.ab.oneColl", "one collection") : t("galio.ab.nColls", "{n} collections", { n: countWord(n) });
+    },
+    quote() {
+      const n = this.cats.length;
+      if (!n) return "";
+      const head = n === 1 ? t("galio.ab.qOne", "One collection") : t("galio.ab.qN", "{n} collections", { n: countWord(n).charAt(0).toUpperCase() + countWord(n).slice(1) });
+      return this.f.pickup ? t("galio.ab.quote", "{head}, one counter, and every piece sold on its own.", { head }) : t("galio.ab.quote0", "{head}, and every piece sold on its own.", { head });
+    },
+    banner() {
+      return { wide: photo("galio-banner-wide.webp"), square: photo("galio-banner-square.webp") };
+    },
+    photos() {
+      return { counter: photo("galio-mosaic-counter.webp"), courier: photo("galio-mosaic-courier.webp") };
+    },
+    /* One best seller from each collection, for the drawn fallbacks. */
+    picks() {
+      const out = this.plates.map((x: any) => x.p);
+      return out.concat(out).slice(0, 6);
+    },
+    bannerPicks() {
+      return this.plates.map((x: any) => x.p).slice(0, 6);
+    },
+    counterNote() {
+      const note = String(this.f.pickupNote || "").trim();
+      if (!note) return "";
+      const first = note.split(/(?<=\.)\s/)[0];
+      return /\d{1,2}[:.]\d{2}/.test(first) ? "" : first;
+    },
+    openText() {
+      return openLine(this.f);
+    },
+    mapPlace() {
+      return shortAddress(this.f) || this.name;
+    },
+    directions() {
+      return directionsTo(this.f);
     },
     shopTo() {
-      return catalogueRoute({});
+      return shopAllTo();
     },
     contactTo() {
       return { name: window.$storefront.routes.SHOP_CONTACT_US };
     },
+    faqTo() {
+      return { name: "ShopFAQ" };
+    },
+  },
+
+  watch: {
+    "data.cats.length"() {
+      this.$nextTick(this.fit);
+    },
   },
 
   created() {
-    loadNoir();
-    this.setPageTitle?.(t("bakini.n.rd.aboutTitle", "About {shop}", { shop: shopName(this.$store.getters.getShop) }));
+    loadShop();
+    this.setPageTitle?.(t("galio.ab.title", "About {shop}", { shop: shopName(this.$store.getters.getShop) }));
     shopProfile(this.$shop.name, "about-us").then((p) => (this.profile = p));
+    journalPage({ page: 1, limit: 4 })
+      .then(({ articles }: any) => (this.posts = (articles || []).slice(0, 4)))
+      .catch(() => {});
   },
 
-  methods: { t, hueOf, catTo, catTitle, catImage, productImage },
+  mounted() {
+    this.fit();
+    document.fonts?.ready?.then(() => this.fit());
+    this.onResize = () => this.fit();
+    window.addEventListener("resize", this.onResize, { passive: true });
+  },
+
+  beforeUnmount() {
+    window.removeEventListener("resize", this.onResize);
+  },
+
+  methods: {
+    t,
+    money,
+    tintOf,
+    catTo,
+    catTitle,
+    telOf,
+    productImage(p: any) {
+      return productImage(p, 128) || productImage(p);
+    },
+    fromOf(c: any) {
+      void this.currency;
+      return fromPrice(this.shop, c.id);
+    },
+    /* The script line stays on one line inside the banner (the mockup's fitAll). */
+    fit() {
+      if (this.$refs.script && window.innerWidth > 760) fitLine(this.$refs.script as HTMLElement);
+    },
+  },
 };
 </script>

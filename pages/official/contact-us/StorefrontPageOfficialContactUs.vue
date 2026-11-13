@@ -1,117 +1,137 @@
 <!--
-  Bakini Noir — Contact (bakio-design/contact-b.html, b/pages-read.js
-  N.pages.contact): "Talk to the bakery." with the shop's real lines (the
-  address, the phone, the email, the open days and counter hours, the pickup
-  counter) beside the counter on the map; then the message form (name,
-  email, message, Send), sent with Selldone's own contact call. Missing
-  fields are named under each field before sending. When the shop has
-  written its own "Contact us" page, its text shows above the form. A
-  missing page is not an error: nothing red is shown ("Store profile not
-  found" never appears).
+  Galio Sundae — Contact & visit (galio-design/contact-b.html): the mint title band; four lemon blocks
+  (Visit with directions, Call, Write, Hours) from the shop's own facts; the photo slot beside "Send a
+  message" (Selldone's contact form: name, email, message; honest errors and a thank-you); then the
+  real map with the counter's card. The shop's own "contact us" text, when it has one, sits above
+  the form.
 -->
 <template>
-  <div class="nx nx-contact">
-    <section class="wrap ct">
-      <div class="ct-hd">
-        <nx-crumbs :items="[{ label: t('bakini.n.rd.contactCrumb', 'Contact') }]" />
-        <h1 class="serif">{{ t("bakini.n.rd.ctH", "Talk to") }} <em>{{ t("bakini.n.rd.ctHem", "the bakery.") }}</em></h1>
-        <p class="muted">{{ lede }}</p>
-      </div>
+  <div class="gl gl-contact">
+    <gl-ptitle :crumbs="crumbs" :h1="t('galio.ct.h1', 'Contact & visit')" :kick="t('galio.ct.kick', 'say hello')" :lede="lede" band="mint" />
+    <section class="sec sec--tight bg-white">
+      <div class="wrap">
+        <ul class="cblocks">
+          <li v-if="f.address" class="cblock">
+            <span class="cb-ic"><gl-icon name="pin" /></span>
+            <h2>{{ t("galio.ct.visit", "Visit") }}</h2>
+            <p><bdi>{{ fullAddress }}</bdi></p>
+            <a v-if="directions" :href="directions" class="link link--sm" rel="noopener" target="_blank">{{ t("galio.home.directions", "Get directions") }}<gl-icon name="arrow" /></a>
+          </li>
+          <li v-if="f.phone" class="cblock">
+            <span class="cb-ic"><gl-icon name="phone" /></span>
+            <h2>{{ t("galio.ct.call", "Call") }}</h2>
+            <p dir="ltr">{{ f.phone }}</p>
+            <a :href="telOf(f.phone)" class="link link--sm">{{ t("galio.ct.callBakery", "Call the bakery") }}<gl-icon name="arrow" /></a>
+          </li>
+          <li v-if="f.email" class="cblock">
+            <span class="cb-ic"><gl-icon name="mail" /></span>
+            <h2>{{ t("galio.ct.write", "Write") }}</h2>
+            <p>{{ f.email }}</p>
+            <a :href="'mailto:' + f.email" class="link link--sm">{{ t("galio.ct.sendEmail", "Send an email") }}<gl-icon name="arrow" /></a>
+          </li>
+          <li v-if="open" class="cblock">
+            <span class="cb-ic"><gl-icon name="clock" /></span>
+            <h2>{{ t("galio.ct.hours", "Hours") }}</h2>
+            <p>{{ open }}</p>
+            <span v-if="counterNote" class="cb-note">{{ counterNote }}</span>
+          </li>
+        </ul>
 
-      <div class="ct-grid">
-        <div class="gcard ct-info">
-          <div class="ilines">
-            <div v-if="f.address" class="iline">
-              <nx-icon name="pin" />
-              <div>
-                <b><bdi>{{ street }}</bdi></b><span><bdi>{{ fullCity }}</bdi></span>
-              </div>
-            </div>
-            <div v-if="f.phone" class="iline">
-              <nx-icon name="phone" />
-              <div>
-                <b><a :href="'tel:' + f.phone.replace(/[^\d+]/g, '')" dir="ltr">{{ f.phone }}</a></b
-                ><span>{{ f.hours ? t("bakini.n.rd.phoneHours", "Every day during counter hours") : t("bakini.n.rd.phoneAny", "Call the bakery") }}</span>
-              </div>
-            </div>
-            <div v-if="f.email" class="iline">
-              <nx-icon name="mail" />
-              <div>
-                <b><a :href="'mailto:' + f.email">{{ f.email }}</a></b><span>{{ t("bakini.n.rd.mailFor", "For orders, ingredients and allergens") }}</span>
-              </div>
-            </div>
-            <div v-if="open" class="iline">
-              <nx-icon name="clock" />
-              <div>
-                <b>{{ open }}</b><span v-if="f.everyDay">{{ t("bakini.n.rd.monSunShort", "Monday to Sunday") }}</span>
-              </div>
-            </div>
-            <div v-if="f.pickup" class="iline">
-              <nx-icon name="store" />
-              <div>
-                <b>{{ t("bakini.n.rd.pickupCounter", "Pickup counter") }}</b><span>{{ pickupLine }}</span>
-              </div>
+        <div class="cform-row">
+          <div class="cf-ph">
+            <div :class="['ph', 'cf-photo', { '-photo': tablePhoto }]">
+              <img v-if="tablePhoto" :src="tablePhoto" alt="" class="ph-img" loading="lazy" />
+              <gl-cuts v-else :items="picks" class="-banner -square" />
             </div>
           </div>
-          <div v-if="f.location" class="ct-map"><nx-map :line="[street, f.hours].filter(Boolean).join(' · ')" :location="f.location" :title="name" /></div>
+          <form class="cform" novalidate @submit.prevent="send">
+            <span aria-hidden="true" class="kick">{{ t("galio.ct.formKick", "write to us") }}</span>
+            <h2 class="h3x">{{ t("galio.ct.formH", "Send a message") }}</h2>
+            <div v-if="own" class="gl-own prose" v-html="ownHtml"></div>
+            <p v-else class="cf-sub">{{ t("galio.ct.formSub", "About an order, a question on allergens, or anything else.") }}</p>
+            <template v-if="!sent">
+              <div class="fgrid">
+                <div class="fld">
+                  <label for="gl-c-name">{{ t("galio.ct.name", "Your name") }}</label>
+                  <input id="gl-c-name" v-model.trim="form.name" :aria-describedby="errs.name ? 'gl-c-e-name' : undefined" :aria-invalid="errs.name ? 'true' : undefined" autocomplete="name" name="name" />
+                  <span v-if="errs.name" id="gl-c-e-name" class="err">{{ errs.name }}</span>
+                </div>
+                <div class="fld">
+                  <label for="gl-c-mail">{{ t("galio.ct.email", "Email") }}</label>
+                  <input id="gl-c-mail" v-model.trim="form.email" :aria-describedby="errs.email ? 'gl-c-e-mail' : undefined" :aria-invalid="errs.email ? 'true' : undefined" autocomplete="email" name="email" type="email" />
+                  <span v-if="errs.email" id="gl-c-e-mail" class="err">{{ errs.email }}</span>
+                </div>
+                <div class="fld full">
+                  <label for="gl-c-msg">{{ t("galio.ct.message", "Message") }}</label>
+                  <textarea id="gl-c-msg" v-model="form.message" :aria-describedby="errs.message ? 'gl-c-e-msg' : undefined" :aria-invalid="errs.message ? 'true' : undefined" name="message"></textarea>
+                  <span v-if="errs.message" id="gl-c-e-msg" class="err">{{ errs.message }}</span>
+                </div>
+              </div>
+              <p v-if="failed" class="err" role="alert">{{ failed }}</p>
+              <button :disabled="busy" class="btn" type="submit"><gl-icon name="send" />{{ t("galio.ct.send", "Send the message") }}</button>
+            </template>
+            <div v-else class="lg-ok" role="status">
+              <b>{{ t("galio.ct.thanks", "Thank you.") }}</b>
+              {{ t("galio.ct.sentP", "Your message is on its way. The bakery replies at the email you gave.") }}
+              <button class="link link--sm" type="button" @click="sent = false">{{ t("galio.ct.another", "Send another message") }}</button>
+            </div>
+          </form>
         </div>
+      </div>
+    </section>
 
-        <form class="gcard ct-form" novalidate @submit.prevent="send">
-          <div class="gc-hd">
-            <h2>{{ t("bakini.n.rd.sendH", "Send a message") }}</h2>
-          </div>
-          <div v-if="own" class="prose nx-own" v-html="ownHtml"></div>
-          <template v-if="!sent">
-            <div class="fgrid">
-              <label :class="['fld', { err: errs.name }]">
-                <span>{{ t("bakini.n.rd.fName", "Name") }}</span>
-                <input v-model.trim="form.name" :placeholder="t('bakini.n.rd.fNamePh', 'Your name')" autocomplete="name" name="name" />
-                <small class="hint">{{ errs.name }}</small>
-              </label>
-              <label :class="['fld', { err: errs.email }]">
-                <span>{{ t("bakini.n.rd.fEmail", "Email") }}</span>
-                <input v-model.trim="form.email" autocomplete="email" name="email" placeholder="you@example.com" type="email" />
-                <small class="hint">{{ errs.email }}</small>
-              </label>
-              <label :class="['fld', 'full', { err: errs.message }]">
-                <span>{{ t("bakini.n.rd.fMessage", "Message") }}</span>
-                <textarea v-model="form.message" :placeholder="t('bakini.n.rd.fMessagePh', 'How can the bakery help?')" name="message" rows="6"></textarea>
-                <small class="hint">{{ errs.message }}</small>
-              </label>
+    <section v-if="f.location || f.address" aria-labelledby="gl-h-find" class="sec sec--tight bg-sky">
+      <div class="wrap">
+        <h2 id="gl-h-find" class="vh">{{ t("galio.ct.find", "Find the counter") }}</h2>
+        <div class="cmap">
+          <gl-map :location="f.location" :place="mapPlace" />
+          <div class="visit-card">
+            <h3><bdi>{{ visitTitle }}</bdi></h3>
+            <ul class="facts">
+              <li v-if="f.address">
+                <gl-icon name="pin" /><span
+                  ><bdi>{{ fullAddress }}</bdi><small v-if="counterNote">{{ counterNote }}</small></span
+                >
+              </li>
+              <li v-if="open">
+                <gl-icon name="clock" /><span>{{ open }}<small v-if="f.pickup && f.pickup.fee === 0">{{ t("galio.home.pickupFree", "Pickup is free") }}</small></span>
+              </li>
+              <li v-if="f.phone">
+                <gl-icon name="phone" /><span><a :href="telOf(f.phone)" dir="ltr">{{ f.phone }}</a></span>
+              </li>
+              <li v-if="f.email">
+                <gl-icon name="mail" /><span><a :href="'mailto:' + f.email">{{ f.email }}</a></span>
+              </li>
+            </ul>
+            <div class="acts">
+              <a v-if="directions" :href="directions" class="btn" rel="noopener" target="_blank">{{ t("galio.home.directions", "Get directions") }}</a>
+              <router-link :to="{ name: 'ShopFAQ' }" class="btn btn--ghost">{{ t("galio.ct.questions", "Questions") }}</router-link>
             </div>
-            <p v-if="failed" class="nx-fail" role="alert">{{ failed }}</p>
-            <div class="ct-send">
-              <p class="muted">{{ t("bakini.n.rd.replies", "The bakery replies by email.") }}</p>
-              <button :disabled="busy" class="btn lg" type="submit"><nx-icon name="send" />{{ t("bakini.n.rd.send", "Send") }}</button>
-            </div>
-          </template>
-          <div v-else class="ct-ok" role="status">
-            <span class="ec big"><nx-icon name="check" /></span>
-            <b class="serif">{{ t("bakini.n.rd.thanks", "Thank you.") }}</b>
-            <p class="muted">{{ t("bakini.n.rd.sentP", "Your message is on its way. The bakery replies at the email you gave.") }}</p>
-            <button class="btn ghost sm" type="button" @click="sent = false">{{ t("bakini.n.rd.another", "Send another message") }}</button>
           </div>
-        </form>
+        </div>
       </div>
     </section>
   </div>
 </template>
 
 <script lang="ts">
-import NxIcon from "@app-storefront/components/bakini/noir/NxIcon.vue";
-import NxMap from "@app-storefront/components/bakini/noir/NxMap.vue";
-import NxCrumbs from "@app-storefront/components/bakini/noir/read/NxCrumbs.vue";
-import { shopFacts } from "@app-storefront/components/bakini/noir/noir";
-import { cityLine, openLine, ownText, shopName, shopProfile, streetOf } from "@app-storefront/components/bakini/noir/read/rd";
+import GlIcon from "@app-storefront/components/galio/GlIcon.vue";
+import GlPtitle from "@app-storefront/components/galio/GlPtitle.vue";
+import GlCuts from "@app-storefront/components/galio/home/GlCuts.vue";
+import GlMap from "@app-storefront/components/galio/home/GlMap.vue";
+import { bySells, catsBySells, directionsTo, inCat, loadShop, openLine, shopData, shopFacts, shortAddress, streetOf, telOf } from "@app-storefront/components/galio/galio";
+import { photo } from "@app-storefront/components/galio/gl-photos";
+import { cityLine, ownText, shopName, shopProfile } from "@app-storefront/components/galio/gl-read";
 import { t } from "@app-storefront/components/kalio/i18n/kalio-i18n";
 
 export default {
   name: "StorefrontPageOfficialContactUs",
-  components: { NxIcon, NxMap, NxCrumbs },
+  components: { GlIcon, GlPtitle, GlCuts, GlMap },
   inject: ["$shop"],
 
   data: () => ({
     profile: null as any,
+    data: shopData,
     form: { name: "", email: "", message: "" },
     errs: { name: "", email: "", message: "" } as Record<string, string>,
     busy: false,
@@ -132,21 +152,47 @@ export default {
     street() {
       return streetOf(this.f);
     },
-    fullCity() {
-      return [cityLine(this.f), this.f.country].filter(Boolean).join(", ");
+    crumbs() {
+      return [[t("galio.crumb.home", "Home"), { path: "/" }], [t("galio.ct.crumb", "Contact")]];
+    },
+    /* "1 The Embarcadero, San Francisco, CA 94111". */
+    fullAddress() {
+      return [this.street, cityLine(this.f)].filter(Boolean).join(", ") || this.f.address;
+    },
+    counterNote() {
+      const note = String(this.f.pickupNote || "").trim();
+      if (!note) return "";
+      const first = note.split(/(?<=\.)\s/)[0];
+      return /\d{1,2}[:.]\d{2}/.test(first) ? "" : first.replace(/\.$/, "");
+    },
+    visitTitle() {
+      const p = this.f.pickupPoint;
+      return p?.name || p?.title || [this.name, this.f.city].filter(Boolean).join(" ");
+    },
+    mapPlace() {
+      return shortAddress(this.f) || this.name;
+    },
+    directions() {
+      return directionsTo(this.f);
+    },
+    tablePhoto() {
+      return photo("galio-mosaic-table.webp");
+    },
+    /* One best seller from each of three collections, for the drawn photo slot. */
+    picks() {
+      void this.data.products.length;
+      return catsBySells()
+        .map((c: any) => bySells(inCat(c.id))[0])
+        .filter(Boolean)
+        .slice(0, 3);
     },
     open() {
       return openLine(this.f);
     },
-    pickupLine() {
-      const note = this.f.pickupNote ? this.f.pickupNote.split(".")[0] + "." : "";
-      const free = this.f.pickup && !this.f.pickup.fee ? t("bakini.n.rd.pickupChoose", "Choose Pickup at checkout — it is free.") : t("bakini.n.rd.pickupChoosePaid", "Choose Pickup at checkout.");
-      return [note, free].filter(Boolean).join(" ");
-    },
     lede() {
-      return this.f.everyDay
-        ? t("bakini.n.rd.ctLede", "Questions about an order, ingredients or allergens — the counter is open every day.")
-        : t("bakini.n.rd.ctLede2", "Questions about an order, ingredients or allergens — write or call the bakery.");
+      return this.f.pickup
+        ? t("galio.ct.lede", "Call, write or come by the counter. The bakery answers every message.")
+        : t("galio.ct.lede0", "Call or write to the bakery. It answers every message.");
     },
     own() {
       return ownText(this.profile?.body);
@@ -157,7 +203,8 @@ export default {
   },
 
   created() {
-    this.setPageTitle?.(t("bakini.n.rd.contactCrumb", "Contact"));
+    loadShop();
+    this.setPageTitle?.(t("galio.ct.crumb", "Contact"));
     shopProfile(this.$shop.name, "contact-us").then((p) => (this.profile = p));
     const u = this.USER?.();
     if (u) {
@@ -168,15 +215,16 @@ export default {
 
   methods: {
     t,
+    telOf,
     check() {
       const f = this.form;
       this.errs = {
-        name: f.name.length > 1 ? "" : t("bakini.n.rd.errName", "Add your name"),
-        email: /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(f.email) ? "" : f.email ? t("bakini.n.rd.errEmailBad", "Check the email address") : t("bakini.n.rd.errEmail", "Add your email"),
-        message: f.message.trim().length > 3 ? "" : t("bakini.n.rd.errMessage", "Write a message"),
+        name: f.name.length > 1 ? "" : t("galio.ct.errName", "Add your name"),
+        email: /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(f.email) ? "" : f.email ? t("galio.ct.errEmailBad", "Check the email address") : t("galio.ct.errEmail", "Add your email"),
+        message: f.message.trim().length > 3 ? "" : t("galio.ct.errMessage", "Write a message"),
       };
       const first = ["name", "email", "message"].find((k) => this.errs[k]);
-      if (first) (this.$el.querySelector(`[name="${first}"]`) as HTMLElement | null)?.focus();
+      if (first) (this.$el.querySelector(`.cform [name="${first}"]`) as HTMLElement | null)?.focus();
       return !first;
     },
     send() {
@@ -194,13 +242,13 @@ export default {
         })
         .then(({ data }: any) => {
           if (data?.error) {
-            this.failed = t("bakini.n.rd.failed", "That did not go through. Please try again.");
+            this.failed = t("galio.ct.failed", "That did not go through. Please try again.");
             return;
           }
           this.form.message = "";
           this.sent = true;
         })
-        .catch(() => (this.failed = t("bakini.n.rd.failedLater", "That did not go through. Please try again in a moment.")))
+        .catch(() => (this.failed = t("galio.ct.failedLater", "That did not go through. Please try again in a moment.")))
         .finally(() => (this.busy = false));
     },
   },

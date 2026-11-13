@@ -1,72 +1,69 @@
 <!--
-  Bakini Noir — the journal (bakio-design/blog-b.html, b/pages-read.js
-  N.pages.blog): the breadcrumb, "The journal." and a line; the newest post
-  as a wide featured card ("Latest · <date>", its title, its description,
-  "Read the story"); then the others in a grid of journal cards with their
-  dates (never "1 min read": the list has no text to count). Whatever posts
-  the shop has, newest first; "More stories" reads the next page. A topic,
-  tag, author or search narrows the list and says so in the heading.
+  Galio Sundae — the journal (galio-design/blog-b.html): the sky title band; the newest post large
+  (its cover with the date roundel, "Newest", the date, title, description, "Read the post"); then
+  "Every post" on lemon, three across. Only the shop's published posts, from Selldone's journal; a
+  topic, tag, author or search shows its own posts under its own name.
 -->
 <template>
-  <div class="nx nx-journal">
-    <section class="wrap jr">
-      <div class="jr-hd">
-        <nx-crumbs :items="[{ label: t('bakini.n.rd.journal', 'Journal') }]" />
-        <h1 v-if="!filtered" class="serif">{{ t("bakini.n.rd.jrH", "The") }} <em>{{ t("bakini.n.rd.jrHem", "journal.") }}</em></h1>
-        <h1 v-else class="serif">
-          <em>{{ heading }}</em>
-        </h1>
-        <p class="muted">{{ lede }}</p>
-      </div>
+  <div class="gl gl-journal">
+    <gl-ptitle :crumbs="crumbs" :h1="filtered ? heading : t('galio.rd.jrH', 'From the journal')" :kick="filtered ? '' : t('galio.rd.jrKick', 'the journal')" :lede="lede" band="sky" />
 
-      <template v-if="articles.length">
-        <article v-if="feature" class="jr-feat">
-          <router-link :to="postRoute(feature)" aria-hidden="true" class="jr-feat-ph" tabindex="-1">
-            <img v-if="feature.image" :src="image(feature)" :srcset="srcset(feature)" alt="" height="1000" sizes="(max-width: 760px) 92vw, 760px" width="1600" @error="dropSrcset" />
+    <template v-if="articles.length">
+      <section v-if="feature" :aria-label="t('galio.rd.newestAria', 'Newest post')" class="sec sec--tight bg-white">
+        <div class="wrap">
+          <router-link :to="postRoute(feature)" class="feat">
+            <gl-cover :post="feature" cls="jcov--big" sizes="(max-width: 760px) 92vw, 760px" />
+            <span class="feat-t">
+              <span class="feat-k">{{ t("galio.rd.newest", "Newest") }}</span>
+              <time v-if="feature.created_at" :datetime="feature.created_at">{{ fmtDate(feature.created_at) }}</time>
+              <h2>{{ feature.title }}</h2>
+              <p v-if="feature.description">{{ feature.description }}</p>
+              <span aria-hidden="true" class="btn">{{ t("galio.rd.readPost", "Read the post") }}</span>
+            </span>
           </router-link>
-          <div class="jr-feat-t">
-            <p class="eyebrow">
-              {{ t("bakini.n.rd.latest", "Latest") }}<template v-if="feature.created_at">{{ " · " }}<time :datetime="feature.created_at">{{ fmtDate(feature.created_at) }}</time></template>
-            </p>
-            <h2 class="serif">
-              <router-link :to="postRoute(feature)">{{ feature.title }}</router-link>
-            </h2>
-            <p v-if="feature.description">{{ feature.description }}</p>
-            <router-link :to="postRoute(feature)" class="btn">{{ t("bakini.n.rd.readStory", "Read the story") }}<nx-icon name="arrow" /></router-link>
+        </div>
+      </section>
+      <section v-if="rest.length" :aria-labelledby="'gl-h-all'" :class="['sec', 'sec--tight', feature ? 'bg-lemon' : 'bg-white']">
+        <div class="wrap">
+          <h2 v-if="feature" id="gl-h-all" class="h3x">{{ t("galio.rd.every", "Every post") }}</h2>
+          <h2 v-else id="gl-h-all" class="vh">{{ t("galio.rd.posts", "Posts") }}</h2>
+          <ul class="pgrid"><gl-post v-for="b in rest" :key="b.id" :post="b" /></ul>
+          <div v-if="articles.length < total" class="gl-more">
+            <button :disabled="busy" class="btn btn--ghost" type="button" @click="loadMore">{{ t("galio.rd.morePosts", "More posts") }}</button>
           </div>
-        </article>
-        <div v-if="rest.length" class="jr-grid">
-          <nx-post v-for="b in rest" :key="b.id" :post="b" />
         </div>
-        <div v-if="articles.length < total" class="nx-more">
-          <button :disabled="busy" class="btn ghost" type="button" @click="loadMore">{{ t("bakini.n.rd.moreStories", "More stories") }}</button>
-        </div>
-      </template>
+      </section>
+    </template>
 
-      <div v-else-if="busy" aria-hidden="true" class="jr-grid nx-skel">
-        <div v-for="n in 3" :key="n" class="post"><span class="post-ph"></span></div>
+    <section v-else-if="busy" aria-hidden="true" class="sec sec--tight bg-white">
+      <div class="wrap">
+        <ul class="pgrid gl-skel-posts">
+          <li v-for="n in 3" :key="n"><span class="jcov"></span></li>
+        </ul>
       </div>
+    </section>
 
-      <nx-empty
-        v-else
-        :text="filtered ? t('bakini.n.rd.noMatchP', 'Nothing in the journal matches this yet. Every story is one tap away.') : t('bakini.n.rd.noPostsP', 'The bakery has not published any stories yet.')"
-        :title="filtered ? t('bakini.n.rd.noMatchT', 'No stories here yet') : t('bakini.n.rd.noPostsT', 'No stories yet')"
-        icon="book"
-      >
-        <router-link v-if="filtered" :to="journalRoute()" class="btn">{{ t("bakini.n.rd.allStories", "All stories") }}</router-link>
-        <router-link v-else :to="{ path: '/' }" class="btn">{{ t("bakini.n.rd.backShop", "Back to the shop") }}</router-link>
-      </nx-empty>
+    <section v-else class="sec sec--tight bg-white">
+      <div class="wrap">
+        <gl-empty
+          :text="filtered ? t('galio.rd.noMatchP', 'Nothing in the journal matches this yet.') : t('galio.rd.noPostsP', 'The bakery has not published any posts yet.')"
+          :title="filtered ? t('galio.rd.noMatchT', 'No posts here yet') : t('galio.rd.noPostsT', 'No posts yet')"
+          icon="doc"
+        >
+          <router-link v-if="filtered" :to="journalRoute()" class="btn">{{ t("galio.rd.allPosts", "Every post") }}</router-link>
+          <router-link v-else :to="{ path: '/' }" class="btn">{{ t("galio.rd.backShop", "Back to the shop") }}</router-link>
+        </gl-empty>
+      </div>
     </section>
   </div>
 </template>
 
 <script lang="ts">
-import NxIcon from "@app-storefront/components/bakini/noir/NxIcon.vue";
-import NxPost from "@app-storefront/components/bakini/noir/NxPost.vue";
-import NxCrumbs from "@app-storefront/components/bakini/noir/read/NxCrumbs.vue";
-import NxEmpty from "@app-storefront/components/bakini/noir/read/NxEmpty.vue";
-import { fmtDate } from "@app-storefront/components/bakini/noir/noir";
-import { dropSrcset, photoSrcset } from "@app-storefront/components/kalio/kalio-catalog";
+import GlPtitle from "@app-storefront/components/galio/GlPtitle.vue";
+import GlEmpty from "@app-storefront/components/galio/GlEmpty.vue";
+import GlPost from "@app-storefront/components/galio/read/GlPost.vue";
+import GlCover from "@app-storefront/components/galio/read/GlCover.vue";
+import { fmtDate } from "@app-storefront/components/galio/galio";
 import { journalExtra, journalPage, journalRoute, postRoute } from "@app-storefront/components/kalio/pages/kalio-journal";
 import { t } from "@app-storefront/components/kalio/i18n/kalio-i18n";
 
@@ -75,7 +72,7 @@ const FIRST = 13;
 
 export default {
   name: "StorefrontPageBlogsList",
-  components: { NxIcon, NxPost, NxCrumbs, NxEmpty },
+  components: { GlPtitle, GlEmpty, GlPost, GlCover },
   inject: ["$shop"],
 
   data: () => ({ articles: [] as any[], total: 0, busy: false, page: 1, categories: [] as any[] }),
@@ -111,7 +108,12 @@ export default {
     lede() {
       if (this.current_category) return this.category?.description || t("bakini.n.rd.ledeTopic", "Every story on this topic, newest first.");
       if (this.filtered) return t("bakini.n.rd.ledeMatch", "The stories that match, newest first.");
-      return t("bakini.n.rd.jrLede", "Guides to the collections, how orders reach you, and small ideas for ordering pastries one by one.");
+      return t("galio.rd.jrLede", "Notes on the pastries, the collections and how an order reaches you.");
+    },
+    crumbs() {
+      const home = [t("galio.crumb.home", "Home"), { path: "/" }];
+      if (!this.filtered) return [home, [t("galio.rd.journal", "Journal")]];
+      return [home, [t("galio.rd.journal", "Journal"), journalRoute()], [this.heading]];
     },
     feature() {
       return this.filtered ? null : this.articles[0] || null;
@@ -128,7 +130,7 @@ export default {
   },
 
   created() {
-    this.setPageTitle?.(t("bakini.n.rd.journal", "Journal"));
+    this.setPageTitle?.(t("galio.rd.journal", "Journal"));
     this.load();
     journalExtra()
       .then(({ categories }: any) => (this.categories = categories || []))
@@ -140,13 +142,6 @@ export default {
     fmtDate,
     postRoute,
     journalRoute,
-    dropSrcset,
-    image(a: any) {
-      return a?.image ? window.CDN.GET_SHOP_IMAGE_PATH(a.image, null) : null;
-    },
-    srcset(a: any) {
-      return photoSrcset(this.image(a));
-    },
     query(offsetPage: number, limit: number) {
       return {
         page: offsetPage,

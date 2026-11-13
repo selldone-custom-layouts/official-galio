@@ -13,75 +13,151 @@
   -->
 
 <!--
-  Bakini Noir — one package's way to the shopper (checkout-b.html "Delivery
-  method", delivery-b.html): the shop's ways as cards (the mockup's .dmc:
-  icon, name, a line about it, the fee), its pickup points as cards too,
-  then the way's time windows as chips (one chosen, a ring inside). A way
-  that asks for a date gets a date field. The data and every rule are
-  Selldone's (the days and windows the way offers, lead time, the earliest
-  date); choosing a window writes delivery_info.custom, .days and
+  Galio Sundae — one package's way to the shopper. In the checkout's Delivery card
+  (checkout-b.html): the shop's ways as method cards (.mcard: round icon, name, a line about it,
+  the fee), its pickup points as cards too, then the way's windows as chips ("Delivery window",
+  one chosen). In the delivery sheet (delivery-b.html, the page provides glSheet): each way a
+  radio row with its days and reach under it and its windows as chips. A way that asks for a date
+  gets a date field. The data and every rule are Selldone's (the days and windows the way offers,
+  lead time, the earliest date); choosing a window writes delivery_info.custom, .days and
   .time_spans, as Selldone's own "choose a time" does.
 -->
 <template>
-  <section class="nx-ship">
-    <div v-if="transportation_exclude_pickup?.length || pickups?.length" :aria-label="t('bakini.n.co.method', 'Delivery method')" class="dms" role="group">
+  <!-- ▆▆ The delivery sheet ▆▆ -->
+  <div v-if="glSheet" :aria-label="t('galio.co.method', 'Delivery method')" class="dsheet" role="radiogroup">
+    <div v-for="item in transportation_exclude_pickup" :key="item.type" :class="['dopt', { 'is-on': isWay(item) }]">
+      <button :aria-checked="isWay(item) ? 'true' : 'false'" class="dopt-h" role="radio" type="button" @click="pickWay(item)">
+        <span class="mc-ic"><gl-icon :name="wayIcon(item.type)" /></span>
+        <span class="mc-t"
+          ><b>{{ wayTitleOf(item) }}</b><small v-if="reachOf(item)">{{ reachOf(item) }}</small></span
+        >
+        <span class="mc-fee">{{ feeOf(item) }}</span>
+        <span aria-hidden="true" class="radio"></span>
+      </button>
+      <div v-if="isWay(item)" class="dopt-b">
+        <p class="dopt-addr">
+          <gl-icon name="clock" /><span
+            >{{ daysOf(item) }}<small v-if="sheetSmall(item)">{{ sheetSmall(item) }}</small></span
+          >
+        </p>
+        <div v-if="windowsOn && timeItems.length" :aria-label="t('galio.co.windowsOf', '{way} windows', { way: wayTitleOf(item) })" class="chips" role="radiogroup">
+          <button
+            v-for="span in timeItems"
+            :key="span.value"
+            :aria-checked="isWindow(span.value) ? 'true' : 'false'"
+            :aria-pressed="isWindow(span.value) ? 'true' : 'false'"
+            :disabled="span.props?.disabled"
+            class="chip"
+            role="radio"
+            type="button"
+            @click="pickWindow(span.value)"
+          >
+            {{ windowName(span) }}
+          </button>
+        </div>
+        <label v-if="need_ask_shipping_date" class="fld">
+          <span class="lbl">{{ t("galio.co.date", "Date") }}</span>
+          <input :min="minDate" :type="transportation.eta === ETA.date.code ? 'date' : 'datetime-local'" :value="dateValue" @change="setDate($event.target.value)" />
+        </label>
+      </div>
+    </div>
+    <div v-for="(pickup, i) in pickups || []" :key="'p' + i" :class="['dopt', { 'is-on': isPickup(pickup) }]">
+      <button :aria-checked="isPickup(pickup) ? 'true' : 'false'" class="dopt-h" role="radio" type="button" @click="pickPickup(pickup)">
+        <span class="mc-ic"><gl-icon name="store" /></span>
+        <span class="mc-t"
+          ><b>{{ pickupTitle(pickup) }}</b><small>{{ t("galio.co.collect", "Collect it yourself") }}</small></span
+        >
+        <span class="mc-fee">{{ t("galio.co.free", "Free") }}</span>
+        <span aria-hidden="true" class="radio"></span>
+      </button>
+      <div v-if="isPickup(pickup)" class="dopt-b">
+        <p class="dopt-addr">
+          <gl-icon name="pin" /><span
+            ><bdi>{{ pickupAddress(pickup) }}</bdi><small v-if="pickupNote(pickup)">{{ pickupNote(pickup) }}</small></span
+          >
+        </p>
+        <div v-if="windowsOn && timeItems.length" :aria-label="t('galio.co.whenCome', 'When will you come by?')" class="chips" role="radiogroup">
+          <button
+            v-for="span in timeItems"
+            :key="span.value"
+            :aria-checked="isWindow(span.value) ? 'true' : 'false'"
+            :aria-pressed="isWindow(span.value) ? 'true' : 'false'"
+            :disabled="span.props?.disabled"
+            class="chip"
+            role="radio"
+            type="button"
+            @click="pickWindow(span.value)"
+          >
+            {{ windowName(span) }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ▆▆ The checkout's Delivery card ▆▆ -->
+  <div v-else class="gl-ship">
+    <div v-if="transportation_exclude_pickup?.length || pickups?.length" :aria-label="t('galio.co.method', 'Delivery method')" class="mcards" role="radiogroup">
       <button
         v-for="item in transportation_exclude_pickup"
         :key="item.type"
-        :aria-pressed="transportation?.type === item.type && !selectedPickup ? 'true' : 'false'"
-        class="dmc"
+        :aria-checked="isWay(item) ? 'true' : 'false'"
+        class="mcard"
+        role="radio"
         type="button"
         @click="pickWay(item)"
       >
-        <span class="dm-ic"><nx-icon :name="wayIcon(item.type)" /></span>
-        <b>{{ wayTitleOf(item) }}</b>
-        <span v-if="noteOf(item)" class="dmc-n">{{ noteOf(item) }}</span>
-        <span class="dmc-f">{{ feeOf(item) }}</span>
+        <span class="mc-ic"><gl-icon :name="wayIcon(item.type)" /></span>
+        <span class="mc-t"
+          ><b>{{ wayTitleOf(item) }}</b><small v-if="smallOf(item)">{{ smallOf(item) }}</small></span
+        >
+        <span class="mc-fee">{{ feeOf(item) }}</span>
       </button>
       <button
         v-for="(pickup, i) in pickups || []"
         :key="'p' + i"
-        :aria-pressed="selectedPickup?.address && selectedPickup.address === pickup.address ? 'true' : 'false'"
-        class="dmc"
+        :aria-checked="isPickup(pickup) ? 'true' : 'false'"
+        class="mcard"
+        role="radio"
         type="button"
         @click="pickPickup(pickup)"
       >
-        <span class="dm-ic"><nx-icon name="store" /></span>
-        <b>{{ pickup_transportation?.title || t("bakini.way.pickupAt", "Pickup at {place}", { place: pickup.title || pickup.name || pickup.address }) }}</b>
-        <span class="dmc-n">{{ pickup.message || MapHelper.GenerateFullAddressFromMapInfo(pickup) }}</span>
-        <span class="dmc-f">{{ t("bakini.n.co.free", "Free") }}</span>
+        <span class="mc-ic"><gl-icon name="store" /></span>
+        <span class="mc-t"
+          ><b>{{ pickupShort(pickup) }}</b><small>{{ smallOf(pickup_transportation, pickup) }}</small></span
+        >
+        <span class="mc-fee">{{ t("galio.co.free", "Free") }}</span>
       </button>
     </div>
 
     <template v-if="transportation">
-      <template v-if="windowsOn && timeItems.length">
-        <p class="dm-lbl">{{ t("bakini.n.co.window", "Time window") }}</p>
-        <div :aria-label="t('bakini.n.co.window', 'Time window')" class="dm-win" role="group">
+      <div v-if="windowsOn && timeItems.length" class="wins">
+        <p :id="'gl-win-' + winId" class="lbl">{{ selectedPickup ? t("galio.co.whenCome", "When will you come by?") : t("galio.co.window", "Delivery window") }}</p>
+        <div :aria-labelledby="'gl-win-' + winId" class="chips" role="radiogroup">
           <button
             v-for="span in timeItems"
             :key="span.value"
+            :aria-checked="isWindow(span.value) ? 'true' : 'false'"
             :aria-pressed="isWindow(span.value) ? 'true' : 'false'"
             :disabled="span.props?.disabled"
             class="chip"
+            role="radio"
             type="button"
             @click="pickWindow(span.value)"
           >
-            <nx-icon name="clock" />{{ windowName(span) }}
+            {{ windowName(span) }}
           </button>
         </div>
-      </template>
-      <template v-if="need_ask_shipping_date">
-        <p class="dm-lbl">{{ t("bakini.n.co.date", "Date") }}</p>
-        <label class="fld nx-ship__date">
-          <span class="vh">{{ t("bakini.n.co.date", "Date") }}</span>
-          <input :min="minDate" :type="transportation.eta === ETA.date.code ? 'date' : 'datetime-local'" :value="dateValue" @change="setDate($event.target.value)" />
-        </label>
-      </template>
-      <p v-if="max_lead_time > 0 || transportation?.etd" class="nx-ship__hint">
-        <nx-icon name="clock" />{{ t("bakini.n.co.readyIn", { one: "Ready in about {n} hour.", other: "Ready in about {n} hours." }, { n: max_lead_time + (transportation?.etd ? transportation.etd : 0) }) }}
+      </div>
+      <label v-if="need_ask_shipping_date" class="fld gl-ship-date">
+        <span class="lbl">{{ t("galio.co.date", "Date") }}</span>
+        <input :min="minDate" :type="transportation.eta === ETA.date.code ? 'date' : 'datetime-local'" :value="dateValue" @change="setDate($event.target.value)" />
+      </label>
+      <p v-if="max_lead_time > 0 || transportation?.etd" class="panel-note">
+        <gl-icon name="clock" /><span>{{ t("galio.co.readyIn", { one: "Ready in about {n} hour.", other: "Ready in about {n} hours." }, { n: max_lead_time + (transportation?.etd ? transportation.etd : 0) }) }}</span>
       </p>
     </template>
-  </section>
+  </div>
 </template>
 
 <script lang="ts">
@@ -98,9 +174,9 @@ import { TimeSpans } from "@selldone/core-js/enums/logistic/TimeSpans.ts";
 import TemplateMixin from "@selldone/components-vue/mixin/template/TemplateMixin.ts";
 import ProductMixin from "@selldone/components-vue/mixin/product/ProductMixin.ts";
 import MapMixin from "@selldone/components-vue/mixin/map/MapMixin.ts";
-import NxIcon from "../../../components/bakini/noir/NxIcon.vue";
-import { shopWay, wayIcon } from "../../../components/bakini/noir/buy/noir-cart";
-import { wayTitle } from "../../../components/bakini/noir/noir";
+import GlIcon from "../../../components/galio/GlIcon.vue";
+import { orWords, shopWay, wayIcon, waySmall, windowWord } from "../../../components/galio/buy/gl-cart";
+import { shopFacts, wayTitle } from "../../../components/galio/galio";
 
 export default defineComponent({
   name: "SCartShippingOptions",
@@ -108,9 +184,9 @@ export default defineComponent({
 
   components: {
     ProductsDenseImagesCircles,
-    NxIcon,
+    GlIcon,
   },
-  inject: ["$shop"],
+  inject: { $shop: "$shop", glSheet: { from: "glSheet", default: false } },
   emits: ["update:transportation", "set-basket-config", "pickupSelected"],
   props: {
     basket: {
@@ -143,6 +219,7 @@ export default defineComponent({
     show_package_info: false,
 
     customDeliveryTimes: false,
+    winId: "gl-win-" + Math.random().toString(36).slice(2, 8),
   }),
 
   computed: {
@@ -400,9 +477,55 @@ export default defineComponent({
     moneyFrom,
     t,
     wayIcon,
-    /* ── Bakini Noir ── */
+    /* ── Galio Sundae ── */
     wayTitleOf(item) {
       return item?.title || wayTitle(item, this.$shop);
+    },
+    isWay(item) {
+      return this.transportation?.type === item.type && !this.selectedPickup;
+    },
+    isPickup(pickup) {
+      return !!(this.selectedPickup?.address && this.selectedPickup.address === pickup.address);
+    },
+    /* The card's line at checkout: "Within 30 km of the bakery, every day". */
+    smallOf(item, pickup = null) {
+      return item ? waySmall(this.$shop, item, "checkout", pickup) : "";
+    },
+    /* The sheet's line under the name: "Local delivery within 30 km of the bakery", "Ships anywhere". */
+    reachOf(given) {
+      const item = { ...given, ...shopWay(this.$shop, given) };
+      if (item.message) return item.message;
+      if (["Global", "Post", "Airplane", "Ship"].includes(item.type)) return t("galio.co.shipsAnywhere", "Ships anywhere");
+      if (item.distance && item.distance < 1000) return t("galio.co.within", "Local delivery within {km} km of the bakery", { km: item.distance });
+      return "";
+    },
+    /* "Every day", or the way's own days. */
+    daysOf(given) {
+      const days = given?.days || [];
+      if (days.length >= 7) return t("galio.co.everyDayCap", "Every day");
+      return orWords(days.map((d) => (WeekDays[d] ? this.$t(WeekDays[d].name) : d)));
+    },
+    sheetSmall(given) {
+      const item = { ...given, ...shopWay(this.$shop, given) };
+      if (["Global", "Post", "Airplane", "Ship"].includes(item.type)) return t("galio.co.transit", "Pastries are delicate: think about the time in transit");
+      const street = String(shopFacts(this.$shop).address || "").split(",")[0];
+      if (item.distance && item.distance < 1000 && street) return t("galio.co.withinOfPlace", "Within {km} km of {place}", { km: item.distance, place: street });
+      return "";
+    },
+    pickupTitle(pickup) {
+      return this.pickup_transportation?.title || t("galio.co.pickupAt", "Pickup at {place}", { place: pickup.title || pickup.name || pickup.address });
+    },
+    /* The card's short name: "Pickup at the counter". */
+    pickupShort(pickup) {
+      return this.pickup_transportation?.title || t("galio.co.pickupCounter", "Pickup at the counter");
+    },
+    pickupAddress(pickup) {
+      return MapHelper.GenerateFullAddressFromMapInfo(pickup) || pickup.address || "";
+    },
+    pickupNote(pickup) {
+      const facts = shopFacts(this.$shop);
+      const hours = facts.hours ? (facts.everyDay ? t("galio.co.openEvery", "open every day {hours}", { hours: facts.hours }) : facts.hours) : "";
+      return [pickup.message, hours].filter(Boolean).join(" · ");
     },
     /* A line about the way, from its own data. */
     noteOf(given) {
@@ -410,10 +533,10 @@ export default defineComponent({
       const item = { ...given, ...shopWay(this.$shop, given) };
       if (item.message) return item.message;
       const parts = [];
-      if (item.type === "Global") parts.push(t("bakini.n.co.anywhere", "Ships anywhere"));
-      else if (item.type !== "Pickup" && item.distance && item.distance < 1000) parts.push(t("bakini.n.co.within", "Local delivery within {km} km of the bakery", { km: item.distance }));
+      if (item.type === "Global") parts.push(t("galio.co.anywhere", "Ships anywhere"));
+      else if (item.type !== "Pickup" && item.distance && item.distance < 1000) parts.push(t("galio.co.within", "Local delivery within {km} km of the bakery", { km: item.distance }));
       if (item.free_shipping && item.free_shipping_limit > 0)
-        parts.push(t("bakini.n.co.freeOverOrders", "free on orders over {amount}", { amount: moneyFrom(item.free_shipping_limit, item.currency, { short: "auto" }) }));
+        parts.push(t("galio.co.freeOverOrders", "free on orders over {amount}", { amount: moneyFrom(item.free_shipping_limit, item.currency, { short: "auto" }) }));
       const line = parts.join("; ");
       return line.charAt(0).toUpperCase() + line.slice(1);
     },
@@ -423,19 +546,13 @@ export default defineComponent({
       const free = item.free_shipping && !(item.free_shipping_limit > 0);
       const fee = Number(item.const) || 0;
       const over = item.free_shipping && item.free_shipping_limit > 0 ? moneyFrom(item.free_shipping_limit, item.currency, { short: "auto" }) : "";
-      if (free || !fee) return over ? t("bakini.n.co.freeOver", "Free over {amount}", { amount: over }) : t("bakini.n.co.free", "Free");
+      if (free || !fee) return over ? t("galio.co.freeOver", "Free over {amount}", { amount: over }) : t("galio.co.free", "Free");
       const base = moneyFrom(fee, item.currency);
-      return over ? t("bakini.n.co.feeFreeOver", "{fee} · free over {amount}", { fee: base, amount: over }) : base;
+      return over ? t("galio.co.feeFreeOver", "{fee}, free over {amount}", { fee: base, amount: over }) : base;
     },
     /* The shop's window by its own name ("Morning"), not Selldone's hours. */
     windowName(span) {
-      const words = {
-        Morning: t("bakini.n.co.winMorning", "Morning"),
-        Evening: t("bakini.n.co.winEvening", "Evening"),
-        Night: t("bakini.n.co.winNight", "Night"),
-        Instant: t("bakini.n.co.winInstant", "Instant"),
-      };
-      return words[span.value] || this.$t(span.name);
+      return ["Morning", "Evening", "Night", "Instant"].includes(span.value) ? windowWord(span.value) : this.$t(span.name);
     },
     isWindow(value) {
       return !!this.deliveryInfo?.custom && this.deliveryInfo.time_spans?.length === 1 && this.deliveryInfo.time_spans[0] === value;

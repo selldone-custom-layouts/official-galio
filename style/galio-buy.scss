@@ -1,0 +1,807 @@
+/* Galio Sundae — the Layout's dress for Selldone's parts of the bag, checkout, sheets and order page
+   (the address sheet, the payment window, coupons, the discount code, the order page's cards), in
+   Galio's tokens. Ported from Bakini Noir's dress, then reshaped to the B mockups. */
+
+/* ── The bag page and checkout (cart-b, checkout-b) ── */
+.gl-cartpage {
+  min-height: 60vh;
+}
+.gl .sumcard.-busy .rc {
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+.gl .gl-spin {
+  display: inline-block;
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin-inline-end: 10px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.35);
+  border-top: 2px solid var(--gl-act-on);
+  animation: gl-spin 0.8s linear infinite;
+}
+@keyframes gl-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gl .gl-spin {
+    animation: none;
+  }
+}
+.gl .ckc-sub {
+  margin-top: -6px;
+  font-size: 14px;
+  color: var(--gl-muted);
+}
+.gl .ck-side .sumcard > .link--sm {
+  justify-self: start;
+}
+/* Selldone's shipping options in the Delivery card (SCartShippingOptions in Galio's cards) */
+.gl .gl-ship {
+  display: grid;
+  gap: 10px;
+}
+.gl .gl-ship .panel-note {
+  margin-top: 2px;
+}
+.gl .gl-ship-date,
+.gl .dopt-b .fld {
+  max-width: 320px;
+}
+/* The delivery sheet's foot stays with the rows. */
+.gl .dlg--del .dsheet-foot .btn {
+  width: 100%;
+}
+.gl .addr .btn--ghost {
+  background: var(--gl-surface);
+}
+
+/* ── Selldone's billing form, coupons and discount code, in Galio ── */
+.gl .gl-billform {
+  margin-top: 16px;
+}
+.gl .gl-billform .v-btn,
+.gl .gl-offers .v-btn,
+.gl .gl-code .v-btn {
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  font-family: var(--gl-f-body) !important;
+  font-weight: 700 !important;
+  box-shadow: none !important;
+}
+.gl .gl-code {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.gl .gl-code .discount-code-row {
+  width: 100%;
+}
+.gl .gl-code .discount-code-row > .v-btn {
+  background: transparent !important;
+  color: var(--gl-act-text) !important;
+  box-shadow: inset 0 0 0 1px var(--gl-line) !important;
+  border-radius: 999px !important;
+  height: 40px !important;
+  min-height: 40px !important;
+  margin: 0 !important;
+}
+.gl .gl-code .discount-code-row > .v-btn .v-icon {
+  color: var(--gl-act-text) !important;
+}
+.gl .gl-offers:empty {
+  display: none;
+}
+.gl .gl-offers {
+  border-radius: 28px;
+  padding: 18px 20px;
+  background: var(--gl-surface);
+  box-shadow: inset 0 0 0 1px var(--gl-line);
+}
+.gl .gl-offers .v-btn {
+  border-radius: 999px !important;
+}
+/* Selldone's coupon strip (only when the shop has coupons for this shopper):
+   its show/hide pill, the coupon tickets and "Add coupon" in Noir. */
+/* (the strip's root carries both .gl-offers and Selldone's .s--storefront-coupons) */
+.gl .gl-offers > p .v-btn {
+  background: var(--gl-bg) !important;
+  color: var(--gl-ink) !important;
+  border: 0 !important;
+}
+.gl .gl-offers > p .v-btn .fas {
+  display: none;
+}
+.gl .gl-offers .coupon-slide > .v-btn {
+  background: transparent !important;
+  color: var(--gl-act-text) !important;
+  border: 1.5px dashed var(--gl-line) !important;
+  border-radius: 14px !important;
+  margin-inline-start: 12px;
+}
+.gl .gl-offers .coupon-slide > .v-btn:hover {
+  color: var(--gl-ink) !important;
+}
+.gl .gl-offers .s--coupon-card {
+  border: 1.5px dashed var(--gl-line) !important;
+  border-radius: 14px;
+  background: var(--gl-bg);
+  color: var(--gl-ink);
+  padding: 12px;
+  font-family: var(--gl-f-body);
+}
+.gl .gl-offers .s--coupon-card.selected {
+  border-style: solid !important;
+  border-color: var(--gl-act-text) !important;
+  background: var(--gl-act-soft) !important;
+  color: var(--gl-ink) !important;
+}
+.gl .gl-offers .s--coupon-card.selected small,
+.gl .gl-offers .s--coupon-card .v-icon {
+  color: var(--gl-muted) !important;
+}
+.gl .gl-offers .s--coupon-card .coupon-title {
+  font-size: 13.5px;
+  font-weight: 700;
+}
+.gl .gl-offers .s--coupon-card .coupon-description {
+  color: var(--gl-muted);
+  font-size: 12.5px;
+}
+.gl .gl-coform:empty {
+  display: none;
+}
+
+/* ── The address sheet (map-b): Kalio's sheet in the mockup's dress ── */
+.v-overlay.v-dialog:has(.k-addr),
+.v-overlay.v-dialog:has(.s--storefront-master-payment-dialog) {
+  backdrop-filter: none !important;
+}
+.v-overlay.v-dialog:has(.k-addr) > .v-overlay__scrim,
+.v-overlay.v-dialog:has(.s--storefront-master-payment-dialog) > .v-overlay__scrim {
+  background: rgba(20, 10, 6, 0.46) !important;
+  opacity: 1 !important;
+}
+.k-sheet.k-addr {
+  background: var(--gl-surface) !important;
+  color: var(--gl-ink);
+  font-family: var(--gl-f-body);
+  border-radius: 28px;
+  box-shadow: inset 0 0 0 1px var(--gl-line), 0 40px 80px -30px rgba(0, 0, 0, 0.6);
+  .k-sheet__head h2 {
+    font: 400 clamp(30px, 3.4vw, 40px) / 1.05 var(--gl-f-display) !important;
+    letter-spacing: -0.005em !important;
+    margin-top: 4px;
+    color: var(--gl-ink);
+  }
+  .k-addr__eyebrow {
+    margin: 0;
+    font: 700 11.5px/1.3 var(--gl-f-body) !important;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gl-act-text) !important;
+  }
+  .k-sheet__x {
+    background: var(--gl-bg) !important;
+    color: var(--gl-ink) !important;
+  }
+  .k-addr__field > span,
+  .k-addr__label {
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--gl-ink);
+  }
+  .k-addr__field input,
+  .k-addr__field select,
+  .k-addr__field textarea,
+  .k-addr__search {
+    border-radius: 14px !important;
+    background: var(--gl-bg) !important;
+    color: var(--gl-ink) !important;
+    box-shadow: inset 0 0 0 1px var(--gl-line) !important;
+    border: 0 !important;
+  }
+  .k-addr__search {
+    border-radius: 999px !important;
+  }
+  .k-addr__field input:focus,
+  .k-addr__field select:focus,
+  .k-addr__field textarea:focus,
+  .k-addr__search:focus-within {
+    outline: none !important;
+    box-shadow: inset 0 0 0 2px var(--gl-act-text) !important;
+  }
+  .k-addr__field.-error input {
+    box-shadow: inset 0 0 0 2px var(--gl-act-text) !important;
+  }
+  .k-sheet__foot {
+    justify-content: flex-end;
+    gap: 10px;
+  }
+  .k-sheet__go {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    min-height: 54px;
+    padding: 0 28px !important;
+    border-radius: 999px !important;
+    background: var(--gl-act) !important;
+    color: var(--gl-act-on) !important;
+  }
+  .k-sheet__go:hover {
+    background: var(--gl-act-deep) !important;
+  }
+  .k-sheet__ghost {
+    border-radius: 999px !important;
+    padding: 0 20px !important;
+    min-height: 46px;
+    color: var(--gl-ink) !important;
+    box-shadow: inset 0 0 0 1px var(--gl-line) !important;
+    background: transparent !important;
+  }
+  .k-addr__locate {
+    border-radius: 999px !important;
+    background: var(--gl-surface) !important;
+    color: var(--gl-ink) !important;
+    box-shadow: inset 0 0 0 1px var(--gl-line) !important;
+  }
+  .k-addr__found {
+    border-radius: 16px;
+    background: var(--gl-bg);
+  }
+  .k-addr__found-ico {
+    color: var(--gl-act-text);
+  }
+}
+
+/* ── The order page (order-b): the actions, and Kalio's delivery and
+   message cards in the mockup's glass ── */
+.gl .ord-t > .gl-ord-acts,
+.gl .gl-ord-acts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.gl .gl-ord-acts .gl-share .v-btn,
+.gl .gl-ord-acts .gl-share > button {
+  min-height: 38px !important;
+  height: 38px !important;
+  padding: 0 16px !important;
+  border-radius: 999px !important;
+  background: transparent !important;
+  color: var(--gl-ink) !important;
+  box-shadow: inset 0 0 0 1px var(--gl-line) !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  font: 700 13.5px/1 var(--gl-f-body) !important;
+}
+.gl .gl-ord-acts .gl-share .v-btn:hover {
+  background: var(--gl-bg) !important;
+}
+.gl .gl-ord-acts .gl-share .v-btn__overlay,
+.gl .gl-ord-acts .gl-share .v-btn__underlay {
+  display: none;
+}
+.gl .gl-ord-off {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+}
+.gl .gl-ord-off b {
+  display: block;
+  font-weight: 700;
+}
+.gl .gl-ord-off span:not(.dm-ic) {
+  display: block;
+  font-size: 13.5px;
+  color: var(--gl-muted);
+}
+.gl .ord-main {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+.gl .k-ocard {
+  border: 0;
+  border-radius: 28px;
+  padding: clamp(18px, 2.4vw, 28px);
+  background: linear-gradient(165deg, var(--gl-surface), var(--gl-surface)), var(--gl-surface);
+  box-shadow: inset 0 0 0 1px var(--gl-line), inset 0 1px 0 var(--gl-line);
+  color: var(--gl-ink);
+  font-family: var(--gl-f-body);
+}
+.gl .k-ocard__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+  margin-bottom: 18px;
+}
+.gl .k-ocard__titles {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 12px;
+  flex: 1;
+  min-width: 0;
+}
+.gl .k-ocard__titles h2 {
+  font: 400 28px/1.1 var(--gl-f-display) !important;
+  letter-spacing: 0 !important;
+  color: var(--gl-ink);
+}
+.gl .k-ocard__titles p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--gl-muted);
+}
+.gl .k-ocard__ico {
+  background: var(--gl-bg);
+  box-shadow: inset 0 0 0 1px var(--gl-line);
+}
+.gl .k-ocard__ico .v-icon {
+  color: var(--gl-act-text) !important;
+}
+
+/* Delivery */
+.gl .k-odel__lines {
+  margin-bottom: 4px;
+}
+.gl .k-odel__lines .iline > div {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.gl .k-odel__body:not(.-nomap) > .k-odel__lines,
+.gl .k-odel__body:not(.-nomap) > .k-odel__list {
+  grid-column: 1;
+}
+.gl .k-odel__body:not(.-nomap) > .k-odel__map {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  border-radius: 18px;
+  box-shadow: inset 0 0 0 1px var(--gl-line);
+}
+.gl .k-odel__body {
+  gap: 14px 24px;
+}
+.gl .k-odel__list:empty {
+  display: none;
+}
+.gl .k-odel__list {
+  box-shadow: inset 0 1px 0 var(--gl-line);
+  padding-top: 4px;
+}
+.gl .k-odel__row {
+  border-top: 1px solid var(--gl-line);
+}
+.gl .k-odel__row:first-child {
+  padding-top: 12px;
+}
+.gl .k-odel__row dt {
+  color: var(--gl-muted);
+  font-weight: 700;
+}
+.gl .k-odel__row dd {
+  color: var(--gl-ink);
+  font-size: 14.5px;
+}
+.gl .k-odel__who {
+  color: var(--gl-ink);
+}
+.gl .k-odel__note {
+  font-style: italic;
+  color: var(--gl-muted);
+}
+.gl .k-odel__link {
+  color: var(--gl-act-text) !important;
+  text-decoration: none !important;
+  font-size: 13.5px;
+}
+.gl .k-odel__link:hover {
+  color: var(--gl-ink) !important;
+}
+.gl .k-odel__ask,
+.gl .k-odel__done {
+  border: 0;
+  border-radius: 18px;
+  background: var(--gl-bg);
+  box-shadow: inset 0 0 0 1px var(--gl-line);
+  color: var(--gl-ink);
+}
+.gl .k-odel__go,
+.gl .k-odel__save {
+  border-radius: 999px;
+  background: var(--gl-act) !important;
+  color: var(--gl-act-on) !important;
+  box-shadow: none;
+}
+.gl .k-odel__go:hover,
+.gl .k-odel__save:hover {
+  background: var(--gl-act-deep) !important;
+}
+.gl .k-odel__ghost {
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px var(--gl-line);
+  color: var(--gl-ink);
+  background: transparent;
+}
+.gl .k-odel__field input {
+  border: 0;
+  border-radius: 14px;
+  background: var(--gl-bg);
+  color: var(--gl-ink);
+  box-shadow: inset 0 0 0 1px var(--gl-line);
+}
+.gl .k-odel__field input:focus {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--gl-act-text);
+}
+.gl .k-odel__seg button.-on {
+  background: var(--gl-act-soft);
+  box-shadow: inset 0 0 0 2px var(--gl-act-text);
+  color: var(--gl-ink);
+}
+.gl .k-odel__trip {
+  box-shadow: inset 0 1px 0 var(--gl-line);
+  border-top: 0;
+}
+.gl .k-odel__dot {
+  background: var(--gl-bg);
+  color: var(--gl-act-text);
+}
+
+/* Messages: the shop's mark beside its bubbles, yours in the act colour */
+.gl .k-chat .k-ocard__head .k-ocard__ico {
+  display: none;
+}
+.gl .k-chat__thread {
+  gap: 14px;
+}
+.gl .k-chat__day span {
+  background: var(--gl-bg);
+  color: var(--gl-muted);
+}
+.gl .k-chat__face {
+  width: 36px;
+  height: 36px;
+  background: var(--gl-band-lemon, #f4ece1);
+  box-shadow: inset 0 0 0 1px var(--gl-line);
+  object-fit: contain;
+}
+.gl .k-chat__who {
+  color: var(--gl-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+.gl .k-chat__who i {
+  background: transparent;
+  color: var(--gl-act-text);
+  padding: 0;
+  font-style: normal;
+}
+.gl .k-chat__bubble {
+  padding: 12px 14px;
+  border: 0;
+  border-radius: 18px 18px 18px 6px;
+  background: var(--gl-bg);
+  color: var(--gl-ink);
+  font-size: 14px;
+  line-height: 1.5;
+}
+.gl .k-chat__msg.-mine .k-chat__bubble {
+  border-radius: 18px 18px 6px 18px;
+  background: var(--gl-act);
+  color: var(--gl-act-on);
+}
+.gl .k-chat__meta,
+.gl .k-chat__meta time {
+  color: var(--gl-muted);
+  font-size: 11.5px;
+}
+.gl .k-chat__bin {
+  color: var(--gl-muted);
+  background: transparent;
+}
+.gl .k-chat__bin:hover {
+  color: var(--gl-act-text);
+}
+.gl .k-chat__empty p {
+  color: var(--gl-muted);
+  font-size: 14px;
+}
+.gl .k-chat__start {
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--gl-ink);
+  box-shadow: inset 0 0 0 1px var(--gl-line);
+}
+.gl .k-chat__start:hover {
+  background: var(--gl-bg);
+}
+.gl .k-chat__box {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  margin-top: 14px;
+  padding-top: 14px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: inset 0 1px 0 var(--gl-line);
+}
+.gl .k-chat__field {
+  flex: 1;
+  min-width: 0;
+}
+.gl .k-chat__field textarea {
+  width: 100%;
+  min-height: 44px;
+  padding: 11px 16px;
+  border: 0;
+  border-radius: 22px;
+  background: var(--gl-bg);
+  color: var(--gl-ink);
+  box-shadow: inset 0 0 0 1px var(--gl-line);
+  resize: none;
+}
+.gl .k-chat__field textarea:focus {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--gl-act-text);
+}
+.gl .k-chat__send {
+  flex: none;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--gl-act);
+  color: var(--gl-act-on);
+}
+.gl .k-chat__send:hover {
+  background: var(--gl-act-deep);
+}
+.gl .k-chat__send .v-icon {
+  color: inherit !important;
+}
+.gl .k-chat__send:disabled {
+  opacity: 0.55;
+}
+.gl .k-chat__left {
+  color: var(--gl-muted);
+}
+
+/* ── Selldone's payment window (payment-b): the sheet in the mockup's
+   glass, the total on the stone, each way to pay as the mockup's card
+   (an icon tile, its kind and name; the act ring on hover). Its logic and
+   words stay Selldone's (gateways, gift cards, wallet, Stripe…). ── */
+$nx-ico-cash: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='6.5' width='18' height='11' rx='2'/%3E%3Ccircle cx='12' cy='12' r='2.6'/%3E%3Cpath d='M6.5 9.5v5M17.5 9.5v5'/%3E%3C/svg%3E";
+$nx-ico-card: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='5.5' width='18' height='13' rx='2.5'/%3E%3Cpath d='M3 10h18M7 15h4'/%3E%3C/svg%3E";
+$nx-ico-gift: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4' y='9' width='16' height='11' rx='2'/%3E%3Cpath d='M3 9h18M12 9v11M12 9S10.5 4 8 4.8 9.5 9 12 9zM12 9s1.5-5 4-4.2S14.5 9 12 9z'/%3E%3C/svg%3E";
+
+html.gl-dark .s--storefront-master-payment-dialog,
+.s--storefront-master-payment-dialog {
+  font-family: var(--gl-f-body);
+  border-radius: 28px 28px 0 0 !important;
+
+  > .v-card {
+    border-radius: 28px 28px 0 0 !important;
+    background: linear-gradient(165deg, var(--gl-surface, transparent), var(--gl-surface, transparent)), var(--gl-surface) !important;
+    color: var(--gl-ink) !important;
+    box-shadow: inset 0 0 0 1px var(--gl-line), 0 -30px 80px -40px rgba(0, 0, 0, 0.7) !important;
+  }
+
+  .v-toolbar {
+    background: transparent !important;
+    color: var(--gl-ink) !important;
+  }
+
+  .body-title {
+    font: 400 clamp(30px, 3.2vw, 38px) / 1.05 var(--gl-f-display) !important;
+    letter-spacing: -0.005em !important;
+    color: var(--gl-ink) !important;
+  }
+
+  .circle-button-selldone .v-btn {
+    background: var(--gl-bg) !important;
+    color: var(--gl-ink) !important;
+    box-shadow: none !important;
+  }
+
+  .circle-button-selldone .v-btn:hover {
+    background: var(--gl-plate, var(--gl-bg)) !important;
+  }
+
+  .v-card-text {
+    color: var(--gl-ink) !important;
+  }
+
+  /* The total */
+  .v-card-text > div > .text-start:first-child {
+    background: var(--gl-bg) !important;
+    box-shadow: inset 0 0 0 1px var(--gl-line);
+    border-radius: 18px !important;
+
+    > small {
+      font: 700 11.5px/1.3 var(--gl-f-body) !important;
+      letter-spacing: 0.16em !important;
+      color: var(--gl-act-text) !important;
+    }
+
+    > .v-icon {
+      display: none;
+    }
+
+    .u--price {
+      font: 400 44px/1.05 var(--gl-f-display) !important;
+      letter-spacing: 0 !important;
+      color: var(--gl-ink) !important;
+    }
+
+    .v-btn {
+      color: var(--gl-muted) !important;
+    }
+  }
+
+  .pb-12 > p.small {
+    color: var(--gl-ink) !important;
+    font-weight: 700;
+  }
+
+  /* Each way to pay */
+  .container-btn.container-btn {
+    border: 0 !important;
+    border-radius: 18px !important;
+    background: var(--gl-bg) !important;
+    box-shadow: inset 0 0 0 1px var(--gl-line) !important;
+    color: var(--gl-ink) !important;
+
+    &:hover,
+    &:focus-visible {
+      border: 0 !important;
+      background: var(--gl-act-soft, var(--gl-bg)) !important;
+      box-shadow: inset 0 0 0 2px var(--gl-act-text) !important;
+    }
+
+    .left-side {
+      position: relative;
+      display: grid !important;
+      place-items: center;
+
+      &::before {
+        content: "";
+        position: absolute;
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        background: var(--gl-surface);
+        box-shadow: inset 0 0 0 1px var(--gl-line);
+      }
+
+      &::after {
+        position: relative;
+        width: 22px !important;
+        height: 22px !important;
+        border-radius: 0 !important;
+        background: var(--gl-act-text) !important;
+        -webkit-mask: url($nx-ico-card) center / 22px no-repeat;
+        mask: url($nx-ico-card) center / 22px no-repeat;
+      }
+    }
+
+    &.-blue .left-side::after {
+      -webkit-mask-image: url($nx-ico-cash);
+      mask-image: url($nx-ico-cash);
+    }
+
+    &.-purple .left-side::after {
+      -webkit-mask-image: url($nx-ico-gift);
+      mask-image: url($nx-ico-gift);
+    }
+
+    .-right-side-container {
+      color: var(--gl-muted) !important;
+
+      p {
+        color: var(--gl-ink) !important;
+      }
+    }
+
+    .arrow {
+      color: var(--gl-act-text) !important;
+    }
+  }
+
+  /* "No gateway for this currency": Selldone's own words, in a calm card */
+  .pb-12 > div:not(.v-row) {
+    background: var(--gl-bg) !important;
+    box-shadow: inset 0 0 0 1px var(--gl-line);
+    color: var(--gl-ink) !important;
+  }
+
+  .v-expansion-panel {
+    background: var(--gl-bg) !important;
+    color: var(--gl-ink) !important;
+  }
+
+  .v-field {
+    border-radius: 14px !important;
+    background: var(--gl-bg) !important;
+    color: var(--gl-ink) !important;
+  }
+
+  .v-field__outline {
+    --v-field-border-opacity: 0.18;
+    color: var(--gl-line) !important;
+  }
+}
+.s--storefront-master-payment-dialog .container-btn .-right-side-container img {
+  display: none !important;
+}
+
+/* The checkout's column never grows past the page (Selldone's coupon list
+   and checkout form ask for a fixed width). */
+.gl .co-main,
+.gl .co-side {
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
+}
+.gl .co-main > * {
+  min-width: 0;
+  max-width: 100%;
+}
+.gl .co-main .v-container {
+  max-width: 100% !important;
+  padding-inline: 0 !important;
+}
+
+/* The delivery sheet itself takes the focus when it opens (not a control: no ring). */
+.gl #dlsheet:focus {
+  outline: none;
+}
+
+/* On a phone the address sheet fills the window; without a map its fields
+   take all the room between the head and the foot (the foot sits at the
+   bottom, no empty band under it). */
+.v-dialog--fullscreen .k-addr__grid.-nomap {
+  flex: 1 1 auto;
+  max-height: none;
+  min-height: 0;
+}
+
+/* The payment window on a wide screen: a dialog in the middle of the page,
+   as in the mockup (payment-b), not a sheet stuck to the bottom edge; on a
+   phone it stays Selldone's bottom sheet. */
+@media (min-width: 761px) {
+  .v-bottom-sheet > .v-overlay__content.s--storefront-master-payment-dialog {
+    align-self: center !important;
+    margin-block: auto !important;
+    max-height: calc(100dvh - 64px) !important;
+    border-radius: 28px !important;
+  }
+  html.gl-dark .s--storefront-master-payment-dialog > .v-card,
+  .s--storefront-master-payment-dialog > .v-card {
+    border-radius: 28px !important;
+    box-shadow: inset 0 0 0 1px var(--gl-line), 0 40px 80px -30px rgba(0, 0, 0, 0.7) !important;
+  }
+}
+
+/* The checkout's column never grows past the screen (Selldone's coupon strip is a wide slide group). */
+.gl .ck-main,
+.gl .cart-main,
+.gl .desk-main,
+.gl .ord-main {
+  grid-template-columns: minmax(0, 1fr);
+}
+.gl .gl-offers {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+}

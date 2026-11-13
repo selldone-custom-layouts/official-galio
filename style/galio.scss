@@ -345,7 +345,8 @@ html body {
 
 /* ── Selldone's and Kalio's global names the mockup shares ── */
 /* .dot (Selldone: an absolute badge dot), .card (a bordered box), balanced headings (Kalio). */
-.gl .mark .dot {
+.gl .mark .dot,
+.gl .cr .dot {
   position: static;
   margin: 0;
 }

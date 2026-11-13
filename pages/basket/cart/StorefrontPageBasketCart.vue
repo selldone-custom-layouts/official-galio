@@ -14,467 +14,438 @@
 
 
 <!--
-  Bakini Noir — the bag and the checkout (bakio-design/cart-b.html,
-  checkout-b.html; b/pages-buy.js cart and checkout). One Selldone basket
-  page in two stages (noir-cart.ts): the bag (rows with − n + and Remove,
-  the delivery ways to choose now or later, the receipt and "Checkout",
-  "Often added") and the checkout (?step=checkout: step pills, then
-  numbered glass cards — Contact, Delivery method and its time window,
-  Delivery address or the pickup counter, Billing, Note — and the floating
-  receipt with "Place order · pay $X on delivery", what is still missing
-  named above it). Empty: a calm card, "Continue shopping" and the
-  collections.
-
-  Everything that works is Selldone's and stays as it was in the script
-  below: the bill, the basket config (receiver, delivery, billing, the
-  shop's checkout questions, the guest's email), coupons and prizes, the
-  shipping options, the address sheet (map on or off), the payment window
-  and the service order.
+  Galio Sundae — the bag page and checkout (galio-design/cart-b.html, checkout-b.html,
+  delivery-b.html, map-b.html, payment-b.html) on Selldone's own basket script (gl-cart.ts reads
+  it). The bag: the title band with the step pills; the rows (round plate, − n +, the line total, a
+  bin); "How it reaches you" (the shop's ways as method cards); the order summary with Checkout and
+  the cash line; "Often added". The checkout (?step=checkout): numbered cards (Contact, Delivery
+  with Selldone's shipping options in Galio's cards and window chips, the address or the counter,
+  billing, the note), the shop's own checkout questions, coupons and prizes when the shopper has
+  some; "Your order" with the pieces, the receipt, the way line, what is still missing, the code
+  box and "Place order", which opens Selldone's payment window.
 -->
 <template>
-  <div class="nx nx-cartpage">
+  <div class="gl gl-cartpage">
     <!-- ▆▆▆▆ Empty ▆▆▆▆ -->
-    <section v-if="!(basket && basket.items && basket.items.length)" class="wrap cart">
-      <div class="cart-hd">
-        <nav :aria-label="t('bakini.n.co.crumbs', 'Breadcrumb')" class="crumbs">
-          <router-link :to="{ path: '/' }">{{ t("bakini.n.co.home", "Home") }}</router-link><nx-icon name="right" /><span aria-current="page">{{ t("bakini.n.co.bag", "Bag") }}</span>
-        </nav>
-        <h1 class="serif">{{ t("bakini.n.co.your", "Your") }}{{ " " }}<em>{{ t("bakini.n.co.bagEm", "bag.") }}</em></h1>
-      </div>
-      <div class="empty">
-        <span class="ec"><nx-icon name="bag" /></span>
-        <h3>{{ t("bakini.n.co.emptyT", "Your bag is empty") }}</h3>
-        <p>{{ t("bakini.n.co.emptyP", "Every pastry is sold individually — pick one piece or a few to begin.") }}</p>
-        <div class="acts">
-          <router-link :to="shopTo" class="btn">{{ t("bakini.n.co.continue", "Continue shopping") }}</router-link>
-        </div>
-      </div>
-      <div v-if="noir.cats.length" class="cat-chips nx-cart-cats">
-        <router-link v-for="c in noir.cats" :key="c.id" :to="catTo(c)" class="chip"><img v-if="catImg(c)" :src="catImg(c)" alt="" /><bdi>{{ c.title || c.name }}</bdi></router-link>
-      </div>
-    </section>
-
-    <!-- ▆▆▆▆ Bag ▆▆▆▆ -->
-    <template v-else-if="nx_stage === 'bag'">
-      <section class="wrap cart">
-        <div class="cart-hd">
-          <nav :aria-label="t('bakini.n.co.crumbs', 'Breadcrumb')" class="crumbs">
-            <router-link :to="{ path: '/' }">{{ t("bakini.n.co.home", "Home") }}</router-link><nx-icon name="right" /><span aria-current="page">{{ t("bakini.n.co.bag", "Bag") }}</span>
-          </nav>
-          <h1 class="serif">{{ t("bakini.n.co.your", "Your") }}{{ " " }}<em>{{ t("bakini.n.co.bagEm", "bag.") }}</em></h1>
-        </div>
-        <div class="cart-grid">
-          <div class="cart-main">
-            <div class="gcard cart-rows">
-              <div v-for="it in nx_lines" :key="it.id" :style="{ '--bk-hue': hueOf(it.product?.category_id) }" class="crow">
-                <router-link :to="productTo({ id: it.product_id })" aria-hidden="true" class="th" tabindex="-1"><img :src="nx_img(it)" alt="" class="cut" /></router-link>
-                <div class="crow-t">
-                  <p v-if="nx_cat(it)" class="eyebrow"><bdi>{{ nx_cat(it) }}</bdi></p>
-                  <router-link :to="productTo({ id: it.product_id })" class="nm">{{ it.product?.title }}</router-link>
-                  <p class="meta">
-                    <span class="money">{{ nx_money(it.price) }}</span>{{ " " }}<span v-if="it.dis > 0" class="was money">{{ nx_money(it.price + it.dis) }}</span>
-                    {{ " · " + t("bakini.n.co.per", "per {unit}", { unit: nx_unit(it) }) }}<template v-if="it.dis > 0">{{ " · " }}<span class="gold">{{ t("bakini.n.co.save", "Save {amount}", { amount: nx_money(it.dis) }) }}</span></template>
-                  </p>
-                </div>
-                <div class="crow-q">
-                  <nx-line-qb :item="it" />
-                  <button :aria-label="t('bakini.n.co.removeOf', 'Remove {name}', { name: it.product?.title || '' })" class="crow-rm" type="button" @click="nx_remove(it)">
-                    <nx-icon name="trash" /><span>{{ t("bakini.n.co.remove", "Remove") }}</span>
-                  </button>
-                </div>
-                <span class="crow-lt money">{{ nx_money(it.price * nx_shown(it)) }}</span>
+    <template v-if="!(basket && basket.items && basket.items.length)">
+      <gl-ptitle :crumbs="crumbsBag" :h1="t('galio.co.yourBag', 'Your bag')" band="straw" cls="ptitle--short" />
+      <section class="sec sec--tight bg-white">
+        <div class="wrap">
+          <div class="cart-empty">
+            <span aria-hidden="true" class="kick">{{ t("galio.co.emptyKick", "put something in the bag") }}</span>
+            <gl-empty
+              :text="t('galio.co.emptyP', 'Every pastry is sold on its own, so start with one you like and add more as you go.')"
+              :title="t('galio.co.emptyT', 'Your bag is empty')"
+              cls="empty--bag"
+              icon="bag"
+            >
+              <router-link :to="shopTo" class="btn">{{ t("galio.co.continue", "Continue shopping") }}</router-link>
+              <div v-if="gcData.cats.length" class="chips">
+                <router-link v-for="c in gcData.cats" :key="c.id" :to="catTo(c)" class="chip"><bdi>{{ catTitle(c) }}</bdi></router-link>
               </div>
-            </div>
-
-            <div v-if="transportation_list.length && has_delivery && !isService" class="gcard cart-dl">
-              <div class="gc-hd">
-                <h2>{{ t("bakini.n.co.delivery", "Delivery") }}</h2>
-                <span class="muted">{{ t("bakini.n.co.chooseNow", "Choose now or at checkout") }}</span>
-              </div>
-              <div class="dpv">
-                <button
-                  v-for="way in nx_ways_in_order"
-                  :key="way.type + (way.id || '')"
-                  :aria-pressed="delivery_info?.type === way.type ? 'true' : 'false'"
-                  class="dpv-o"
-                  type="button"
-                  @click="nx_pick_way(way)"
-                >
-                  <span class="dm-ic"><nx-icon :name="wayIcon(way.type)" /></span>
-                  <span class="dm-t"
-                    ><b>{{ wayTitleOf(way) }}</b><span v-if="way.time_spans?.length">{{ way.time_spans.join(" · ") }}</span></span
-                  >
-                  <span class="dm-fee">{{ nx_way_fee(way) }}</span>
-                </button>
-              </div>
-            </div>
+            </gl-empty>
           </div>
-
-          <aside class="cart-side">
-            <div :class="{ '-busy': busy_bill || refreshing_price }" class="rc-card">
-              <h2 class="serif">{{ t("bakini.n.co.receipt", "Receipt") }}</h2>
-              <div v-if="bill" class="rcpt">
-                <div class="ln">
-                  <span>{{ t("bakini.n.co.full", "Items at full price") }}</span><span class="money">{{ nx_money(nx_rc.full) }}</span>
-                </div>
-                <div v-if="nx_rc.save > 0" class="ln save">
-                  <span>{{ nx_save_label }}</span><span class="money">−{{ nx_money(nx_rc.save) }}</span>
-                </div>
-                <div v-if="nx_rc.offer > 0" class="ln save">
-                  <span>{{ t("bakini.n.co.offers", "Offers") }}</span><span class="money">−{{ nx_money(nx_rc.offer) }}</span>
-                </div>
-                <div class="ln">
-                  <span>{{ t("bakini.n.co.deliveryOf", "Delivery · {way}", { way: nx_delivery_label }) }}</span>
-                  <span>{{ nx_rc.delivery < 0 && !nx_way_is_free ? t("bakini.n.co.atCheckout", "At checkout") : nx_delivery_value }}</span>
-                </div>
-                <div class="ln tot">
-                  <span>{{ t("bakini.n.co.total", "Total") }}</span><span class="money">{{ nx_money(nx_rc.total) }}</span>
-                </div>
-              </div>
-              <p v-else-if="!busy_bill" class="rc-pay"><nx-icon name="info" /><span>{{ t("bakini.n.co.billError", "We could not work out the bill. Please reload the page.") }}</span></p>
-              <button class="btn lg block" type="button" @click="nx_go_checkout">{{ t("bakini.n.co.checkout", "Checkout") }}<nx-icon name="arrow" /></button>
-              <p v-if="nx_cod_only" class="rc-pay"><nx-icon name="cash" /><span>{{ t("bakini.n.co.codNote", "Cash on delivery — pay the courier when it arrives.") }}</span></p>
-            </div>
-          </aside>
         </div>
       </section>
-      <nx-row
-        v-if="nx_often.length"
-        :accent="t('bakini.n.co.oftenEm', 'with your bag.')"
-        :eyebrow="t('bakini.n.co.oftenEyebrow', 'Often added')"
-        :items="nx_often"
-        :title="t('bakini.n.co.oftenH', 'Pairs well')"
-      />
+    </template>
+
+    <!-- ▆▆▆▆ Bag ▆▆▆▆ -->
+    <template v-else-if="gc_stage === 'bag'">
+      <gl-ptitle :crumbs="crumbsBag" :h1="t('galio.co.yourBag', 'Your bag')" band="straw" cls="ptitle--short">
+        <ol :aria-label="t('galio.co.steps', 'Checkout steps')" class="steps">
+          <li v-for="s in gc_steps" :key="s.key" :aria-current="s.state === 'now' ? 'step' : undefined" :class="['stp', 'stp--' + s.state]">
+            <span class="stp-ic"><gl-icon :name="s.state === 'done' ? 'check' : s.icon" /></span><span>{{ s.label }}</span>
+          </li>
+        </ol>
+      </gl-ptitle>
+      <section class="sec sec--tight bg-white">
+        <div class="wrap">
+          <div class="cart">
+            <div class="cart-main">
+              <div class="panel">
+                <div class="panel-head">
+                  <h2>{{ t("galio.co.pieces", { one: "{n} piece", other: "{n} pieces" }, { n: gc_pieces }) }}</h2>
+                  <router-link :to="shopTo" class="link">{{ t("galio.co.keepShopping", "Keep shopping") }}<gl-icon name="arrow" /></router-link>
+                </div>
+                <ul class="brows brows--page">
+                  <gl-bag-row v-for="it in gc_lines" :key="it.id" :currency="gc_currency" :item="it" page trash />
+                </ul>
+              </div>
+
+              <div v-if="transportation_list.length && has_delivery && !isService" class="panel">
+                <div class="panel-head">
+                  <h2>{{ t("galio.co.howReaches", "How it reaches you") }}</h2>
+                </div>
+                <div :aria-label="t('galio.co.methodLater', 'Delivery method (you confirm it at checkout)')" class="mcards" role="radiogroup">
+                  <button
+                    v-for="way in gc_ways_in_order"
+                    :key="way.type + (way.id || '')"
+                    :aria-checked="delivery_info?.type === way.type ? 'true' : 'false'"
+                    class="mcard"
+                    role="radio"
+                    type="button"
+                    @click="gc_pick_way(way)"
+                  >
+                    <span class="mc-ic"><gl-icon :name="wayIcon(way.type)" /></span>
+                    <span class="mc-t"
+                      ><b>{{ gc_way_name(way) }}</b><small v-if="gc_way_small(way, 'bag')">{{ gc_way_small(way, "bag") }}</small></span
+                    >
+                    <span class="mc-fee">{{ gc_way_fee(way) }}</span>
+                  </button>
+                </div>
+                <p class="panel-note"><gl-icon name="info" /><span>{{ gc_bag_note }}</span></p>
+              </div>
+            </div>
+
+            <aside class="cart-side">
+              <div :class="['sumcard', { '-busy': busy_bill || refreshing_price }]">
+                <h2>{{ t("galio.co.summary", "Order summary") }}</h2>
+                <gl-receipt
+                  v-if="bill"
+                  :delivery-label="gc_delivery_label"
+                  :delivery-value="gc_rc.delivery < 0 && !gc_way_is_free ? t('galio.co.atCheckout', 'Chosen at checkout') : gc_delivery_value"
+                  :format="gc_money"
+                  :full="gc_rc.full"
+                  :offer="gc_rc.offer"
+                  :pieces="gc_pieces"
+                  :save="gc_rc.save"
+                  :save-label="gc_save_label"
+                  :tax="Number(bill.tax) || 0"
+                  :total="gc_rc.total"
+                />
+                <p v-else-if="!busy_bill" class="sum-note"><gl-icon name="info" /><span>{{ t("galio.co.billError", "We could not work out the bill. Please reload the page.") }}</span></p>
+                <button class="btn btn--big" type="button" @click="gc_go_checkout">{{ t("galio.co.checkout", "Checkout") }}<gl-icon name="arrow" /></button>
+                <p v-if="gc_cod_only && bill" class="sum-note">
+                  <gl-icon name="cash" /><span>{{ t("galio.co.payCash", "Pay {total} in cash when it arrives.", { total: gc_money(gc_rc.total) }) }}</span>
+                </p>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </section>
+      <section v-if="gc_often.length" aria-labelledby="gl-h-often" class="sec sec--tight bg-mint">
+        <div class="wrap">
+          <div class="head head--left">
+            <span aria-hidden="true" class="kick">{{ t("galio.co.oftenKick", "one more?") }}</span>
+            <h2 id="gl-h-often" class="h2">{{ t("galio.co.often", "Often added") }}</h2>
+          </div>
+          <ul class="grid-cards row-cards"><gl-card v-for="p in gc_often.slice(0, 4)" :key="p.id" :product="p" /></ul>
+        </div>
+      </section>
     </template>
 
     <!-- ▆▆▆▆ Checkout ▆▆▆▆ -->
-    <div v-else class="co-stage">
-      <section class="wrap co-top">
-        <div class="co-title">
-          <div>
-            <nav :aria-label="t('bakini.n.co.crumbs', 'Breadcrumb')" class="crumbs">
-              <a href="#" @click.prevent="nx_go_bag">{{ t("bakini.n.co.bag", "Bag") }}</a><nx-icon name="right" /><span aria-current="page">{{ t("bakini.n.co.checkout", "Checkout") }}</span>
-            </nav>
-            <h1 class="serif">{{ t("bakini.n.co.check", "Check") }}<em>{{ t("bakini.n.co.out", "out.") }}</em></h1>
-          </div>
-          <ol :aria-label="t('bakini.n.co.steps', 'Checkout steps')" class="steps">
-            <li v-for="(s, i) in nx_steps" :key="s.key" :aria-current="s.state === 'cur' ? 'step' : undefined" :class="['sp', s.state]">
-              <a v-if="s.key === 'bag'" href="#" @click.prevent="nx_go_bag"
-                ><span class="sp-n"><nx-icon name="check" /></span>{{ s.label }}</a
-              >
-              <a v-else :href="'#' + s.anchor" @click.prevent="nx_scroll_to(s.anchor)"
-                ><span class="sp-n"><nx-icon v-if="s.state === 'done'" name="check" /><template v-else>{{ i + 1 }}</template></span>{{ s.label }}</a
-              >
-            </li>
-          </ol>
-        </div>
-      </section>
+    <template v-else>
+      <gl-ptitle :crumbs="crumbsCheckout" :h1="t('galio.co.checkout', 'Checkout')" band="lemon" cls="ptitle--short">
+        <ol :aria-label="t('galio.co.steps', 'Checkout steps')" class="steps">
+          <li v-for="s in gc_steps" :key="s.key" :aria-current="s.state === 'now' ? 'step' : undefined" :class="['stp', 'stp--' + s.state]">
+            <span class="stp-ic"><gl-icon :name="s.state === 'done' ? 'check' : s.icon" /></span><span>{{ s.label }}</span>
+          </li>
+        </ol>
+      </gl-ptitle>
+      <section class="sec sec--tight bg-white">
+        <div class="wrap">
+          <div class="ck">
+            <form class="ck-main" novalidate @submit.prevent="gc_place">
+              <!-- 1. Contact -->
+              <section id="co-details" class="ckc">
+                <div class="ckc-h">
+                  <span class="ckc-n">1</span>
+                  <h2>{{ t("galio.co.contact", "Contact") }}</h2>
+                  <button v-if="!user" class="link link--sm" type="button" @click="NeedLogin">{{ has_guest_payment ? t("galio.co.signInInstead", "Sign in instead") : t("galio.co.signIn", "Sign in") }}</button>
+                </div>
+                <p v-if="user" class="ckc-sub">{{ t("galio.co.signedAs", "Signed in as {name}.", { name: user.name || user.email || "" }) }}</p>
+                <p v-else-if="busy_user" class="ckc-sub">{{ t("galio.co.checking", "Checking your sign-in…") }}</p>
+                <p v-else-if="!has_guest_payment" class="ckc-sub">{{ t("galio.co.signInToOrder", "Sign in to place the order.") }}</p>
+                <div class="fgrid">
+                  <div class="fld">
+                    <label for="co-f-email">{{ t("galio.co.email", "Email") }}</label>
+                    <input
+                      id="co-f-email"
+                      :aria-describedby="gc_touched.email && !gc_email_ok ? 'e-email' : undefined"
+                      :aria-invalid="gc_touched.email && !gc_email_ok ? 'true' : undefined"
+                      :disabled="!!user || (!user && !has_guest_payment)"
+                      :value="gc_email"
+                      autocomplete="email"
+                      inputmode="email"
+                      name="email"
+                      placeholder="you@example.com"
+                      type="email"
+                      @blur="gc_save_contact"
+                      @input="gc_email = $event.target.value"
+                    />
+                    <span v-if="gc_touched.email && !gc_email_ok" id="e-email" class="err">{{ t("galio.co.emailErr", "Add your email address so we can send the order.") }}</span>
+                  </div>
+                  <div v-if="has_delivery && !isService" class="fld">
+                    <label for="co-f-phone">{{ t("galio.co.phone", "Phone") }}</label>
+                    <input
+                      id="co-f-phone"
+                      :aria-describedby="gc_touched.phone && !gc_phone_ok ? 'e-phone' : undefined"
+                      :aria-invalid="gc_touched.phone && !gc_phone_ok ? 'true' : undefined"
+                      :value="gc_phone"
+                      autocomplete="tel"
+                      dir="ltr"
+                      name="phone"
+                      :placeholder="gc_phone_hint"
+                      type="tel"
+                      @blur="gc_save_contact"
+                      @input="gc_phone = $event.target.value"
+                    />
+                    <span v-if="gc_touched.phone && !gc_phone_ok" id="e-phone" class="err">{{ gc_is_pickup ? t("galio.co.phoneErrPickup", "Add a phone number so the bakery can reach you.") : t("galio.co.phoneErr", "Add a phone number for the courier.") }}</span>
+                  </div>
+                </div>
+              </section>
 
-      <section class="wrap co">
-        <div class="co-main">
-          <!-- 1. Contact -->
-          <section id="co-details" class="gcard">
-            <div class="gc-hd">
-              <span class="gc-n">1</span>
-              <h2>{{ t("bakini.n.co.contact", "Contact") }}</h2>
-              <a v-if="!user" class="link" href="#" @click.prevent="NeedLogin">{{ t("bakini.n.co.signIn", "Sign in") }}</a>
-            </div>
-            <template v-if="user">
-              <p class="muted gc-sub">{{ t("bakini.n.co.signedAs", "Signed in as {name}.", { name: user.name || user.email || "" }) }}</p>
-            </template>
-            <p v-else-if="busy_user" class="muted gc-sub">{{ t("bakini.n.co.checking", "Checking your sign-in…") }}</p>
-            <p v-else-if="has_guest_payment" class="muted gc-sub">{{ t("bakini.n.co.noAccount", "No account needed — we only use these for this order.") }}</p>
-            <p v-else class="muted gc-sub">{{ t("bakini.n.co.signInToOrder", "Sign in to place the order.") }}</p>
-            <div class="fgrid">
-              <label id="co-f-email" :class="['fld', { err: nx_touched.email && !nx_email_ok }]">
-                <span>{{ t("bakini.n.co.email", "Email") }}</span>
-                <input
-                  :disabled="!!user || (!user && !has_guest_payment)"
-                  :value="nx_email"
-                  autocomplete="email"
-                  inputmode="email"
-                  name="email"
-                  placeholder="you@example.com"
-                  type="email"
-                  @blur="nx_save_contact"
-                  @input="nx_email = $event.target.value"
-                />
-                <small class="hint">{{ nx_touched.email && !nx_email_ok ? t("bakini.n.co.emailHint", "Add a valid email") : "" }}</small>
-              </label>
-              <label v-if="has_delivery && !isService" id="co-f-phone" :class="['fld', { err: nx_touched.phone && !nx_phone_ok }]">
-                <span>{{ t("bakini.n.co.phone", "Phone") }}</span>
-                <input :value="nx_phone" autocomplete="tel" dir="ltr" name="phone" placeholder="+1 …" type="tel" @blur="nx_save_contact" @input="nx_phone = $event.target.value" />
-                <small class="hint">{{ nx_touched.phone && !nx_phone_ok ? t("bakini.n.co.phoneHint", "Add a phone number") : "" }}</small>
-              </label>
-            </div>
-            <button v-if="!user && !has_guest_payment" class="btn" style="margin-top: 14px" type="button" @click="NeedLogin">{{ t("bakini.n.co.signIn", "Sign in") }}</button>
-          </section>
+              <!-- 2. Delivery: Selldone's shipping options in Galio's cards -->
+              <section v-if="has_delivery && !isService && bill" id="co-delivery" class="ckc">
+                <div class="ckc-h">
+                  <span class="ckc-n">2</span>
+                  <h2>{{ t("galio.co.delivery", "Delivery") }}</h2>
+                  <button aria-controls="gl-dlsheet" class="link link--sm" type="button" @click="gc_open_sheet($event)">{{ t("galio.co.compareOptions", "Compare the options") }}</button>
+                </div>
+                <s-shop-connect-shipping-options
+                  :basket="basket"
+                  :start-package-index="0"
+                  @change="
+                    (connect_shippings) => {
+                      delivery_info.connect_shippings = connect_shippings;
+                      setBasketConfig();
+                    }
+                  "
+                ></s-shop-connect-shipping-options>
+                <s-order-shipping-vendors-options
+                  :basket="basket"
+                  :deliveryInfo="delivery_info"
+                  :start-package-index="bill?.connect_shipping_options?.length"
+                  @set-basket-config="setBasketConfig"
+                ></s-order-shipping-vendors-options>
+                <s-order-shipping-stores-options
+                  v-if="!delivery_sheet"
+                  :basket="basket"
+                  :delivery-info="delivery_info"
+                  :start-package-index="bill?.connect_shipping_options?.length + bill?.vendor_shipping_options?.length"
+                  @set-basket-config="setBasketConfig"
+                ></s-order-shipping-stores-options>
+              </section>
 
-          <!-- 2. Delivery method and its window (Selldone's shipping options) -->
-          <section v-if="has_delivery && !isService && bill" id="co-delivery" class="gcard">
-            <div class="gc-hd">
-              <span class="gc-n">2</span>
-              <h2>{{ t("bakini.n.co.method", "Delivery method") }}</h2>
-              <button class="link" type="button" @click="delivery_sheet = true">{{ t("bakini.n.co.allDetails", "All details") }}</button>
-            </div>
-            <s-shop-connect-shipping-options
-              :basket="basket"
-              :start-package-index="0"
-              @change="
-                (connect_shippings) => {
-                  delivery_info.connect_shippings = connect_shippings;
-                  setBasketConfig();
-                }
-              "
-            ></s-shop-connect-shipping-options>
-            <s-order-shipping-vendors-options
-              :basket="basket"
-              :deliveryInfo="delivery_info"
-              :start-package-index="bill?.connect_shipping_options?.length"
-              @set-basket-config="setBasketConfig"
-            ></s-order-shipping-vendors-options>
-            <s-order-shipping-stores-options
-              v-if="!delivery_sheet"
-              :basket="basket"
-              :delivery-info="delivery_info"
-              :start-package-index="bill?.connect_shipping_options?.length + bill?.vendor_shipping_options?.length"
-              @set-basket-config="setBasketConfig"
-            ></s-order-shipping-stores-options>
-          </section>
+              <!-- 3. Delivery address, or the pickup counter -->
+              <section v-if="has_delivery" id="co-address" class="ckc">
+                <div class="ckc-h">
+                  <span class="ckc-n">{{ gc_n_address }}</span>
+                  <h2>{{ gc_is_pickup ? t("galio.co.pickupPoint", "Pickup point") : isService ? t("galio.co.serviceAddress", "Service address") : t("galio.co.address", "Delivery address") }}</h2>
+                </div>
+                <div class="gl-addr-box">
+                  <div v-if="gc_is_pickup" class="addr addr--pick">
+                    <span class="addr-ic"><gl-icon name="store" /></span>
+                    <div>
+                      <b><bdi>{{ gc_pickup_title }}</bdi></b>
+                      <p><bdi>{{ [receiver_info?.address, receiver_info?.city, receiver_info?.postal].filter(Boolean).join(", ") }}</bdi></p>
+                      <p v-if="gc_pickup_line">{{ gc_pickup_line }}</p>
+                    </div>
+                  </div>
+                  <div v-else-if="gc_has_address" id="f-addr" class="addr addr--set">
+                    <span class="addr-ic"><gl-icon name="home" /></span>
+                    <div>
+                      <b><bdi>{{ [receiver_info.name, receiver_info.phone].filter(Boolean).join(" · ") }}</bdi></b>
+                      <p><bdi>{{ address_line }}</bdi><template v-if="receiver_info.city">{{ ", " + [receiver_info.city, receiver_info.state, receiver_info.postal].filter(Boolean).join(" ") }}</template></p>
+                    </div>
+                    <button class="btn btn--ghost" type="button" @click="openAddress()">{{ t("galio.co.change", "Change") }}</button>
+                  </div>
+                  <div v-else id="f-addr" :class="['addr', 'addr--none', { 'addr--err': gc_touched.address }]">
+                    <span class="addr-ic"><gl-icon name="pin" /></span>
+                    <div>
+                      <b>{{ t("galio.co.noAddress", "No delivery address yet") }}</b>
+                      <p>{{ gc_no_address_line }}</p>
+                    </div>
+                    <button class="btn" type="button" @click="openAddress()"><gl-icon name="pin" />{{ no_map ? t("galio.co.addAddress", "Add the address") : t("galio.co.addOnMap", "Add on the map") }}</button>
+                  </div>
+                </div>
+              </section>
 
-          <!-- 3. Delivery address, or the pickup counter -->
-          <section v-if="has_delivery" id="co-address" class="gcard">
-            <div class="gc-hd">
-              <span class="gc-n">{{ has_delivery && !isService && bill ? 3 : 2 }}</span>
-              <h2>{{ nx_is_pickup ? t("bakini.n.co.pickupCounter", "Pickup counter") : isService ? t("bakini.n.co.serviceAddress", "Service address") : t("bakini.n.co.address", "Delivery address") }}</h2>
-            </div>
-            <div v-if="nx_is_pickup" class="addr-card pk">
-              <span class="dm-ic"><nx-icon name="store" /></span>
-              <div>
-                <b><bdi>{{ receiver_info?.name || receiver_info?.title || nx_pickup_point?.name }}</bdi></b>
-                <span
-                  ><bdi>{{ [receiver_info?.address, receiver_info?.city, receiver_info?.postal].filter(Boolean).join(", ") }}</bdi
-                  ><template v-if="receiver_info?.message || nx_pickup_point?.message">{{ " · " + (nx_pickup_point?.message || "") }}</template></span
-                >
-              </div>
-            </div>
-            <div v-else-if="nx_has_address" class="addr-card">
-              <span class="dm-ic"><nx-icon name="pin" /></span>
-              <div>
-                <b v-if="receiver_info.name"><bdi>{{ receiver_info.name }}</bdi></b>
-                <span><bdi>{{ address_line }}</bdi><template v-if="receiver_info.city">{{ ", " + [receiver_info.city, receiver_info.state, receiver_info.postal].filter(Boolean).join(" ") }}</template></span>
-                <span v-if="receiver_info.phone" dir="ltr">{{ receiver_info.phone }}</span>
-              </div>
-              <button class="btn ghost sm" type="button" @click="openAddress()"><nx-icon name="edit" />{{ t("bakini.n.co.change", "Change") }}</button>
-            </div>
-            <div v-else :class="['addr-card', 'none', { err: nx_touched.address }]">
-              <span class="dm-ic"><nx-icon name="pin" /></span>
-              <div>
-                <b>{{ t("bakini.n.co.noAddress", "No delivery address yet") }}</b>
-                <span>{{ no_map ? t("bakini.n.co.noAddressP0", "Add the receiver and the street.") : t("bakini.n.co.noAddressP", "Drop a pin on the map, then add the receiver and street.") }}</span>
-              </div>
-              <button class="btn sm" type="button" @click="openAddress()"><nx-icon name="pin" />{{ no_map ? t("bakini.n.co.addAddress", "Add your address") : t("bakini.n.co.addOnMap", "Add on the map") }}</button>
-            </div>
-          </section>
+              <!-- 4. Billing -->
+              <section id="co-billing" class="ckc">
+                <div class="ckc-h">
+                  <span class="ckc-n">{{ gc_n_address + (has_delivery ? 1 : 0) }}</span>
+                  <h2>{{ t("galio.co.billing", "Billing address") }}</h2>
+                </div>
+                <div :aria-label="t('galio.co.billing', 'Billing address')" class="bill" role="radiogroup">
+                  <button :aria-checked="!gc_billing_custom ? 'true' : 'false'" class="bill-opt" role="radio" type="button" @click="gc_set_billing(false)">
+                    <span aria-hidden="true" class="radio"></span
+                    ><span
+                      ><b>{{ t("galio.co.same", "Same as delivery") }}</b
+                      ><small>{{ gc_is_pickup || !has_delivery ? t("galio.co.sameContact", "Use the contact details above") : t("galio.co.sameAddress", "Use the delivery address") }}</small></span
+                    >
+                  </button>
+                  <button :aria-checked="gc_billing_custom ? 'true' : 'false'" class="bill-opt" role="radio" type="button" @click="gc_set_billing(true)">
+                    <span aria-hidden="true" class="radio"></span
+                    ><span
+                      ><b>{{ t("galio.co.other", "Different billing address") }}</b><small>{{ t("galio.co.otherP", "Add another address for the receipt") }}</small></span
+                    >
+                  </button>
+                </div>
+                <s-shop-billing-address-form
+                  v-if="gc_billing_custom"
+                  v-model="billing"
+                  :receiver-info="receiver_info"
+                  class="gl-billform"
+                  force-show-form
+                  @change="setBasketConfig"
+                ></s-shop-billing-address-form>
+              </section>
 
-          <!-- 4. Billing -->
-          <section id="co-billing" class="gcard">
-            <div class="gc-hd">
-              <span class="gc-n">{{ (has_delivery && !isService && bill ? 3 : 2) + (has_delivery ? 1 : 0) }}</span>
-              <h2>{{ t("bakini.n.co.billing", "Billing") }}</h2>
-            </div>
-            <div class="bill">
-              <button :aria-pressed="!nx_billing_custom ? 'true' : 'false'" class="bill-o" type="button" @click="nx_set_billing(false)">
-                <span class="rd"></span
-                ><span
-                  ><b>{{ t("bakini.n.co.same", "Same as delivery") }}</b
-                  ><span>{{ nx_is_pickup ? t("bakini.n.co.sameReceiver", "Use the receiver details") : t("bakini.n.co.sameAddress", "Use the delivery address") }}</span></span
-                >
-              </button>
-              <button :aria-pressed="nx_billing_custom ? 'true' : 'false'" class="bill-o" type="button" @click="nx_set_billing(true)">
-                <span class="rd"></span
-                ><span
-                  ><b>{{ t("bakini.n.co.other", "Different billing address") }}</b><span>{{ t("bakini.n.co.otherP", "Add another name and address") }}</span></span
-                >
-              </button>
-            </div>
-            <s-shop-billing-address-form
-              v-if="nx_billing_custom"
-              v-model="billing"
-              :receiver-info="receiver_info"
-              class="nx-billform"
-              force-show-form
-              @change="setBasketConfig"
-            ></s-shop-billing-address-form>
-          </section>
+              <!-- 5. Note for the bakery (the receiver's note) -->
+              <section v-if="has_delivery && !isService" id="co-note" class="ckc">
+                <div class="ckc-h">
+                  <span class="ckc-n">{{ gc_n_address + (has_delivery ? 2 : 1) }}</span>
+                  <h2>
+                    {{ t("galio.co.note", "Note for the bakery") }}{{ " " }}<small>{{ t("galio.co.optional", "optional") }}</small>
+                  </h2>
+                </div>
+                <div class="fld">
+                  <label class="vh" for="co-f-note">{{ t("galio.co.note", "Note for the bakery") }}</label>
+                  <textarea
+                    id="co-f-note"
+                    :placeholder="t('galio.co.notePh', 'A doorbell name, a gate code, or a word about allergies')"
+                    :value="gc_note_value"
+                    name="note"
+                    @blur="setBasketConfig"
+                    @input="gc_note_value = $event.target.value"
+                  ></textarea>
+                </div>
+              </section>
 
-          <!-- 5. Note for the bakery (the receiver's note) -->
-          <section v-if="has_delivery && !isService" id="co-note" class="gcard">
-            <div class="gc-hd">
-              <span class="gc-n">{{ (has_delivery && !isService && bill ? 4 : 3) + (has_delivery ? 1 : 0) }}</span>
-              <h2>{{ t("bakini.n.co.note", "Note for the bakery") }}</h2>
-              <span class="muted">{{ t("bakini.n.co.optional", "Optional") }}</span>
-            </div>
-            <label class="fld">
-              <span class="vh">{{ t("bakini.n.co.note", "Note for the bakery") }}</span>
-              <textarea
-                :placeholder="t('bakini.n.co.notePh', 'Anything about this order — for example a door code or a pickup time.')"
-                :value="nx_note_value"
-                name="note"
-                @blur="setBasketConfig"
-                @input="nx_note_value = $event.target.value"
-              ></textarea>
-            </label>
-          </section>
+              <!-- The shop's own checkout questions (Selldone) -->
+              <s-order-checkout-form
+                :key="'socf-' + basket?.id"
+                v-model="form"
+                :country="receiver_info?.country ? receiver_info.country : billing?.country"
+                class="gl-coform"
+                @changed="setBasketConfig"
+              ></s-order-checkout-form>
 
-          <!-- The shop's own checkout questions (Selldone) -->
-          <s-order-checkout-form
-            :key="'socf-' + basket?.id"
-            v-model="form"
-            :country="receiver_info?.country ? receiver_info.country : billing?.country"
-            class="nx-coform"
-            @changed="setBasketConfig"
-          ></s-order-checkout-form>
-
-          <!-- Coupons and prizes, only when the shopper has some -->
-          <s-storefront-coupons-list
-            v-if="!isSubscription"
-            v-model="basket.coupon"
-            :basket="basket"
-            class="nx-offers"
-            return-object
-            selectable
-            @loading="(val) => (refreshing_price = val)"
-            @update:model-value="selectCoupon"
-          ></s-storefront-coupons-list>
-          <s-storefront-lottery-prizes-list
-            v-if="!isSubscription"
-            v-model="basket.lottery"
-            :basket="basket"
-            class="nx-offers"
-            return-object
-            selectable
-            @loading="(val) => (refreshing_price = val)"
-            @update:model-value="selectLottery"
-          ></s-storefront-lottery-prizes-list>
-        </div>
-
-        <!-- The floating receipt -->
-        <aside id="co-pay" class="co-side">
-          <div :class="['rc-card', 'float', { '-busy': busy_bill || refreshing_price || busy_save }]">
-            <div class="rc-hd">
-              <h2 class="serif">{{ t("bakini.n.co.yourOrder", "Your order") }}</h2>
-              <a class="link" href="#" @click.prevent="nx_go_bag">{{ t("bakini.n.co.editBag", "Edit bag") }}</a>
-            </div>
-            <div class="rc-items">
-              <div v-for="it in nx_lines" :key="it.id" :style="{ '--bk-hue': hueOf(it.product?.category_id) }" class="rc-it">
-                <span class="th"><img :src="nx_img(it)" alt="" class="cut" /><i>{{ nx_shown(it) }}</i></span>
-                <span class="nm">{{ it.product?.title }}</span>
-                <span class="money">{{ nx_money(it.price * nx_shown(it)) }}</span>
-              </div>
-            </div>
-            <div v-if="bill" class="rcpt">
-              <div class="ln">
-                <span>{{ t("bakini.n.co.full", "Items at full price") }}</span><span class="money">{{ nx_money(nx_rc.full) }}</span>
-              </div>
-              <div v-if="nx_rc.save > 0" class="ln save">
-                <span>{{ nx_save_label }}</span><span class="money">−{{ nx_money(nx_rc.save) }}</span>
-              </div>
-              <div v-if="nx_rc.offer > 0" class="ln save">
-                <span>{{ t("bakini.n.co.offers", "Offers") }}</span><span class="money">−{{ nx_money(nx_rc.offer) }}</span>
-              </div>
-              <div v-if="discount_code_amount > 0" class="ln save">
-                <span>{{ discount_code?.code ? t("bakini.n.co.codeNamed", "Code {code}", { code: discount_code.code }) : t("bakini.n.co.code", "Code") }}</span
-                ><span class="money">−{{ nx_money(discount_code_amount) }}</span>
-              </div>
-              <div v-if="coupon && coupon_discount > 0" class="ln save">
-                <span>{{ coupon.title || $t("global.commons.coupon") }}</span><span class="money">−{{ nx_money(coupon_discount) }}</span>
-              </div>
-              <div v-if="customer_club_discount > 0" class="ln save">
-                <span>{{ t("bakini.n.co.club", "Club") }}</span><span class="money">−{{ nx_money(customer_club_discount) }}</span>
-              </div>
-              <div v-if="wallet" class="ln save">
-                <span>{{ $t("global.commons.my_wallet") }}</span><span class="money">−{{ nx_money(wallet) }}</span>
-              </div>
-              <div v-if="!isService" class="ln">
-                <span>{{ nx_delivery_label }}</span>
-                <span>{{ nx_delivery_value }}</span>
-              </div>
-              <div v-if="bill.tax" class="ln">
-                <span>{{ $t("global.commons.tax") }}</span><span class="money">{{ nx_money(bill.tax) }}</span>
-              </div>
-              <div class="ln tot">
-                <span>{{ nx_cod_only ? t("bakini.n.co.payOnDelivery", "Pay on delivery") : t("bakini.n.co.total", "Total") }}</span><span class="money">{{ nx_money(nx_rc.total) }}</span>
-              </div>
-            </div>
-            <p v-if="nx_way_line" class="rc-line">
-              <nx-icon :name="wayIcon(nx_way?.type)" /><span>{{ nx_way_line }}</span>
-            </p>
-            <div v-if="!isSubscription" class="nx-code">
-              <s-discount-code-input
-                v-model="basket.discount_code"
+              <!-- Coupons and prizes, only when the shopper has some -->
+              <s-storefront-coupons-list
+                v-if="!isSubscription"
+                v-model="basket.coupon"
                 :basket="basket"
-                :currency="basket.currency"
+                class="gl-offers"
+                return-object
+                selectable
                 @loading="(val) => (refreshing_price = val)"
-                @update:model-value="selectDiscountCode"
-              />
-            </div>
-            <div v-if="nx_missing.length" class="rc-miss" data-miss role="status">
-              <b>{{ t("bakini.n.co.beforePlace", "Before you place the order, add:") }}</b>
-              <ul>
-                <li v-for="x in nx_missing" :key="x.key">
-                  <button type="button" @click="nx_goto(x.key)">{{ x.label }}</button>
-                </li>
-              </ul>
-            </div>
-            <div v-if="nx_no_gateway" class="pay-none-c">
-              <span class="ec"><nx-icon name="lock" /></span>
-              <div>
-                <b>{{ t("bakini.n.co.noPayT", "This shop is not taking payment right now") }}</b>
-                <span>{{ nx_facts.phone ? t("bakini.n.co.noPayP", "Your bag is saved. Please try again later, or contact the bakery on {phone}.", { phone: nx_facts.phone }) : t("bakini.n.co.noPayP0", "Your bag is saved. Please try again later.") }}</span>
-              </div>
-            </div>
-            <p v-else-if="pay_blocker && !nx_missing.length" class="rc-pay"><nx-icon name="info" /><span>{{ pay_blocker }}</span></p>
-            <button v-if="!nx_no_gateway" :disabled="busy_submit" class="btn lg block" type="button" @click="nx_place">
-              <span v-if="busy_save || busy_bill || busy_submit" class="nx-spin" aria-hidden="true"></span>{{ nx_place_label }}
-            </button>
-            <p class="rc-pay">
-              <nx-icon name="lock" /><span>{{
-                nx_cod_only
-                  ? nx_is_pickup
-                    ? t("bakini.n.co.cashPickup", "Nothing is charged online. You pay in cash at the counter or to the courier.")
-                    : t("bakini.n.co.cash", "Nothing is charged online. You pay the courier in cash.")
-                  : t("bakini.n.co.secure", "You choose how to pay in the next step.")
-              }}</span>
-            </p>
-          </div>
-        </aside>
-      </section>
-    </div>
+                @update:model-value="selectCoupon"
+              ></s-storefront-coupons-list>
+              <s-storefront-lottery-prizes-list
+                v-if="!isSubscription"
+                v-model="basket.lottery"
+                :basket="basket"
+                class="gl-offers"
+                return-object
+                selectable
+                @loading="(val) => (refreshing_price = val)"
+                @update:model-value="selectLottery"
+              ></s-storefront-lottery-prizes-list>
+            </form>
 
-    <!-- ▆▆▆▆ The delivery sheet (delivery-b): every way, its windows, the counter ▆▆▆▆ -->
-    <teleport to="body">
-      <div class="nx nx-buy-layers">
-        <div :class="['scrim', { open: delivery_sheet }]" @click="delivery_sheet = false"></div>
-        <div id="dlsheet" ref="dlsheet" :class="['dialog', { open: delivery_sheet }]" aria-labelledby="dl-t" aria-modal="true" role="dialog" style="--bk-dw: 720px" tabindex="-1" @keydown.esc.stop="delivery_sheet = false">
-          <button :aria-label="t('bakini.n.co.close', 'Close')" class="iconbtn x" type="button" @click="delivery_sheet = false"><nx-icon name="close" /></button>
-          <div v-if="delivery_sheet && basket && bill" class="sh-in">
-            <p class="eyebrow">{{ t("bakini.n.co.delivery", "Delivery") }}</p>
-            <h2 id="dl-t" class="sh-h">{{ t("bakini.n.co.howReach", "How should it reach you?") }}</h2>
-            <s-order-shipping-stores-options
-              :basket="basket"
-              :delivery-info="delivery_info"
-              :start-package-index="bill?.connect_shipping_options?.length + bill?.vendor_shipping_options?.length"
-              class="nx-dlsheet"
-              @set-basket-config="setBasketConfig"
-            ></s-order-shipping-stores-options>
-            <div class="sh-foot">
-              <button class="btn lg" type="button" @click="delivery_sheet = false">{{ t("bakini.n.co.done", "Done") }}</button>
-            </div>
+            <!-- Your order -->
+            <aside id="co-pay" class="ck-side">
+              <div :class="['sumcard', { '-busy': busy_bill || refreshing_price || busy_save }]">
+                <h2>{{ t("galio.co.yourOrder", "Your order") }}</h2>
+                <ul class="sum-items">
+                  <li v-for="it in gc_lines" :key="it.id">
+                    <span :style="{ '--gl-tint': tintOf(it.product?.category_id) }" class="mthumb"><img :src="gc_img(it)" alt="" height="400" width="400" /></span>
+                    <span class="si-n"
+                      >{{ it.product?.title }}<small>× {{ gc_shown(it) }}</small></span
+                    >
+                    <b class="tab-num">{{ gc_money(it.price * gc_shown(it)) }}</b>
+                  </li>
+                </ul>
+                <a class="link link--sm" href="#" @click.prevent="gc_go_bag">{{ t("galio.co.editBag", "Edit the bag") }}</a>
+                <gl-receipt
+                  v-if="bill"
+                  :delivery-label="isService ? '' : gc_delivery_label"
+                  :delivery-value="gc_delivery_value"
+                  :discount="(discount_code_amount || 0) + (coupon && coupon_discount > 0 ? coupon_discount : 0) + (customer_club_discount || 0) + (wallet || 0)"
+                  :format="gc_money"
+                  :full="gc_rc.full"
+                  :offer="gc_rc.offer"
+                  :pieces="gc_pieces"
+                  :save="gc_rc.save"
+                  :save-label="gc_save_label"
+                  :tax="Number(bill.tax) || 0"
+                  :total="gc_rc.total"
+                />
+                <p v-if="gc_way_line" class="sum-line"><gl-icon :name="wayIcon(gc_way?.type)" /><span>{{ gc_way_line }}</span></p>
+                <div v-if="!isSubscription" class="gl-code">
+                  <s-discount-code-input
+                    v-model="basket.discount_code"
+                    :basket="basket"
+                    :currency="basket.currency"
+                    @loading="(val) => (refreshing_price = val)"
+                    @update:model-value="selectDiscountCode"
+                  />
+                </div>
+                <div v-if="gc_show_missing && gc_missing.length" id="errsum" class="errsum" data-miss role="alert">
+                  <b>{{ t("galio.co.beforePlace", "Before you place the order:") }}</b>
+                  <ul>
+                    <li v-for="x in gc_missing" :key="x.key">
+                      <a :href="'#' + gc_anchor(x.key)" @click.prevent="gc_goto(x.key)">{{ x.label }}</a>
+                    </li>
+                  </ul>
+                </div>
+                <div v-if="gc_no_gateway" class="pn-box">
+                  <span class="empty-ic"><gl-icon name="lock" /></span>
+                  <div>
+                    <b>{{ t("galio.co.noPayT", "This shop is not taking payment right now") }}</b>
+                    <p>
+                      {{
+                        gc_facts.phone
+                          ? t("galio.co.noPayP", "The order can't be placed online yet. Call {shop} on {phone} to order.", { shop: gc_facts.title, phone: gc_facts.phone })
+                          : t("galio.co.noPayP0", "The order can't be placed online yet. Your bag is saved.")
+                      }}
+                    </p>
+                  </div>
+                </div>
+                <p v-else-if="pay_blocker && !gc_missing.length" class="sum-note"><gl-icon name="info" /><span>{{ pay_blocker }}</span></p>
+                <button v-if="!gc_no_gateway" :disabled="busy_submit" class="btn btn--big btn--wide" type="button" @click="gc_place">
+                  <span v-if="busy_save || busy_bill || busy_submit" aria-hidden="true" class="gl-spin"></span>{{ gc_place_label }}
+                </button>
+                <p class="sum-note">
+                  <gl-icon name="lock" /><span>{{
+                    gc_cod_only
+                      ? gc_is_pickup
+                        ? t("galio.co.cashPickup", "Nothing is charged online. You pay at the counter in cash.")
+                        : t("galio.co.cash", "Nothing is charged online. You pay the courier in cash.")
+                      : t("galio.co.secure", "You choose how to pay in the next step.")
+                  }}</span>
+                </p>
+              </div>
+            </aside>
           </div>
+        </div>
+      </section>
+    </template>
+
+    <!-- ▆▆▆▆ The delivery sheet (delivery-b): every way, its days, windows and the counter ▆▆▆▆ -->
+    <template v-if="delivery_sheet && basket && bill">
+      <div class="scrim scrim--dialog" @click="gc_close_sheet"></div>
+      <div id="gl-dlsheet" ref="dlsheet" :aria-label="t('galio.co.sheetH', 'Delivery & time')" aria-modal="true" class="lay lay--dialog dlg dlg--del" role="dialog" tabindex="-1" @keydown.esc.stop="gc_close_sheet">
+        <div class="dlg-head">
+          <h2 class="dlg-h">{{ t("galio.co.sheetH", "Delivery & time") }}</h2>
+          <button :aria-label="t('galio.co.closeSheet', 'Close delivery options')" class="x" type="button" @click="gc_close_sheet"><gl-icon name="x" /></button>
+        </div>
+        <gl-sheet-mode>
+          <s-order-shipping-stores-options
+            :basket="basket"
+            :delivery-info="delivery_info"
+            :start-package-index="bill?.connect_shipping_options?.length + bill?.vendor_shipping_options?.length"
+            @set-basket-config="setBasketConfig"
+          ></s-order-shipping-stores-options>
+        </gl-sheet-mode>
+        <div class="dsheet-foot">
+          <button class="btn btn--wide" type="button" @click="gc_close_sheet">{{ gc_way_line ? t("galio.co.useWay", "Use {way}", { way: gc_way_line }) : t("galio.co.done", "Done") }}</button>
         </div>
       </div>
-    </teleport>
+    </template>
 
     <!-- ▆▆▆▆ The address sheet (map-b; map on or off) ▆▆▆▆ -->
     <kalio-address-sheet
@@ -482,10 +453,10 @@
       v-model="address_sheet"
       :center="center"
       :countries="$shop.countries?.length ? $shop.countries : null"
-      :heading="isService ? t('bakini.n.co.whereService', 'Where should we come?') : no_map ? t('bakini.n.co.yourAddress', 'Your address') : t('bakini.n.co.setPin', 'Set the pin')"
-      :lede="t('bakini.n.co.addressLede', 'Delivery address')"
+      :heading="isService ? t('galio.co.whereService', 'Where should we come?') : t('galio.co.address', 'Delivery address')"
+      :lede="t('galio.co.addressLede', 'Delivery address')"
       :no-map="no_map"
-      :receiver-info="nx_receiver_is_pickup ? {} : receiver_info"
+      :receiver-info="gc_receiver_is_pickup ? {} : receiver_info"
       @save="onClickSetLocation"
     />
 
@@ -531,14 +502,24 @@ import DateMixin from "@selldone/components-vue/mixin/date/DateMixin.ts";
 import SOrderCheckoutForm from "@selldone/components-vue/storefront/order/checkout/SOrderCheckoutForm.vue";
 import { WeekDays } from "@selldone/core-js/enums/logistic/WeekDays";
 import { TimeSpans } from "@selldone/core-js/enums/logistic/TimeSpans";
-import KalioCartLines from "../../../components/kalio/checkout/KalioCartLines.vue";
-import KalioOftenAdded from "../../../components/kalio/KalioOftenAdded.vue";
 import KalioAddressSheet from "../../../components/kalio/checkout/KalioAddressSheet.vue";
 import { formatDate, t } from "../../../components/kalio/i18n/kalio-i18n";
-import NoirCart from "../../../components/bakini/noir/buy/noir-cart";
-import NxIcon from "../../../components/bakini/noir/NxIcon.vue";
-import NxLineQb from "../../../components/bakini/noir/NxLineQb.vue";
-import NxRow from "../../../components/bakini/noir/NxRow.vue";
+import GlCart from "../../../components/galio/buy/gl-cart";
+import GlIcon from "../../../components/galio/GlIcon.vue";
+import GlPtitle from "../../../components/galio/GlPtitle.vue";
+import GlEmpty from "../../../components/galio/GlEmpty.vue";
+import GlCard from "../../../components/galio/GlCard.vue";
+import GlReceipt from "../../../components/galio/GlReceipt.vue";
+import GlBagRow from "../../../components/galio/shell/GlBagRow.vue";
+
+/* The delivery sheet's shipping options draw as the sheet's rows (SCartShippingOptions reads it). */
+const GlSheetMode = {
+  name: "GlSheetMode",
+  provide: { glSheet: true },
+  render() {
+    return this.$slots.default?.();
+  },
+};
 
 export default {
   name: "StorefrontPageBasketCart",
@@ -550,15 +531,17 @@ export default {
     AuthMixin,
     ClubMixin,
     DateMixin,
-    NoirCart,
+    GlCart,
   ],
 
   components: {
-    NxIcon,
-    NxLineQb,
-    NxRow,
-    KalioCartLines,
-    KalioOftenAdded,
+    GlIcon,
+    GlPtitle,
+    GlEmpty,
+    GlCard,
+    GlReceipt,
+    GlBagRow,
+    GlSheetMode,
     KalioAddressSheet,
     SOrderCheckoutForm,
     ULoadingEllipsis,
@@ -1134,9 +1117,9 @@ export default {
 
   watch: {
     /* The tab names the stage: "Your bag", then "Checkout" (not "Open bag"). */
-    nx_stage: {
+    gc_stage: {
       handler(stage) {
-        this.setPageTitle(stage === "checkout" ? t("bakini.n.co.pageTitle", "Checkout") : t("basket.pageTitle", "Your bag"));
+        this.setPageTitle(stage === "checkout" ? t("galio.co.pageTitle", "Checkout") : t("basket.pageTitle", "Your bag"));
       },
       immediate: true,
     },
@@ -1144,16 +1127,16 @@ export default {
        it back to "All details" on close; Esc closes it wherever the focus is. */
     delivery_sheet(open) {
       if (open) {
-        this.nx_dl_opener = document.activeElement;
-        this.nx_dl_esc = (e) => {
+        this.gc_dl_opener = document.activeElement;
+        this.gc_dl_esc = (e) => {
           if (e.key === "Escape") this.delivery_sheet = false;
         };
-        document.addEventListener("keydown", this.nx_dl_esc);
+        document.addEventListener("keydown", this.gc_dl_esc);
         this.$nextTick(() => this.$refs.dlsheet?.focus({ preventScroll: true }));
       } else {
-        document.removeEventListener("keydown", this.nx_dl_esc);
-        if (this.nx_dl_opener && document.contains(this.nx_dl_opener)) this.nx_dl_opener.focus({ preventScroll: true });
-        this.nx_dl_opener = null;
+        document.removeEventListener("keydown", this.gc_dl_esc);
+        if (this.gc_dl_opener && document.contains(this.gc_dl_opener)) this.gc_dl_opener.focus({ preventScroll: true });
+        this.gc_dl_opener = null;
       }
     },
     map_dialog(val) {
@@ -1205,7 +1188,7 @@ export default {
     this.loadFromBasket();
   },
   beforeUnmount() {
-    if (this.nx_dl_esc) document.removeEventListener("keydown", this.nx_dl_esc);
+    if (this.gc_dl_esc) document.removeEventListener("keydown", this.gc_dl_esc);
   },
   mounted() {
     if (
@@ -1259,14 +1242,14 @@ export default {
       if (this.error_message_payment) return this.openAddress();
       if (this.enter_guest_email_error || !this.guest_email_ok) {
         this.guest_email_touched = true;
-        const input = this.$el?.querySelector?.(".k-cart__input");
+        const input = this.$el?.querySelector?.("#co-f-email");
         input?.scrollIntoView({ behavior: "smooth", block: "center" });
         input?.focus({ preventScroll: true });
         return;
       }
       if (!this.canPayAndComplete || this.pay_blocker) {
         // Nothing to fill in: show the receipt's reason (out of view on a phone).
-        this.$el?.querySelector?.(".k-cart__pay")?.scrollIntoView({ behavior: "smooth", block: "center" });
+        this.$el?.querySelector?.("#co-pay")?.scrollIntoView({ behavior: "smooth", block: "center" });
         return;
       }
       if (this.is_service_need_pricing) return this.submitServiceOrder();

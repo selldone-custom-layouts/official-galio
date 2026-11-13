@@ -475,14 +475,14 @@ html body {
 }
 /* The banner's fallback: one best seller of each collection in a row on the warm right half. */
 .gl .gl-cuts.-banner {
-  inset: 14% 3% 12% 46%;
+  inset: 14% 3% 12% 49%;
   gap: 1%;
 }
 .gl .gl-cuts.-banner .gl-cut {
   width: min(16%, 150px);
 }
 [dir="rtl"] .gl .gl-cuts.-banner {
-  inset: 14% 46% 12% 3%;
+  inset: 14% 49% 12% 3%;
 }
 .gl .gl-cuts.-banner.-square,
 [dir="rtl"] .gl .gl-cuts.-banner.-square {
@@ -984,4 +984,45 @@ html:root .gl.bg-white:not(.gl-x) {
   border-radius: 22px;
   background: var(--gl-plate);
   animation: gl-skel 1.4s ease-in-out infinite;
+}
+
+/* ── Deals: Selldone's own .pod (a 4px-bordered square badge) shares the podium card's name ── */
+html .gl .pod {
+  width: auto;
+  height: auto;
+  border: 0;
+  box-shadow: none !important;
+  display: grid;
+  flex-direction: initial;
+  justify-content: initial;
+  text-align: start;
+  font-size: inherit;
+  font-weight: inherit;
+  z-index: auto;
+  user-select: auto;
+  background-color: var(--gl-tint);
+  container: pod / inline-size;
+}
+html.gl-dark .gl .pod {
+  background-color: color-mix(in oklab, var(--gl-tint) 18%, var(--gl-surface));
+}
+
+/* ── The banners beside the rail (1100–1439): the box grows taller so the script line and the plate
+      never meet (the rail takes 260px, the script scales with the window). ── */
+@media (min-width: 1100px) and (max-width: 1279.98px) {
+  .gl .banner .ph {
+    aspect-ratio: 12 / 7;
+  }
+  .gl .banner-script {
+    top: 9%;
+  }
+  .gl .banner-plate {
+    bottom: 8%;
+  }
+}
+@media (min-width: 1280px) and (max-width: 1439.98px) {
+  .gl .banner .ph,
+  .gl .ab-box .ph {
+    aspect-ratio: 2 / 1;
+  }
 }

@@ -48,7 +48,7 @@
   -->
 
 <template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
-  <div class="s--storefront-layout">
+  <div class="s--storefront-layout gl-frame">
     <!-- ▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆ Primary Header ▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆ -->
     <!-- This is the primary header at the top of the website, where you can display your site's name, logo, user avatar, and navigation menu. -->
 
@@ -63,12 +63,12 @@
       "
     >
       <s-header-section v-if="custom_header_code"></s-header-section>
-      <bakini-header
+      <gl-shell
         v-else
         :show-search="!!show_search_box"
         @clear="onClear"
         @search="onSearch"
-      ></bakini-header>
+      ></gl-shell>
     </template>
 
     <!-- Kalio: the search box lives in the Kalio header. -->
@@ -149,7 +149,7 @@
           :dark="!is_light_footer"
           class="m-0"
         />
-        <bakini-footer v-else />
+        <gl-footer v-else />
       </template>
 
       <!-- ▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆ Basket Indicator ▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆▆ -->
@@ -182,8 +182,8 @@
 </template>
 
 <script lang="ts">
-import BakiniHeader from "../components/bakini/shell/BakiniHeader.vue";
-import BakiniFooter from "../components/bakini/shell/BakiniFooter.vue";
+import GlShell from "../components/galio/shell/GlShell.vue";
+import GlFooter from "../components/galio/shell/GlFooter.vue";
 import SStorefrontTopMenu from "@selldone/components-vue/storefront/menu/header/SStorefrontTopMenu.vue";
 import SHeaderSection from "@selldone/components-vue/storefront/header/section/SHeaderSection.vue";
 import TemplateMixin from "@selldone/components-vue/mixin/template/TemplateMixin.ts";
@@ -216,8 +216,8 @@ export default {
     SHeaderSection,
     SStorefrontTopMenu,
 
-    BakiniHeader,
-    BakiniFooter,
+    GlShell,
+    GlFooter,
 
     SStorefrontListingCompareBar: defineAsyncComponent(
       () =>

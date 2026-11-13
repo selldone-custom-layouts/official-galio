@@ -570,6 +570,13 @@ export default {
 <style lang="scss" src="./style/bakini-noir-buy.scss"></style>
 <style lang="scss" src="./style/bakini-noir-read.scss"></style>
 <style lang="scss" src="./style/bakini-noir-account.scss"></style>
+<!-- Galio Sundae: the B mockup's stylesheets (galio-design/g/core.css and
+     b.css), ported unchanged and scoped to Galio's own markup (.gl) by
+     scripts/galio-css.cjs, then the Layout's own touches (style/galio.scss).
+     They hold both modes, so the dark build step leaves them alone. -->
+<style src="./style/galio/core.css"></style>
+<style src="./style/galio/b.css"></style>
+<style lang="scss" src="./style/galio.scss"></style>
 
 <style lang="scss">
 /*

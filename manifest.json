@@ -1,10 +1,10 @@
 {
   "deploy_server": "https://layouts.selldone.com",
   "deploy_path": "",
-  "package": "bakini-noir-patisserie",
-  "name": "Bakini Noir Patisserie",
-  "version": "1.0.5",
+  "package": "galio-sundae-patisserie",
+  "name": "Galio Sundae Patisserie",
+  "version": "1.0.0",
   "storefront": true,
   "backoffice": false,
-  "description": "A dark pastry theatre for a single bakery: a slim glass header, a carousel of the collections in arched windows, the collections as a side-scrolling lineup of tall dark cards, a bento of the shop's real facts (counter hours, delivery windows, pickup, shipping, cash on delivery), selection rows, a compare strip, deals and the journal; real spec filters, a product page with a sticky buy column and Buy together, a bag drawer, glass checkout cards, a desk account, and an ivory light mode."
+  "description": "A sorbet-coloured pastry parlour for a single bakery: a cocoa side rail with a scalloped awning edge, a hero slider of the best-selling collections with filling tabs, line-drawn collections on a lemon band, a photo mosaic of the real ways to get an order, a price list with dot leaders by collection, best sellers on round tinted plates with tilted stickers, the real counter on a map, the journal, and a cocoa footer with the newsletter and the theme row; light by default with a dark mode."
 }

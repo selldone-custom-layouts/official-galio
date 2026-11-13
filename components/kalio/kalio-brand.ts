@@ -1,6 +1,6 @@
 /* ━━━━━━━━━━━━ The Layout's own name and mark ━━━━━━━━━━━━
-   Bakini Noir draws the shop's own live title (Bakio: "bakio") as its
-   wordmark (components/bakini/BakiniLogo.vue), so the Layout works when it is
+   Galio Sundae draws the shop's own live title (Bakio: "bakio") as its
+   wordmark (components/galio/GlMark.vue), so the Layout works when it is
    cloned into another bakery: nothing about the shop is written here.
    `name: null` keeps the shop's title; a string would replace it everywhere
    the storefront names the shop (header, footer, page titles), as Medio and
@@ -8,25 +8,26 @@
 
    The mark (the browser tab's icon, the avatar on order messages and the
    compare page's share card) is drawn from the same title: its first letter
-   in an italic serif, ivory on the Noir stage, with the gold dot of the
-   wordmark. It is an inline SVG, so no image file is needed. */
+   in the fat display face, cream on the rail's cocoa, with the lemon dot of
+   the wordmark. It is an inline SVG, so no image file is needed. */
 
 export const BRAND: { name: string | null; mark: string } = {
   name: null,
   mark: markFor(""),
 };
 
-/** The mark as an SVG data URL: the title's first letter on the Noir stage. */
+/** The mark as an SVG data URL: the title's first letter in Galio's fat
+    display face, cream on the cocoa of the rail, with the wordmark's lemon dot. */
 export function markFor(title: string): string {
   const letter = (String(title || "").trim().charAt(0) || "·").toLowerCase();
   const esc = letter.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c] as string);
   const svg =
     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">' +
-    '<rect width="64" height="64" rx="16" fill="#120c10"/>' +
-    '<text x="29" y="45" text-anchor="middle" font-family="Instrument Serif, Iowan Old Style, Georgia, serif" font-style="italic" font-size="44" fill="#f4ede6">' +
+    '<rect width="64" height="64" rx="18" fill="#2e1c12"/>' +
+    '<text x="28" y="46" text-anchor="middle" font-family="Shrikhand, Cooper Black, Georgia, serif" font-size="40" fill="#fff4ea">' +
     esc +
     "</text>" +
-    '<circle cx="47" cy="42" r="4" fill="#d4a373"/>' +
+    '<circle cx="48" cy="43" r="5" fill="#ffd84d"/>' +
     "</svg>";
   return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
 }

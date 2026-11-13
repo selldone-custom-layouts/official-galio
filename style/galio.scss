@@ -1,0 +1,1042 @@
+/* ▆▆▆▆▆▆▆▆▆▆▆▆▆▆ Galio Sundae — the Layout's own touches on the mockup ▆▆▆▆▆▆▆▆▆▆▆▆▆▆
+
+   style/galio/*.css are the B "Sundae" mockup's stylesheets (galio-design/g/core.css and b.css),
+   generated unchanged by scripts/galio-css.cjs and scoped to Galio's markup (.gl), with the tokens
+   (--gl-*, :root = light, html.gl-dark = dark). What the storefront needs on top of them lives here:
+   the frame (the fixed rail beside Selldone's app), the sticky top bar, the layers (search, the bag
+   drawer), the photo slots' designed fallbacks, the real map, the kits' theme row and region chips in
+   the mockup's dress, and Selldone's own parts in the footer. Not rewritten by the dark build step
+   (vite.config.ts): every colour here is a --gl- token that holds both modes. */
+
+/* ── The page ── */
+/* Vuetify's app clips with overflow: hidden, which stops anything sticking (the top bar); clip does
+   the same without making a scroll box. */
+.v-application,
+.v-application .v-application__wrap,
+.s--shop {
+  overflow: clip !important;
+}
+.v-application,
+.s--shop {
+  background: var(--gl-bg) !important;
+  color: var(--gl-ink);
+  font-family: var(--gl-f-body);
+}
+.v-application .v-main {
+  background: var(--gl-bg) !important;
+}
+html body {
+  background: var(--gl-bg) !important;
+}
+/* Selldone's own .link (its info colour, bold on hover) shares the mockup's name: Galio's wins. */
+.gl .link {
+  color: var(--gl-act-text) !important;
+}
+.gl .link:hover,
+.gl .coll:hover .link {
+  color: var(--gl-ink) !important;
+  font-weight: 600;
+}
+/* Selldone centres the body's text; Galio's markup starts every line at its edge. */
+.gl {
+  text-align: start;
+}
+/* The pages still drawn by the base Layout (until each is ported) read its type tokens: Galio's faces. */
+:root {
+  --bk-ft: var(--gl-f-body);
+  --bk-fd: var(--gl-f-display);
+}
+
+/* ── The frame: the fixed rail on wide screens, the page beside it (b.css .page) ── */
+@media (min-width: 1100px) {
+  .gl-frame {
+    padding-inline-start: calc(var(--gl-side-w) + 12px);
+  }
+}
+/* The rail's strip is painted on the page too (the mockup's body), so a long screenshot or an
+   overscroll never shows the page behind the fixed rail. */
+@media (min-width: 1100px) {
+  .v-application.s--shop {
+    background: var(--gl-side-paint) 0 0 / var(--gl-side-w) 100% no-repeat, var(--gl-bg) !important;
+  }
+  html[dir="rtl"] .v-application.s--shop {
+    background: var(--gl-side-paint) 100% 0 / var(--gl-side-w) 100% no-repeat, var(--gl-bg) !important;
+  }
+}
+/* The home's sorbet bands run the full width beside the rail (Selldone caps its main at 1720px). */
+.v-main:has(.gl-home) {
+  max-width: none !important;
+}
+.gl-home-page {
+  padding-bottom: 0 !important;
+}
+.gl-home .wrap-head {
+  padding-bottom: 0;
+}
+
+/* ── The shell ── */
+.gl.gl-shell {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 50;
+}
+.gl-shell .gl-skip {
+  position: absolute;
+  inset-inline-start: -9999px;
+  top: 8px;
+  z-index: 90;
+  padding: 10px 16px;
+  border-radius: var(--gl-r-s);
+  background: var(--gl-surface);
+  color: var(--gl-ink);
+  font-weight: 600;
+}
+.gl-shell .gl-skip:focus,
+.gl-shell .gl-skip:focus-visible {
+  inset-inline-start: 12px;
+  position: fixed;
+}
+/* The rail scrolls inside on a short window; its scalloped edge (b.css .side::after) stays outside. */
+.gl-shell .side {
+  padding: 0;
+}
+.gl-shell .side-in {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  padding: 40px 22px 26px;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.gl-shell .side-in::-webkit-scrollbar {
+  display: none;
+}
+.gl-shell .side .gl-mark-a {
+  display: block;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 30px;
+  color: var(--gl-side-ink);
+}
+.gl-shell .side .mark {
+  margin-bottom: 0;
+}
+.gl-shell .side-nav button {
+  width: 100%;
+  text-align: center;
+}
+.gl-shell .side-sub .side-more {
+  color: var(--gl-side-hover);
+}
+.gl-shell .side-foot a {
+  color: inherit;
+}
+.gl-shell .side-foot a:hover {
+  color: var(--gl-side-hover);
+}
+.gl-shell .side-bag svg.i,
+.gl-shell .pill-region svg.i {
+  pointer-events: none;
+}
+.gl-shell .top .gl-mark-a {
+  margin-inline-end: auto;
+  color: var(--gl-top-ink);
+  min-width: 0;
+}
+.gl-shell .top-btn {
+  color: var(--gl-top-ink);
+}
+.gl-shell .top-btn:hover {
+  color: var(--gl-side-hover);
+}
+.gl .mark .mark-w {
+  white-space: nowrap;
+}
+/* Right to left: the rail on the right, its scallops on its left edge. */
+[dir="rtl"].gl-shell .side {
+  inset: 0 0 0 auto;
+}
+[dir="rtl"].gl-shell .side::after {
+  right: auto;
+  left: -12px;
+  background: radial-gradient(circle at 100% 50%, var(--gl-side-bg-solid) 10.5px, transparent 11px) 0 0 / 12px 24px repeat-y;
+}
+
+/* ── The layers ── */
+.gl.gl-layers {
+  position: relative;
+  z-index: 60;
+}
+[dir="rtl"].gl-layers .sheet {
+  inset: 0 auto 0 0;
+}
+.gl-layers .sheet-head .gl-mark-a {
+  color: var(--gl-ink);
+}
+.gl-layers .sheet-list small {
+  font-variant-numeric: tabular-nums;
+}
+.gl-layers .sheet-more {
+  color: var(--gl-act-text);
+  font-weight: 700 !important;
+}
+.gl-layers .sheet-more .more-disc {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--gl-act-soft);
+}
+.gl-layers .sheet-more .more-disc svg.i {
+  width: 18px;
+  height: 18px;
+}
+.gl-layers .sheet-foot a {
+  color: inherit;
+}
+.gl-layers .sheet-list .gl-coll {
+  width: 28px;
+  height: 28px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* The region panel: the kit's chips as the mockup's option rows. */
+.gl .region-pop .rs-chips {
+  --rs-ink: var(--gl-ink);
+  --rs-muted: var(--gl-muted);
+  --rs-line: var(--gl-line);
+  --rs-surface: var(--gl-surface);
+  --rs-accent: var(--gl-act-text);
+  --rs-accent-soft: var(--gl-act-soft);
+  --rs-on-accent: var(--gl-act-on);
+  --rs-font: var(--gl-f-body);
+}
+.gl .region-pop .rs-chips__t {
+  font: 600 12px/1.2 var(--gl-f-body);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gl-muted);
+  margin: 0 0 8px;
+}
+.gl .region-pop .rs-chips__t:first-child {
+  display: none; /* the panel's own heading says it */
+}
+.gl .region-pop .rs-chips__row {
+  display: grid;
+  gap: 6px;
+}
+.gl .region-pop .rs-chip {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  min-height: 42px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: var(--gl-r-s);
+  background: var(--gl-surface);
+  box-shadow: inset 0 0 0 1px var(--gl-line);
+  color: var(--gl-ink) !important;
+  font: 600 14px/1 var(--gl-f-body);
+}
+.gl .region-pop .rs-chip.-on {
+  background: var(--gl-act-soft);
+  box-shadow: inset 0 0 0 2px var(--gl-act-text);
+}
+.gl .region-pop .rs-chip small {
+  color: var(--gl-muted);
+  font-weight: 500;
+}
+.gl .region-pop .rs-chips__note {
+  display: none; /* the panel's own note says it */
+}
+.gl .region-pop > p {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--gl-muted);
+  margin-top: 10px;
+}
+
+/* ── Search ── */
+.gl .gl-search {
+  position: fixed;
+  z-index: 75;
+  top: calc(env(safe-area-inset-top, 0px) + 72px);
+  left: 12px;
+  right: 12px;
+  max-height: calc(100vh - 96px);
+  overflow-y: auto;
+  padding: 14px;
+  border-radius: var(--gl-r-m);
+  background: var(--gl-surface);
+  color: var(--gl-ink);
+  box-shadow: inset 0 0 0 1px var(--gl-line), 0 18px 40px -18px rgba(0, 0, 0, 0.35);
+}
+@media (min-width: 1100px) {
+  .gl .gl-search {
+    top: 24px;
+    left: calc(var(--gl-side-w) + 36px);
+    right: auto;
+    width: min(720px, calc(100vw - var(--gl-side-w) - 72px));
+  }
+  [dir="rtl"].gl-layers .gl-search {
+    left: auto;
+    right: calc(var(--gl-side-w) + 36px);
+  }
+}
+.gl .gl-search-form {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) auto 44px;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 4px 4px 4px 16px;
+  border-radius: var(--gl-r-btn);
+  box-shadow: inset 0 0 0 1.5px var(--gl-ink);
+}
+[dir="rtl"] .gl .gl-search-form {
+  padding: 4px 16px 4px 4px;
+}
+.gl .gl-search-form:focus-within {
+  box-shadow: inset 0 0 0 2px var(--gl-ring);
+}
+.gl .gl-search-form input {
+  min-width: 0;
+  height: 44px;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--gl-ink);
+  font: 500 16px/1 var(--gl-f-body);
+}
+.gl .gl-search-form input::placeholder {
+  color: var(--gl-muted);
+  opacity: 1;
+}
+.gl .gl-search-form .btn {
+  min-height: 42px;
+  padding: 0 18px;
+}
+.gl .gl-search-x {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+}
+.gl .gl-search-x:hover {
+  background: var(--gl-act-soft);
+}
+.gl .gl-search-body {
+  padding: 14px 4px 4px;
+}
+.gl .gl-search-pop {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.gl .gl-search-pop .lbl {
+  font: 600 12px/1.2 var(--gl-f-body);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gl-muted);
+  margin-inline-end: 4px;
+}
+.gl .gl-search-pop .chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 14px;
+  border-radius: var(--gl-r-pill);
+  background: var(--gl-surface);
+  box-shadow: inset 0 0 0 1px var(--gl-line);
+  font: 500 14px/1 var(--gl-f-body);
+}
+.gl .gl-search-pop .chip:hover {
+  background: var(--gl-act-soft);
+}
+.gl .gl-search-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 2px;
+}
+.gl .gl-search-list a {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 8px;
+  border-radius: var(--gl-r-s);
+}
+.gl .gl-search-list a:hover,
+.gl .gl-search-list a.hl {
+  background: var(--gl-act-soft);
+}
+.gl .gl-search-list .th {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  overflow: hidden;
+  padding: 4px;
+  background: var(--gl-tint, var(--gl-plate));
+}
+html.gl-dark .gl .gl-search-list .th {
+  background: color-mix(in oklab, var(--gl-tint, #fce4e7) 18%, var(--gl-surface));
+}
+.gl .gl-search-list .th img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.gl .gl-search-list .nm {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+.gl .gl-search-list .nm b {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.gl .gl-search-list .nm b mark {
+  background: transparent;
+  color: var(--gl-act-text);
+}
+.gl .gl-search-list .nm small {
+  color: var(--gl-muted);
+  font-size: 13px;
+}
+.gl .gl-search-list .pr {
+  font-weight: 700;
+}
+.gl .gl-search-none {
+  color: var(--gl-muted);
+  padding: 6px 4px;
+}
+.gl .gl-search-all {
+  padding: 10px 4px 0;
+}
+
+/* ── The bag drawer (in the mockup's sheet) ── */
+.gl .gl-drawer {
+  width: min(440px, 100%);
+  padding: 0;
+  overflow: hidden;
+}
+.gl .gl-drawer .sheet-head {
+  padding: calc(env(safe-area-inset-top, 0px) + 10px) 18px 0;
+  margin-bottom: 4px;
+}
+.gl .gl-drawer-h {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font: var(--gl-h3-big-font);
+}
+.gl .gl-drawer-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 4px 18px 20px;
+}
+.gl .gl-bag-rows {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+}
+.gl .gl-bag-row {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  box-shadow: inset 0 -1px 0 var(--gl-line);
+}
+.gl .gl-bag-txt {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+.gl .gl-bag-txt .msub {
+  -webkit-line-clamp: 2;
+}
+.gl .gl-bag-txt s,
+.gl .gl-often s {
+  color: var(--gl-muted);
+}
+.gl .gl-bag-end {
+  display: grid;
+  justify-items: end;
+  gap: 6px;
+}
+.gl .gl-bag-lt {
+  font: var(--gl-price-font);
+  font-size: 16px;
+}
+.gl .gl-line-step {
+  grid-template-columns: 32px minmax(24px, auto) 32px;
+  height: 34px;
+}
+.gl .gl-line-step button {
+  height: 34px;
+}
+.gl .gl-often {
+  margin-top: 22px;
+}
+.gl .gl-often h3,
+.gl .gl-empty h3 {
+  font: var(--gl-h3-font);
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--gl-ink);
+  margin: 0;
+}
+.gl .gl-often h3 {
+  margin-bottom: 6px;
+}
+.gl .gl-often-list {
+  grid-template-columns: 1fr;
+  gap: 0;
+  max-width: none;
+}
+.gl .gl-often-list .mrow {
+  grid-template-columns: 48px minmax(0, 1fr) auto;
+  gap: 12px;
+}
+.gl .gl-often-list .mthumb {
+  width: 48px;
+  height: 48px;
+}
+.gl .gl-drawer-ft {
+  padding: 16px 18px calc(16px + env(safe-area-inset-bottom, 0px));
+  box-shadow: inset 0 1px 0 var(--gl-line);
+  background: var(--gl-surface);
+}
+.gl .gl-rcpt {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+}
+.gl .gl-rcpt > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 14px;
+  color: var(--gl-muted);
+}
+.gl .gl-rcpt dt,
+.gl .gl-rcpt dd {
+  margin: 0;
+}
+.gl .gl-rcpt .-save {
+  color: var(--gl-act-text);
+  font-weight: 600;
+}
+.gl .gl-rcpt .-tot {
+  margin-top: 4px;
+  padding-top: 10px;
+  box-shadow: inset 0 1px 0 var(--gl-line);
+  color: var(--gl-ink);
+  font: var(--gl-price-font);
+  font-size: 18px;
+}
+.gl .gl-drawer-acts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 14px;
+}
+/* Empty states: an icon in a soft disc, 14px to the heading, 8px to the words, 20px to the button. */
+.gl .gl-empty {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+  padding: 32px 20px;
+  margin-top: 6px;
+  border-radius: var(--gl-r-m);
+  background: var(--gl-band-straw);
+}
+.gl .gl-empty-ic {
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--gl-surface);
+  color: var(--gl-act-text);
+  margin-bottom: 14px;
+}
+.gl .gl-empty-ic svg.i {
+  width: 26px;
+  height: 26px;
+}
+.gl .gl-empty p {
+  margin-top: 8px;
+  max-width: 520px;
+  line-height: 1.55;
+  color: var(--gl-muted);
+}
+.gl .gl-empty .btn {
+  margin-top: 20px;
+}
+
+/* ── Selldone's and Kalio's global names the mockup shares ── */
+/* .dot (Selldone: an absolute badge dot), .card (a bordered box), balanced headings (Kalio). */
+.gl .mark .dot {
+  position: static;
+  margin: 0;
+}
+.gl .card {
+  border: 0;
+}
+/* The base Layout greys every figure caption (an article's picture): the mosaic's captions are cards. */
+.v-application .gl figure figcaption.cap {
+  color: var(--gl-ink) !important;
+}
+.gl .card h3,
+.gl .coll h3 {
+  text-wrap: wrap;
+}
+/* The banner's box holds its script line and plate (the mockup's inline styles). */
+.gl .banner-box {
+  position: relative;
+}
+.gl .banner-plate .btn {
+  justify-self: start;
+}
+
+/* ── The buy control ── */
+.gl .round-add.-out,
+.gl .btn.-out {
+  background: var(--gl-line);
+  color: var(--gl-muted) !important;
+  cursor: default;
+}
+.gl .step button[aria-disabled="true"] {
+  opacity: 0.45;
+  cursor: default;
+}
+.gl .step button[aria-disabled="true"]:hover {
+  background: transparent;
+  color: var(--gl-ink);
+}
+.gl .step button svg.i,
+.gl .round-add svg.i,
+.gl .cbtn svg.i,
+.gl .htab .t {
+  pointer-events: none;
+}
+
+/* ── The hero: the photo or its designed fallback ── */
+.gl .ph .ph-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+}
+[dir="rtl"] .gl .ph .ph-img {
+  transform: scaleX(-1); /* the photos' calm area for words follows the words to the right */
+}
+[dir="rtl"] .gl .htab .fill {
+  transform-origin: right center;
+}
+[dir="rtl"] .gl .cbtn.prev svg,
+[dir="rtl"] .gl .cbtn.next svg,
+[dir="rtl"] .gl .link svg.i,
+[dir="rtl"] .gl .btn svg.i {
+  transform: scaleX(-1);
+}
+.gl .gl-cuts {
+  position: absolute;
+  z-index: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 2%;
+  pointer-events: none;
+}
+.gl .gl-cut {
+  position: relative;
+  flex: none;
+  aspect-ratio: 1 / 1;
+}
+.gl .gl-cut::after {
+  content: "";
+  position: absolute;
+  left: 16%;
+  right: 16%;
+  bottom: 13%;
+  height: 7%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(20, 10, 4, 0.34), transparent);
+  z-index: -1;
+}
+.gl .gl-cut img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+}
+/* The hero's fallback: the painted ground's warm right half holds the collection's three best sellers. */
+.gl .gl-cuts.-hero {
+  inset: 10% 4% 12% 50%;
+}
+.gl .gl-cuts.-hero .gl-cut {
+  width: min(31%, 240px);
+}
+.gl .gl-cuts.-hero .gl-cut:nth-child(2) {
+  width: min(36%, 260px);
+}
+[dir="rtl"] .gl .gl-cuts.-hero {
+  inset: 10% 50% 12% 4%;
+}
+@media (max-width: 900px) {
+  .gl .gl-cuts.-hero,
+  [dir="rtl"] .gl .gl-cuts.-hero {
+    inset: 8% 8% 22%;
+  }
+  .gl .gl-cuts.-hero .gl-cut {
+    width: min(28%, 200px);
+  }
+  .gl .gl-cuts.-hero .gl-cut:nth-child(2) {
+    width: min(32%, 220px);
+  }
+}
+.gl .gl-cuts.-square,
+[dir="rtl"] .gl .gl-cuts.-square {
+  inset: 10% 6% 22%;
+  align-items: center;
+}
+/* The banner's fallback: one best seller of each collection in a row on the warm right half. */
+.gl .gl-cuts.-banner {
+  inset: 14% 3% 12% 46%;
+  gap: 1%;
+}
+.gl .gl-cuts.-banner .gl-cut {
+  width: min(16%, 150px);
+}
+[dir="rtl"] .gl .gl-cuts.-banner {
+  inset: 14% 46% 12% 3%;
+}
+.gl .gl-cuts.-banner.-square,
+[dir="rtl"] .gl .gl-cuts.-banner.-square {
+  inset: 10%;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-content: center;
+  gap: 6% 4%;
+}
+.gl .gl-cuts.-banner.-square .gl-cut {
+  width: 100%;
+  max-width: 150px;
+  justify-self: center;
+}
+/* The mosaic's tiles: a sorbet tint with the way's line drawing, or the shop's own pieces, small,
+   in the upper part (the caption sits low on the tile). */
+.gl .ph.-tile {
+  background: var(--gl-band-lemon);
+}
+.gl .ph.-tile.-straw {
+  background: var(--gl-band-straw);
+}
+.gl .ph.-tile.-mint {
+  background: var(--gl-band-mint);
+}
+.gl .ph.-tile.-sky {
+  background: var(--gl-band-sky);
+}
+.gl .ph.-tile.-photo {
+  background: var(--gl-ph);
+}
+.gl .gl-tile-art {
+  position: absolute;
+  inset: 8% 8% 34% 30%;
+  display: grid;
+  place-items: center;
+  color: var(--gl-act-text);
+  opacity: 0.85;
+}
+.gl .gl-tile-art svg.i {
+  width: min(46%, 170px);
+  height: auto;
+  aspect-ratio: 1 / 1;
+}
+.gl .gl-tile-art svg.i * {
+  vector-effect: non-scaling-stroke;
+  stroke-width: 3px;
+}
+.gl .gl-cuts.-tile.-small {
+  inset: 8% 6% 36% 18%;
+  align-items: center;
+}
+.gl .gl-cuts.-tile.-small .gl-cut {
+  width: min(32%, 150px);
+}
+.gl .gl-cuts.-tile.-big {
+  inset: 12% 6% 34% 6%;
+  align-items: flex-end;
+}
+.gl .gl-cuts.-tile.-big .gl-cut {
+  width: min(23%, 180px);
+}
+/* The counter's shelf under the pieces. */
+.gl .gl-cuts.-tile.-big::after {
+  content: "";
+  position: absolute;
+  left: 4%;
+  right: 4%;
+  bottom: -3%;
+  height: 3%;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--gl-ink) 12%, transparent);
+}
+@media (max-width: 900px) {
+  .gl .gl-cuts.-tile.-small {
+    inset: 10% 10% 14%;
+  }
+  .gl .gl-cuts.-tile.-big {
+    inset: 14% 8% 18%;
+  }
+  .gl .gl-tile-art {
+    inset: 10%;
+  }
+}
+
+/* The collections' grid leaves no row half full (GlHome sets the column counts). */
+.gl-home .colls.gl-cols {
+  grid-template-columns: repeat(var(--gl-cols-d, 6), minmax(0, 1fr));
+}
+@media (max-width: 1279.98px) {
+  .gl-home .colls.gl-cols {
+    grid-template-columns: repeat(var(--gl-cols-t, 3), minmax(0, 1fr));
+  }
+}
+@media (max-width: 640px) {
+  .gl-home .colls.gl-cols {
+    grid-template-columns: repeat(var(--gl-cols-p, 2), minmax(0, 1fr));
+  }
+}
+.gl .coll-ic .gl-coll {
+  width: 72px;
+  height: 72px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+@media (max-width: 640px) {
+  .gl .coll-ic .gl-coll {
+    width: 62px;
+    height: 62px;
+  }
+}
+/* A mosaic with fewer than four ways: the tiles in one row. */
+.gl .gl-mosaic-few {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--gl-mos-gap);
+}
+.gl .gl-mosaic-few.-n1 {
+  grid-template-columns: minmax(0, 560px);
+  justify-content: center;
+}
+.gl .gl-mosaic-few.-n2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@media (max-width: 900px) {
+  .gl .gl-mosaic-few {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ── Visit: the real map with the mockup's pin ── */
+.gl .gl-visit-wrap {
+  position: relative;
+}
+.gl .gl-map {
+  position: relative;
+}
+.gl .gl-map-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+}
+html:not(.gl-dark) .gl .gl-map-img {
+  filter: saturate(0.6) sepia(0.1) brightness(1.03);
+}
+.gl .gl-map svg.gl-map-pin {
+  position: absolute;
+  z-index: 1;
+  width: 96px;
+  height: 140px;
+  transform: translate(-50%, -65.7%);
+  pointer-events: none;
+}
+.gl .gl-map.-none .gl-map-pin {
+  left: 68% !important;
+}
+@media (max-width: 760px) {
+  .gl .gl-map.-none .gl-map-pin {
+    left: 50% !important;
+  }
+}
+.gl .visit-card a {
+  color: inherit;
+}
+.gl .visit-card a:hover {
+  color: var(--gl-act-text);
+}
+[dir="rtl"] .gl .visit-card {
+  left: auto;
+  right: calc(var(--gl-gut) + 32px);
+}
+@media (max-width: 760px) {
+  [dir="rtl"] .gl .visit-card {
+    right: auto;
+  }
+}
+
+/* ── The footer ── */
+.gl-ftr .foot .gl-mark-a {
+  color: var(--gl-foot-ink);
+}
+.gl-ftr .foot-contact a {
+  display: inline-grid;
+  grid-template-columns: 18px auto;
+  gap: 8px;
+  align-items: center;
+  color: inherit;
+}
+.gl-ftr .foot-contact a:hover {
+  color: var(--gl-foot-hover);
+}
+.gl-ftr .news .ok:empty {
+  display: none;
+}
+.gl-ftr .news .ok.-invalid,
+.gl-ftr .news .ok.-error {
+  color: var(--gl-foot-hover);
+  font-weight: 600;
+}
+.gl-ftr .news button:disabled {
+  opacity: 0.7;
+  cursor: progress;
+}
+/* The theme-switcher kit's row in the mockup's strip: THEME, the swatches and the colour's name on
+   the start side, Light / Dark on the end side; every ring inside its box, cream on cocoa. */
+.gl-ftr .theme-strip .ts-row {
+  --ts-ink: var(--gl-foot-ink);
+  --ts-muted: var(--gl-foot-muted);
+  --ts-line: var(--gl-foot-line);
+  --ts-ring: var(--gl-foot-ink);
+  --ts-font: var(--gl-f-body);
+  --ts-swatch-edge: rgba(255, 244, 234, 0.42);
+  width: 100%;
+  gap: 10px 16px;
+}
+.gl-ftr .theme-strip .ts-row__label {
+  font: 600 12px/1 var(--gl-f-body);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gl-foot-ink);
+}
+.gl-ftr .theme-strip .ts-row__palettes {
+  gap: 8px;
+  flex-wrap: nowrap;
+}
+.gl-ftr .theme-strip .ts-swatch:hover {
+  background: var(--gl-foot-field) !important;
+}
+.gl-ftr .theme-strip .ts-row__name {
+  font: 400 13px/1.3 var(--gl-f-body);
+  color: var(--gl-foot-muted);
+}
+.gl-ftr .theme-strip .ts-mode {
+  margin-inline-start: auto;
+  box-shadow: inset 0 0 0 1px var(--gl-foot-line);
+}
+.gl-ftr .theme-strip .ts-mode .ts-mode__btn {
+  font: 400 14px/1 var(--gl-f-body);
+  height: 36px;
+  color: var(--gl-foot-ink) !important;
+}
+.gl-ftr .theme-strip .ts-mode .ts-mode__btn:hover {
+  background: var(--gl-foot-field) !important;
+  color: var(--gl-foot-ink) !important;
+}
+.gl-ftr .theme-strip .ts-mode .ts-mode__btn.-on {
+  background: var(--gl-foot-ink) !important;
+  color: var(--gl-foot-bg) !important;
+}
+.gl-ftr .theme-strip .ts-mode .ts-mode__btn:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--gl-foot-ink);
+}
+.gl-ftr .theme-strip .ts-mode .ts-mode__btn.-on:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--gl-foot-bg), inset 0 0 0 4px var(--gl-foot-ink);
+}
+@media (max-width: 640px) {
+  .gl-ftr .theme-strip .ts-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .gl-ftr .theme-strip .ts-mode {
+    margin-inline-start: 0;
+  }
+}
+/* The legal row's Selldone parts, small and quiet. */
+.gl-ftr .gl-legal-sd {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 14px;
+}
+.gl-ftr .gl-social:empty {
+  display: none;
+}
+.gl-ftr .gl-gdpr,
+.gl-ftr .gl-gdpr .v-btn,
+.gl-ftr .gl-made,
+.gl-ftr .gl-made a,
+.gl-ftr .gl-made .v-btn {
+  color: var(--gl-foot-muted) !important;
+  opacity: 1 !important;
+  font: 500 12.5px var(--gl-f-body) !important;
+  text-transform: none !important;
+  letter-spacing: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  min-height: 0 !important;
+  height: auto !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+.gl-ftr .gl-made img {
+  filter: grayscale(1) brightness(1.6);
+  opacity: 0.75;
+}
+
+/* ── The sign-in sheet's wordmark ── */
+.lg-wm.gl .mark {
+  font-size: 34px;
+  color: var(--gl-ink);
+}
+.lg-wm.gl .gl-mark-a {
+  color: var(--gl-ink);
+}

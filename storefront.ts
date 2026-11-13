@@ -36,14 +36,16 @@ import {createComponents} from "@selldone/components-vue/components";
 // Load fonts:
 import "@fortawesome/fontawesome-free/css/all.css"; // Ensure your project is capable of handling css files
 import "@selldone/components-vue/style/fonts/material-design-fonts/material-design-icons.scss"; // Ensure your project is capable of handling css files
-import "@selldone/components-vue/style/fonts/lang/fa/lang-fa-iransans.css";
+// Galio: Selldone's Persian face (six font files) is left out: the Layout's languages are English and Arabic.
 import "./components/kalio/kalio-fonts"; // Kalio typefaces, loaded by the app so they reach production
 import { PageHyper } from "@selldone/page-builder/PageHyperService.ts";
 import {SetupPageBuilder} from "@selldone/page-builder/page-builder.ts";
 import {SetupService} from "@selldone/core-js/server";
 import {Shop} from "@selldone/core-js/models";
 import { bootThemeSwitcher } from "./components/theme-switcher/theme-switcher"; // the shared theme switcher
-import { BAKINI_THEME } from "./components/bakini/bakini-theme";
+import { GALIO_THEME } from "./components/galio/galio-theme";
+import { themeState } from "./components/theme-switcher/theme-switcher";
+import { watchEffect } from "vue";
 import { bootRegion, prepareLanguage } from "./components/region-switcher/region"; // language + currency (the owner's choice B)
 import { priceText } from "./components/kalio/i18n/price-text"; // money in sentences written as u-price writes it
 import { EN as BAKINI_EN, LOADERS as BAKINI_LANGUAGES } from "./components/kalio/i18n"; // the Kalio base + Bakini's own words
@@ -53,11 +55,17 @@ const vuetify = VuetifyInstance(i18n);
 // Vuetify's light error red reads 4.5:1 on white (its #ff5252 is 3.3:1); set
 // here, not in the switcher's config, so it stays when the switcher is hidden.
 try { vuetify.theme.themes.value.light.colors.error = "#c4122f"; } catch (e) {}
-// Noir is dark first: the designed default (bakini-theme.settings.ts, mode
-// "dark") is painted before the first paint on every shop, Vuetify's dark
-// theme included. On Bakini's own showcase shop the footer's Theme row lets a
-// shopper pick a palette and Light / Dark, kept in the browser.
-bootThemeSwitcher(BAKINI_THEME, vuetify);
+// Galio is light first: the designed default (galio-theme.settings.ts, mode
+// "light") is painted before the first paint. On Galio's own showcase shop the
+// footer's Theme row lets a shopper pick a palette and Light / Dark, kept in
+// the browser.
+bootThemeSwitcher(GALIO_THEME, vuetify);
+// The pages still drawn by the base Layout (until each is ported, phase 2)
+// read their dark rules under html.bk-dark: it follows Galio's dark class.
+watchEffect(() => {
+  void themeState.mode; // re-run on every pick; applyTheme() has set gl-dark by then
+  document.documentElement.classList.toggle("bk-dark", document.documentElement.classList.contains("gl-dark"));
+});
 
 //█████████████████████████████████████████████████████████████
 //―――――――――――――― Global Types ―――――――――――――――

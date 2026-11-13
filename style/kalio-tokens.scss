@@ -145,9 +145,9 @@ s:has(> .u--price) {
 }
 
 /* Not inside Bakini Noir's own markup (.nx): the mockup's type rules hold there. */
-.v-application h1:not(.nx *),
-.v-application h2:not(.nx *),
-.v-application h3:not(.nx *) {
+.v-application h1:not(.nx *, .gl *),
+.v-application h2:not(.nx *, .gl *),
+.v-application h3:not(.nx *, .gl *) {
   /* Colour is not set: headings sit on white in most places and on coloured
      banners in others. */
   font-family: var(--k-display);

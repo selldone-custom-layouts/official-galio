@@ -19,3 +19,7 @@ yarn-error.log*
 /Backend/bootstrap/cache/
 /dist.zip
 /modules/
+
+# Galio: local screenshots and check logs (never committed)
+/.shots/
+/check-logs/

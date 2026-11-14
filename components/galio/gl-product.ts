@@ -1,9 +1,9 @@
 /*
- * Bakini Noir — what the product and compare pages share: the gallery's
+ * Galio Sundae — what the product and compare pages share: the gallery's
  * photos, a unit counted in words, the delivery / pickup / payment lines
  * from the shop's own data, and the "Buy together" picks.
  */
-import { bySells, noir, shopFacts, money } from "./gl-data";
+import { bySells, shopData, shopFacts, money } from "./gl-data";
 import { t } from "../kalio/i18n/kalio-i18n";
 
 declare const window: any;
@@ -105,12 +105,12 @@ export function deliveryLines(shop: any): DeliveryLine[] {
     collections. */
 export function togetherFor(product: any): any[] {
   if (!product) return [];
-  const others = noir.cats.filter((c) => c.id !== product.category_id);
-  const sales = (id: number) => noir.products.filter((p) => p.category_id === id).reduce((n, p) => n + (p.sells || 0), 0);
+  const others = shopData.cats.filter((c) => c.id !== product.category_id);
+  const sales = (id: number) => shopData.products.filter((p) => p.category_id === id).reduce((n, p) => n + (p.sells || 0), 0);
   const cats = [...others].sort((a, b) => sales(b.id) - sales(a.id));
   const out: any[] = [];
   for (const c of cats) {
-    const pick = bySells(noir.products.filter((p) => p.category_id === c.id && p.quantity > 0 && !(p.variants && p.variants.length)))[0];
+    const pick = bySells(shopData.products.filter((p) => p.category_id === c.id && p.quantity > 0 && !(p.variants && p.variants.length)))[0];
     if (pick) out.push(pick);
     if (out.length === 2) break;
   }

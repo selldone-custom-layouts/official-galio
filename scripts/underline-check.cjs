@@ -34,7 +34,7 @@ const MAX = Number(process.env.MAX || 80);
       await pg.waitForTimeout(4000);
       const n = await pg.evaluate((max) => {
         const vis = (e) => { const r = e.getBoundingClientRect(); const s = getComputedStyle(e); return r.width > 2 && r.height > 2 && s.visibility !== "hidden" && s.display !== "none" && +s.opacity > 0.05; };
-        const els = [...document.querySelectorAll("a[href], button, [role=button], .v-btn")].filter(vis).filter((e) => !e.closest(".ar-body, .k-prose, .rd-body, .blog-body, article .body"));
+        const els = [...document.querySelectorAll("a[href], button, [role=button], .v-btn")].filter(vis).filter((e) => !e.closest(".art-body, .gl-own, .ar-body, .k-prose, .rd-body, .blog-body, article .body"));
         els.forEach((e, i) => e.setAttribute("data-ul", i));
         return Math.min(els.length, max);
       }, MAX);

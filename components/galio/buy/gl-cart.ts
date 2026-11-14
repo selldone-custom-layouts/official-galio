@@ -351,7 +351,7 @@ export default {
     catImg(c: any) {
       return catImage(c, 128);
     },
-    /* The way's own title, else words from its kind (noir.ts). */
+    /* The way's own title, else words from its kind (gl-data.ts). */
     wayTitleOf(this: any, way: any): string {
       return wayTitle(way, this.$shop);
     },

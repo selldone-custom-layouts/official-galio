@@ -3,7 +3,7 @@
  * palettes, a custom colour and Light / Dark, a click changes the whole site; the same shared package
  * in every Layout, components/theme-switcher/).
  *
- * Galio is light first (the opposite of Noir): white pages on sorbet bands, with a cocoa night as the
+ * Galio is light first (Bakio's Noir Layout is dark first): white pages on sorbet bands, with a cocoa night as the
  * dark mode. The mode's grounds, lines and words are the mockup's own tokens (style/galio/b.css, :root
  * and html.gl-dark, generated from galio-design/g/b.css); this config writes only the palette's action
  * colour (--gl-act*, --gl-accent, --gl-ring) and Vuetify's theme.

@@ -527,19 +527,6 @@ export default defineComponent({
       const hours = facts.hours ? (facts.everyDay ? t("galio.co.openEvery", "open every day {hours}", { hours: facts.hours }) : facts.hours) : "";
       return [pickup.message, hours].filter(Boolean).join(" · ");
     },
-    /* A line about the way, from its own data. */
-    noteOf(given) {
-      if (!given) return "";
-      const item = { ...given, ...shopWay(this.$shop, given) };
-      if (item.message) return item.message;
-      const parts = [];
-      if (item.type === "Global") parts.push(t("galio.co.anywhere", "Ships anywhere"));
-      else if (item.type !== "Pickup" && item.distance && item.distance < 1000) parts.push(t("galio.co.within", "Local delivery within {km} km of the bakery", { km: item.distance }));
-      if (item.free_shipping && item.free_shipping_limit > 0)
-        parts.push(t("galio.co.freeOverOrders", "free on orders over {amount}", { amount: moneyFrom(item.free_shipping_limit, item.currency, { short: "auto" }) }));
-      const line = parts.join("; ");
-      return line.charAt(0).toUpperCase() + line.slice(1);
-    },
     feeOf(given) {
       if (!given) return "";
       const item = { ...given, ...shopWay(this.$shop, given) };

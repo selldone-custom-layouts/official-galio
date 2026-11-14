@@ -1,8 +1,8 @@
 /*
- * Bakini Noir — the shared shell state and the shop's data as the B mockup
- * (bakio-design/b/core.js) uses it, read live from the shop:
+ * Galio Sundae — the shared shell state and the shop's data as the B mockup
+ * (galio-design/g/shell.js) uses it, read live from the shop:
  *
- * - `noir`: the collections (root categories, the shop's order) and the
+ * - `shopData`: the collections (root categories, the shop's order) and the
  *   whole catalogue, read once and shared by every page;
  * - the layers (the mockup's openLayer / closeLayer): one open at a time;
  *   menus open on a click, a second click, Esc or a click outside closes;
@@ -29,29 +29,29 @@ declare const window: any;
     mockup's exact hues), cycled for a shop with more. */
 export const HUES = ["#c27c4a", "#e7a93f", "#e0784f", "#e0857a", "#c99a5c", "#e8c14a"];
 
-export const noir = reactive({ cats: [] as any[], products: [] as any[], ready: false, catsReady: false });
+export const shopData = reactive({ cats: [] as any[], products: [] as any[], ready: false, catsReady: false });
 
 let booted = false;
 /** Read the collections and the catalogue once (every page calls it). */
-export function loadNoir(): void {
+export function loadShop(): void {
   if (booted) return;
   booted = true;
   aisles().then((list) => {
-    noir.cats = list;
-    noir.catsReady = true;
+    shopData.cats = list;
+    shopData.catsReady = true;
   });
   catalogue().then((list) => {
-    noir.products = list;
-    noir.ready = true;
+    shopData.products = list;
+    shopData.ready = true;
   });
 }
 
 export function catOf(id: number | null | undefined): any {
-  return noir.cats.find((c) => c.id === id) || null;
+  return shopData.cats.find((c) => c.id === id) || null;
 }
 
 export function hueOf(catId: number | null | undefined): string {
-  const i = noir.cats.findIndex((c) => c.id === catId);
+  const i = shopData.cats.findIndex((c) => c.id === catId);
   return HUES[(i < 0 ? 0 : i) % HUES.length];
 }
 
@@ -68,7 +68,7 @@ export function catImage(c: any, size = 256): string | null {
 }
 
 export function inCat(catId: number): any[] {
-  return noir.products.filter((p) => p.category_id === catId);
+  return shopData.products.filter((p) => p.category_id === catId);
 }
 
 /** Most sold first (Selldone's `sells`), the shop's order on a tie. */

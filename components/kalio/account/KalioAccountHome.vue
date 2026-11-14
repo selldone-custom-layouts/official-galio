@@ -46,7 +46,7 @@
     <div class="desk-two">
       <article class="panel">
         <div class="panel-head">
-          <h2>{{ t("galio.acc.addresses", "Saved addresses") }}</h2>
+          <h2>{{ t("galio.acc.savedAddresses", "Saved addresses") }}</h2>
           <router-link :to="sectionRoute('USER_ADDRESSES_PAGE')" class="link link--sm">{{ address ? t("galio.acc.manage", "Manage") : t("galio.acc.add", "Add") }}<gl-icon name="arrow" /></router-link>
         </div>
         <ul v-if="address" class="abooks">

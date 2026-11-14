@@ -294,7 +294,7 @@ export default {
       return !ShopOptionsHelper.HasMap(this.$shop);
     },
 
-    /* Bakini Noir: "<way> · <window>" in one line, as the bag and the order's
+    /* Galio Sundae: "<way> · <window>" in one line, as the bag and the order's
        head say it (the way's own name, the window the shopper chose). */
     methodLine() {
       const info = this.delivery_info;
@@ -308,7 +308,7 @@ export default {
       return parts.join(" · ");
     },
 
-    /* Bakini Noir: the way's reach under its line. */
+    /* Galio Sundae: the way's reach under its line. */
     reach() {
       return this.delivery_info?.type ? wayReach(this.$shop, { type: this.delivery_info.type }) : "";
     },
@@ -356,7 +356,7 @@ export default {
             : list(DAYS.filter((d) => days.includes(d)).map(dayName), "and");
       }
       const spans = (info.time_spans || info.spans || []).map((s) => TimeSpans[s]).filter((s) => s && s.value !== "Instant");
-      /* Bakini Noir: one window is already in the method's line. */
+      /* Galio Sundae: one window is already in the method's line. */
       if (info.custom && (info.time_spans || []).length === 1) return days.length && days.length < 7 ? dayText : null;
       if (!spans.length || spans.length >= 3) return days.length && days.length < 7 ? t("order.delivery.daysAnyTime", "{days}, any time", { days: dayText }) : null;
       const spanText = list(spans.map((s) => t("order.delivery.span", "{from} to {to}", { from: hour(s.min), to: hour(s.max) })), "or");

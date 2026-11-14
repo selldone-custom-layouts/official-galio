@@ -1,4 +1,4 @@
-// card-edge-noir.cjs: the kit's card-edge-check.cjs, with Bakini Noir's own card classes counted as cards
+// card-edge-galio.cjs: the kit's card-edge-check.cjs, with Galio Sundae's own card classes counted as cards
 // (the kit looks for class names with card/tile/panel/item). Same usage, plus STORAGE (a theme, a language).
 //
 // card-edge-check.cjs: does any card's content touch its card's edge?
@@ -43,8 +43,8 @@ function check(min) {
     return solid(cs.backgroundColor) && cs.backgroundColor !== bgOf(el.parentElement);
   };
   const leafs = "a, button, input, label, output, b, strong, em, span, p, h2, h3, h4, [role=radio]";
-  /* Bakini Noir: the kit's names plus the mockup's own boxes (pc = product card, lu = collection card, bt = bento tile, wc = side-by-side card, gcard = glass card, brow/mini = bag rows, …). */
-  const looksCard = (el) => /card|tile|panel|item|(^|\s)(pc|lu|bt|wc|gcard|brow|mini|post|empty|visit|trio|deal-band|cath|dl-head|lv-hero|qv|rc-card|fp-sheet|pro|spec-g|bt2|tr-col|sr-sum|ftr-col)(\s|$)/i.test(el.className && el.className.toString());
+  /* Galio Sundae: the kit's names plus the mockup's own boxes (coll = collection card, pcard/feat = journal cards, pod = deals podium, sumcard/ckc/mcard/addr/bill-opt = bag and checkout, abook/lastord/desk-nav = account, cblock = contact, fq = questions, …). */
+  const looksCard = (el) => /card|tile|panel|item|(^|\s)(coll|ph|pcard|feat|pod|sumcard|ckc|mcard|addr|bill-opt|dopt-h|pay-opt|abook|lastord|ord-track|chat|desk-nav|cblock|visit-card|toc|pv-sec|fq|fq-side|ascard|art-shop|bt|bt-item|fpanel|empty|brow|mini|ch-cell|stp|lo-pay|errsum|pn-box|ab-plate|banner-plate|why3|glance|qv|dr-foot|sheet)(\s|$)/i.test(el.className && el.className.toString());
   const cards = [...document.querySelectorAll("article, li, div, a")].filter((el) => {
     if (!looksCard(el) || !el.offsetParent) return false;
     const r = el.getBoundingClientRect();

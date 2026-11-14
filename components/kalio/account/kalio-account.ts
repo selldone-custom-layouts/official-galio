@@ -22,7 +22,7 @@ import { locale, t } from "../i18n/kalio-i18n";
 
 declare const window: any;
 
-/* Bakini Noir: the B mockup's desk has an Overview (account-b.html), so the
+/* Galio Sundae: the B mockup's desk has an Overview (account-b.html), so the
    Overview route is always on ("home" here is what the router reads to
    route /user to KalioAccountHome); the orders list keeps design A's cards
    (ORDERS_DESK). VITE_KALIO_ACCOUNT is no longer read. */

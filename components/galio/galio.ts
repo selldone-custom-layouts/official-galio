@@ -4,14 +4,13 @@
  * imports the Layout gets its own.
  *
  * The catalogue, the collections, the shop's facts and the layers (one open at a time, Esc, a click
- * outside, a route change) are the same live state the inner pages read (noir.ts, until those pages
- * are ported too), so the bag drawer, the cards and the pages count the same bag.
+ * outside, a route change) are the live state every page reads (gl-data.ts), so the bag drawer, the
+ * cards and the pages count the same bag.
  */
-import { inCat, loadNoir, noir, priceView, prosOf, specGroups, unitOf, bySells } from "./gl-data";
+import { inCat, priceView, prosOf, shopData, specGroups, unitOf, bySells } from "./gl-data";
 import { t } from "../kalio/i18n/kalio-i18n";
 
 export * from "./gl-data";
-export { loadNoir as loadShop, noir as shopData };
 
 declare const window: any;
 
@@ -22,13 +21,13 @@ declare const window: any;
 export const TINTS = ["#f6e3c2", "#fbefc2", "#fcdfe4", "#f9dde8", "#e0e9f8", "#dbefe2"];
 
 export function tintOf(catId: number | null | undefined): string {
-  const i = noir.cats.findIndex((c) => c.id === catId);
+  const i = shopData.cats.findIndex((c) => c.id === catId);
   return TINTS[(i < 0 ? 0 : i) % TINTS.length];
 }
 
 /** Collections with products, most sold first (the sum of their products' sales), the shop's order on a tie. */
 export function catsBySells(): any[] {
-  return noir.cats
+  return shopData.cats
     .map((c, i) => ({ c, i, s: inCat(c.id).reduce((n, p) => n + (p.sells || 0), 0), n: inCat(c.id).length }))
     .filter((x) => x.n > 0)
     .sort((a, b) => b.s - a.s || a.i - b.i)
@@ -51,7 +50,7 @@ export function fromPrice(shop: any, catId: number): { now: number; was: number 
 
 /** One saving for every product ("25"), or 0 when they differ or none is on offer. */
 export function allOff(shop: any): number {
-  const list = noir.products;
+  const list = shopData.products;
   if (!list.length) return 0;
   const offs = new Set(list.map((p) => priceView(shop, p).off || 0));
   if (offs.size !== 1) return 0;

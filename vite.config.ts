@@ -100,20 +100,17 @@ export default ({mode}: any) => {
           : []),
     ],
     /* The theme switcher's build step: every fixed colour gets a dark value
-       under html.bk-dark (components/theme-switcher/tools, PORTING.md).
-       Bakini Noir is dark first: html.bk-dark is on by default, so these
-       dark values are what a visitor sees unless they pick Light. The Noir
-       tokens (style/bakini-theme.scss) hold both modes themselves: their
-       html.bk-dark block is skipped by the step and outranks :root. The pastry
-       photos are transparent cut-outs, so their plates are tokens that turn
-       dark too (no light-tile exceptions beyond the build step's own). */
+       under html.gl-dark (components/theme-switcher/tools, PORTING.md).
+       Galio Sundae is light first: html.gl-dark comes with the footer's Dark.
+       Galio's own styles (style/galio/, galio*.scss, components/galio/) hold
+       both modes themselves, so the step leaves them alone. */
     css: {
       postcss: {
         plugins: [
           darkTokens({
             darkSelector: "html.gl-dark",
             include: [/\/style\//, /\/StorefrontApp\.vue/, /\/components\//, /\/pages\//, /\/layouts\//],
-            exclude: [/\/node_modules\//, /\/modules\/pagebuilder\//, /\/theme-switcher\//, /\/style\/noir\//, /\/style\/bakini-noir[\w-]*\.scss/, /\/components\/bakini\/noir\//, /\/style\/galio\//, /\/style\/galio[\w-]*\.scss/, /\/components\/galio\//],
+            exclude: [/\/node_modules\//, /\/modules\/pagebuilder\//, /\/theme-switcher\//, /\/style\/galio\//, /\/style\/galio[\w-]*\.scss/, /\/components\/galio\//],
             lightVars: [],
             card: "#251a13",
             raise: "#2f2019",
@@ -259,6 +256,9 @@ function flagIconsFromCdn() {
  * keeps its own chunks.
  */
 let entryStaticGraph: Set<string> | null = null;
+/* Galio: small modules that join the core (see coreChunk). */
+let smallCore: Set<string> | null = null;
+const SMALL = 6000;
 
 function coreChunk(id: string, { getModuleInfo, getModuleIds }: any) {
   if (!entryStaticGraph) {
@@ -274,10 +274,35 @@ function coreChunk(id: string, { getModuleInfo, getModuleIds }: any) {
         }
       }
     }
+    /* Galio: a small module (a mixin, a helper, a tiny component or page) whose own static imports are
+       all in the core, or small modules that join it too, joins the core instead of becoming a file of
+       its own: fewer files in the release (Selldone's upload takes about 360; Galio aims at 300), and
+       what runs early is only small definitions. Repeated until nothing more joins. */
+    smallCore = new Set();
+    const inCore = (dep: string) => entryStaticGraph!.has(dep) || smallCore!.has(dep);
+    const ids = [...getModuleIds()];
+    for (let grew = true; grew; ) {
+      grew = false;
+      for (const m of ids) {
+        if (inCore(m)) continue;
+        const mi = getModuleInfo(m);
+        if (!mi || mi.isEntry || mi.isExternal) continue;
+        const code = mi.code || "";
+        if (!code || code.length >= SMALL || /\.(css|scss|sass)($|\?)/.test(m) || /[?&]type=style/.test(m)) continue;
+        if ((mi.importedIds || []).every(inCore)) {
+          smallCore.add(m);
+          grew = true;
+        }
+      }
+    }
   }
   const info = getModuleInfo(id);
   if (info?.isEntry) return undefined;
-  return entryStaticGraph.has(id) ? "core" : undefined;
+  if (entryStaticGraph.has(id) || smallCore!.has(id)) return "core";
+  /* Galio: the reading pages (About, Contact, Terms, Privacy, Questions, the journal, 404) travel as one
+     file: fewer files, nothing more on the home. */
+  if (/\/(pages\/(official|blog|faq|errors)|components\/galio\/read)\//.test(id)) return "galio-read";
+  return undefined;
 }
 
 /**

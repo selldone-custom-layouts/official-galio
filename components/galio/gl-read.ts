@@ -1,12 +1,12 @@
 /*
- * Bakini Noir — what the content pages share (journal, article, About,
+ * Galio Sundae — what the content pages share (journal, article, About,
  * Terms, Privacy, Contact, FAQ, 404): the shop's own page texts (Selldone's
  * shop profiles), and the sample copy that stands in while the shop has not
  * written a page, built only from the shop's live facts (shopFacts(): its
  * address, open days, counter hours, collections, delivery ways and windows,
  * the way to pay). No invented history, awards, names, counts or reviews.
  * Every sample is shown with the label "Sample text — the shop has not
- * written this page yet" (NxSampleTag.vue).
+ * written this page yet" (read/GlSample.vue).
  */
 import { shopFacts, type ShopFacts } from "./gl-data";
 import { t } from "../kalio/i18n/kalio-i18n";

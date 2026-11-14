@@ -186,7 +186,7 @@ export default {
   },
 
   methods: {
-    /* Bakini Noir: the shop's replies carry the shop's mark (the mockup's
+    /* Galio Sundae: the shop's replies carry the shop's mark (the mockup's
        "b" avatar), never a staff member's photo. */
     avatar(message) {
       if (message.officer || !message.user_id) return this.brandMark;

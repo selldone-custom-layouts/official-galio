@@ -73,24 +73,23 @@ Everything is read live from the shop: its title (drawn as the wordmark), collec
 Every check runs one browser at a time against the shop, at 1440px and 390px (and 1100px, the rail's first width, where a check takes widths), dark and light, and in Arabic (right to left) on the dev server. Because a palette re-tints every ground, the contrast check also runs in Pistachio, Blueberry and Cocoa, light and dark, and with the custom colours `#ffff00`, `#00ffff` and `#111111` in both modes. Each is delivered at **TOTAL 0**.
 
 <!-- TESTS:START -->
-Live shop **galio.selldone.shop**, Layout version **1.0.1**, 14 November 2026 (`bash scripts/run-checks.sh https://galio.selldone.shop <logs>`): the 21 English checks below are all **TOTAL 0**. The same set plus the Arabic checks (28 in all) is **TOTAL 0** on the dev server.
+Live shop **galio.selldone.shop**, Layout version **1.0.4**, 14 November 2026 (`bash scripts/run-checks.sh https://galio.selldone.shop <logs>`, one check at a time). Every check below is **TOTAL 0**; the rest of the suite (ring, card edge, corner clear, circle fit, box, underline, contrast with layers open) is TOTAL 0 on the dev server for the same source and was TOTAL 0 live on 1.0.1 and 1.0.2.
 
 | Check | What it looks for | Where | TOTAL |
 | --- | --- | --- | --- |
-| Ring sweep (dark, light; Arabic on dev) | every selection ring and edge drawn inside its box | 18 pages (home, collection, deals, search, two products, compare, journal, a post, About, Terms, Privacy, Contact, FAQ, 404, bag, checkout, account), 9 in Arabic | **0** |
-| Card edge (kit, Galio dark, Galio light) | no card's content touching its edge | home, collections, search, deals, journal, About, FAQ, Contact, Terms, Privacy, account, compare | **0** |
-| Corner clear | the buttons in a card's corner never on or touching words | 9 pages, 390 to 1920px | **0** |
-| Circle fit (long prices; Arabic on dev) | the words in the saving sticker and the date roundel stay inside their circle | home, deals, journal | **0** |
-| Contrast (dark, light, yellow brand) | every word at 4.5:1 or better on what is really behind it | 18 pages, 9 for yellow | **0** |
-| Contrast with layers open | the bag drawer or phone menu open, the sign-in sheet open | home | **0** |
-| Bag audit (dark, light) | the drawer, the bag page and the address sheet | 1440 and 390 | **0** |
+| Contrast, every palette | every word at 4.5:1 or better on what is really behind it | Pistachio, Blueberry and Cocoa, light and dark, 9 pages at 1440, 1100 and 390 | **0** |
+| Contrast, custom colours | the same, with a visitor's own colour | #ffff00, #00ffff and #111111, light and dark | **0** |
+| Contrast in Arabic | the same, right to left | light and dark, 9 pages | **0** |
+| Contrast with the sign-in sheet | the sheet open | dark and light | **0** |
+| Bag audit | the drawer, the bag page and the address sheet | dark and light, 1440 and 390 | **0** |
+| Filled checkout | the checkout with a piece in the bag and Selldone's payment window | light and dark, 1440, 1100 and 390 | **0** |
 | Currency | every price, filter and total follows the picked currency at once | home, collection, deals, drawer, menus | **0** |
-| Box check (dark, light) | no photo over words, icon rows aligned | 16 pages and their open states | **0** |
-| Underline (dark, light) | no line under any word or icon, at rest or on hover | 14 pages | **0** |
+| Arabic words | every word of the Layout in Arabic, the page right to left | 9 pages, the drawer, the bag, compare, account | **0** |
+| Shapes (light, dark) | every edge a circle, a pill, 28 or 14 px; focus rings keep their shape; nothing past the window | 16 pages with their overlays open (menu, flyout, search, region, bag, filter, quick view, sign-in) and the checkout, delivery sheet, address sheet and payment window, 1440, 1100 and 390 | **0** |
+
+Bakio sells in English only, so the Arabic checks offer Arabic in the test browser only (`scripts/pw-shop-languages.cjs` adds it to the shop's languages as the shop-info call comes in); the page is the live production bundle.
 
 **Guest checkout walk** (`scripts/galio-checkout-walk.mjs`, 1440 and 390): one piece from a home card, the bag drawer, Checkout, fake contact details, each of the shop's ways (courier with its Morning, Evening, Night and Instant windows, worldwide shipping, pickup at the counter), the delivery sheet, the address sheet with the map off and on, then "Place order" up to Selldone's payment window, which is closed with its ✕. Every way reaches the payment window on both widths. No order was placed.
-
-**Filled checkout audit** (`scripts/galio-filled-checkout-audit.mjs`): the contrast check on the checkout with a piece in the bag and on the open payment window, light and dark, at 1440, 1100 and 390. It led to the fixes in 1.0.2 (a faded unusable coupon, the payment window's colour and corners).
 <!-- TESTS:END -->
 
 ## Languages

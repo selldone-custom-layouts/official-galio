@@ -4,7 +4,8 @@
 #
 # usage: bash scripts/run-checks.sh <base-url> <log-folder> [checks]
 #   checks: comma list of names below (default: all)
-# Needs MSYS_NO_PATHCONV=1 on Git Bash (set here). Dev: http://localhost:9145 · live: https://galio.selldone.shop
+# Needs MSYS_NO_PATHCONV=1 on Git Bash (set here). On a live shop that does not offer Arabic, run the Arabic checks with
+# PW="$PWD/scripts/pw-shop-languages.cjs" (Arabic offered in the test browser only; dev has its own switch). Dev: http://localhost:9145 · live: https://galio.selldone.shop
 # Widths: 1440 and 390 everywhere, plus 1100 (the side rail's first width) where a check takes WIDTHS.
 # i18n-ar IGNORE: Bakio's own data that equals an English string of the Layout (its gateway "Cash on delivery",
 # its way "Worldwide shipping", the flavour "Pistachio", the cookies' spec key "Style", its counter note "Pickup counter at …").

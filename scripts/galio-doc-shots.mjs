@@ -56,6 +56,8 @@ async function session(kind, mode, list) {
     console.log("shot", path.basename(file), await page.evaluate(() => location.pathname + location.search));
   };
   await page.goto(BASE + "/", { waitUntil: "domcontentloaded", timeout: 120000 });
+  await page.waitForSelector(".gl-ftr", { timeout: 120000 });
+  await sleep(2500);
   let bagged = false;
   for (const name of list) {
     if (name === "home" || name === "dark") await push("/");

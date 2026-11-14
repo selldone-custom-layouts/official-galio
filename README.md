@@ -90,6 +90,7 @@ Live shop **galio.selldone.shop**, Layout version **1.0.4**, 14 November 2026 (`
 Bakio sells in English only, so the Arabic checks offer Arabic in the test browser only (`scripts/pw-shop-languages.cjs` adds it to the shop's languages as the shop-info call comes in); the page is the live production bundle.
 
 **Guest checkout walk** (`scripts/galio-checkout-walk.mjs`, 1440 and 390): one piece from a home card, the bag drawer, Checkout, fake contact details, each of the shop's ways (courier with its Morning, Evening, Night and Instant windows, worldwide shipping, pickup at the counter), the delivery sheet, the address sheet with the map off and on, then "Place order" up to Selldone's payment window, which is closed with its ✕. Every way reaches the payment window on both widths. No order was placed.
+**1.0.5** (live on galio.selldone.shop, release `01M7DGEQ298YGGABCXE3Y9JADZ`): focus without outlines, one ring per control. `scripts/shape-check.cjs` now clicks and tabs into every field of every page and overlay; on dev the focus-related checks (ring, underline, contrast with layers open, shapes with the field test) are TOTAL 0, and the uploaded release passes the field test on the collection page and its filter sheet.
 <!-- TESTS:END -->
 
 ## Languages

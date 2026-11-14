@@ -17,7 +17,7 @@ A shop can show a different Layout on one of its domains. Galio runs on `galio.s
 
 ```json
 api.shops.domains.layout.set   path { "domain_key": "<the domain's id>" }
-body { "mode": "private", "layout_id": <your Layout id>, "layout_version": "1.0.2" }
+body { "mode": "private", "layout_id": <your Layout id>, "layout_version": "1.0.5" }
 ```
 
 Your Layout id is the one printed after your first upload. Pin the **exact** version, never `latest`, so an unverified upload never goes live.
@@ -33,7 +33,7 @@ While you test on one domain, **don't** pin the shop default when you release th
 **With the MCP connector:** `selldone_api_call` → `api.shops.layout.set`, with `confirm: true` and this body:
 
 ```json
-{ "mode": "private", "layout_id": <your Layout id>, "layout_version": "1.0.2" }
+{ "mode": "private", "layout_id": <your Layout id>, "layout_version": "1.0.5" }
 ```
 
 Read `api.shops.layout.options` before and after.

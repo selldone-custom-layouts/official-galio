@@ -152,6 +152,8 @@ On galio.selldone.shop, one check at a time: contrast for Pistachio, Blueberry a
 
 **Arabic (the "i18n-ar" item).** Not a Layout bug: see "Live pass on 1.0.4"; the live Arabic checks run with `PW=scripts/pw-shop-languages.cjs` and are TOTAL 0. No code change.
 
+**Follow-up (14 Nov 2026):** none parked: the invalid-field focus ring shipped in 1.0.5; next, the shape check's field test on every remaining overlay in the live pass, and the wiki's first page (official-galio.wiki.git does not exist until it is created in a browser).
+
 ## Releases
 
 Next uploads: `bash "../new-shop-kits/upload-guard.sh" env LAYOUT_ID=39 SELLDONE_CLI="$(npm root -g)/selldone-cli" SELLDONE_CLI_SRC="../selldone-cli-src" bash scripts/release.sh <version> desk` (a new version number every time), then `node --use-system-ca scripts/kalio-verify-deploy.mjs <cli> 39 dist/app`.

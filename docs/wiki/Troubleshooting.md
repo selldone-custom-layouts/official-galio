@@ -38,7 +38,7 @@ Selldone stores the MIME type it sniffs from each file. Every JS file must start
 | "The manifest must be an array." | Upload with `scripts/kalio-deploy.mjs`, not the plain CLI. |
 | "Archive paths must be safe relative app/ paths." | Remove `dist/index.html`, and use no spaces or brackets in file names. |
 | "Active SVG attributes" / "only passive vector shapes" | Run `node scripts/kalio-svg-flatten.mjs dist/app`. |
-| Request cut off after ~100 s, and the version exists but is empty | Too many files. Stay under ~360 (Galio 1.0.2 has 317; photo slots add one file each), then upload a **new** version number. |
+| Request cut off after ~100 s, and the version exists but is empty | Too many files. Stay under ~360 (Galio 1.0.5 has 317; photo slots add one file each), then upload a **new** version number. |
 | 401 | The CLI is signed out (`~/.selldone-dev/.persist` is empty). Run `selldone` → Login. |
 | `node: bad option: --use-system-ca` | Your Node.js is too old for the release scripts. Use Node.js 22.15 or newer. |
 

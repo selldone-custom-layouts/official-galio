@@ -6,5 +6,5 @@
   "version": "1.0.4",
   "storefront": true,
   "backoffice": false,
-  "description": "A sorbet-coloured pastry parlour for a single bakery: a cocoa side rail with a scalloped awning edge, a hero slider of the best-selling collections with filling tabs, line-drawn collections on a lemon band, a photo mosaic of the real ways to get an order, a price list with dot leaders by collection, best sellers on round tinted plates with tilted stickers, the real counter on a map, the journal, and a cocoa footer with the newsletter and the theme row; light by default with a dark mode."
+  "description": "A pastry parlour for a single bakery in one colour family: every ground, band, plate, the rail and the footer are tints of the chosen palette's hue (cherry by default), white pages taking turns with tinted bands. One shape language: circles, pills and 28px panels, a straight side rail in the family's near-black with rounded joins, and a scalloped awning only under each inner page's title. A hero slider of the best-selling collections, line-drawn collections, a mosaic of the real ways to get an order, a price list with dot leaders, best sellers on round plates with tilted stickers, the real counter on a map, the journal, and a footer with the newsletter and the theme row; light by default with a dark mode in the same family."
 }

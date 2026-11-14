@@ -97,12 +97,12 @@ await session("phone", "light", ["home", "category", "product", "cart", "checkou
 await session("desktop", "dark", ["dark"]);
 await session("phone", "dark", ["dark"]);
 
-/* the cover: the desktop home with the phone home beside it, on the cocoa of the rail */
+/* the cover: the desktop home with the phone home beside it, on the Cherry family's tints */
 const page = await browser.newPage({ viewport: { width: 1600, height: 900 }, deviceScaleFactor: 1 });
 const data = (f) => "data:image/jpeg;base64," + fs.readFileSync(path.join(OUT, f)).toString("base64");
-await page.setContent(`<body style="margin:0;width:1600px;height:900px;overflow:hidden;background:linear-gradient(135deg,#fbe6a6 0%,#f7d2d8 55%,#cfe9dc 100%);position:relative">
-  <img src="${data("desktop-home.jpg")}" style="position:absolute;left:56px;top:70px;width:1200px;height:750px;border-radius:18px;box-shadow:0 30px 70px -25px rgba(46,28,18,.55),0 0 0 1px rgba(46,28,18,.12)">
-  <img src="${data("phone-home.jpg")}" style="position:absolute;left:1180px;top:118px;width:340px;height:736px;border-radius:34px;border:10px solid #2e1c12;box-shadow:0 30px 70px -20px rgba(46,28,18,.6)">
+await page.setContent(`<body style="margin:0;width:1600px;height:900px;overflow:hidden;background:linear-gradient(135deg,#ffeeef 0%,#ffdcde 60%,#fbbfc3 100%);position:relative">
+  <img src="${data("desktop-home.jpg")}" style="position:absolute;left:56px;top:70px;width:1200px;height:750px;border-radius:18px;box-shadow:0 30px 70px -25px rgba(46,24,26,.55),0 0 0 1px rgba(46,24,26,.12)">
+  <img src="${data("phone-home.jpg")}" style="position:absolute;left:1180px;top:118px;width:340px;height:736px;border-radius:34px;border:10px solid #2e181a;box-shadow:0 30px 70px -20px rgba(46,24,26,.6)">
 </body>`);
 await page.waitForFunction(() => [...document.images].every((i) => i.complete));
 await page.screenshot({ path: path.join(OUT, "cover.jpg"), type: "jpeg", quality: 88 });

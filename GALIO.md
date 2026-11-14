@@ -77,6 +77,8 @@ Every page now draws its final B mockup (`../galio-design/<page>-b.html`, source
 
 ## Releases
 
+Next uploads: `bash "../new-shop-kits/upload-guard.sh" env LAYOUT_ID=39 SELLDONE_CLI="$(npm root -g)/selldone-cli" SELLDONE_CLI_SRC="../selldone-cli-src" bash scripts/release.sh <version> desk` (a new version number every time), then `node --use-system-ca scripts/kalio-verify-deploy.mjs <cli> 39 dist/app`.
+
 | Version | Date | Layout | Deploy | What |
 | --- | --- | --- | --- | --- |
-| — | — | — | — | Nothing uploaded yet (phase 1 is dev only) |
+| 1.0.0 | 14 Nov 2026 | 39 | 640 (release `01M7BZ4R6XD4TPHCK0WACZDWKK`) | First upload: phase 2, every page in the B mockups, 299 files; verified `extracting:false`, `error:null`, shop.js and shop.css match. Not pinned by this session (the coordinator pins it on galio.selldone.shop, domain 1249) |

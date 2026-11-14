@@ -3,7 +3,7 @@
   "deploy_path": "",
   "package": "galio-sundae-patisserie",
   "name": "Galio Sundae Patisserie",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "storefront": true,
   "backoffice": false,
   "description": "A sorbet-coloured pastry parlour for a single bakery: a cocoa side rail with a scalloped awning edge, a hero slider of the best-selling collections with filling tabs, line-drawn collections on a lemon band, a photo mosaic of the real ways to get an order, a price list with dot leaders by collection, best sellers on round tinted plates with tilted stickers, the real counter on a map, the journal, and a cocoa footer with the newsletter and the theme row; light by default with a dark mode."

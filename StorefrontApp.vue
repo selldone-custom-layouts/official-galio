@@ -569,6 +569,7 @@ export default {
 <style src="./style/galio/one.css"></style>
 <style lang="scss" src="./style/galio.scss"></style>
 <style lang="scss" src="./style/galio-buy.scss"></style>
+<style lang="scss" src="./style/galio-shape.scss"></style>
 
 <style lang="scss">
 /*

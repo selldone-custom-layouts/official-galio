@@ -83,6 +83,13 @@ run box-dark    env WIDTHS="$W3" PAGES="$BOX_PAGES" STORAGE="$DARK"  node "$ROOT
 run box-light   env WIDTHS="$W3" PAGES="$BOX_PAGES" STORAGE="$LIGHT" node "$ROOT/scripts/box-check.cjs" "$BASE" "$WAIT"
 run box-ar      env PAGES="$BOX_PAGES" STORAGE="$AR" STATES=0 node "$ROOT/scripts/box-check.cjs" "$BASE" "$WAIT"
 run i18n-ar     env IGNORE="Cash on delivery|Worldwide shipping|Pistachio|Style|/^Pickup counter at /" I18N="$ROOT/components/kalio/i18n" LANGUAGES=ar SHOP=bakio MENU=".menu-btn" CART="$BAG" CATEGORY="@a[href$=\"-category\"]" PAGES="about=/about-us,contact=/contact-us,blog=/blog,terms=/terms,privacy=/privacy,account=/user,cart=/basket/PHYSICAL,compare=/comparison?list=p720375_p720378_p720380" node "$ROOT/scripts/i18n-check-forced.cjs" "$BASE" "$WAIT"
+# Shape option B "Awning" (1.0.4): every edge circle, pill, 28 or 14 px; focus rings keep the control's shape;
+# nothing past the window; the overlays open (and, FILLED=1, the checkout, address sheet and payment window)
+SHAPE_PAGES='home=/,category=/croissants-category,deals=/?filter={"only_has_discount":true},search=/?search=pistachio,product=/product/720375,compare=/comparison?list=p720375_p720378_p720380,blog=/blog,article=/blog/pickup-or-delivery-36222,about=/about-us,contact=/contact-us,terms=/terms,privacy=/privacy,faq=/faq,404=/no-such-page,cart=/basket/PHYSICAL,account=/user'
+run shape-light env WIDTHS="$W3" PAGES="$SHAPE_PAGES" STORAGE="$LIGHT" FILLED=1 node "$ROOT/scripts/shape-check.cjs" "$BASE" "$WAIT"
+run shape-dark  env WIDTHS="$W3" PAGES="$SHAPE_PAGES" STORAGE="$DARK"  FILLED=1 node "$ROOT/scripts/shape-check.cjs" "$BASE" "$WAIT"
+run shape-teal  env WIDTHS="1440,390" PAGES="$PAGES_MAIN" STORAGE="$(theme_of custom light '#0f7b7b')" STATES=0 node "$ROOT/scripts/shape-check.cjs" "$BASE" "$WAIT"
+run shape-ar    env WIDTHS="1440,390" PAGES="$PAGES_MAIN" STORAGE="$AR" STATES=0 node "$ROOT/scripts/shape-check.cjs" "$BASE" "$WAIT"
 run underline-dark  env PAGES="$UL_PAGES" STORAGE="$DARK"  node "$ROOT/scripts/underline-check.cjs" "$BASE" "$WAIT"
 run underline-light env PAGES="$UL_PAGES" STORAGE="$LIGHT" WIDTHS=1440 node "$ROOT/scripts/underline-check.cjs" "$BASE" "$WAIT"
 echo "done"

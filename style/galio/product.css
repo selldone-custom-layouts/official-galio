@@ -24,18 +24,18 @@ html.gl-dark .gal-plate:is(.gl,.gl *), html.gl-dark .gthumb:is(.gl,.gl *), html.
 /* tabs (Glace: Description / Additional information / Reviews) */
 .ptabs:is(.gl,.gl *) { display: grid; gap: 22px }
 .ptab-list:is(.gl,.gl *) { display: flex; flex-wrap: wrap; gap: 8px }
-.ptab:is(.gl,.gl *) { min-height: 44px; padding: 0 18px; border-radius: 22px; font: 600 15px/1 var(--gl-f-body); background: var(--gl-surface); color: var(--gl-ink); box-shadow: inset 0 0 0 1px var(--gl-line) }
+.ptab:is(.gl,.gl *) { min-height: 44px; padding: 0 18px; border-radius: 999px; font: 600 15px/1 var(--gl-f-body); background: var(--gl-surface); color: var(--gl-ink); box-shadow: inset 0 0 0 1px var(--gl-line) }
 .ptab:hover:is(.gl,.gl *) { background: var(--gl-act-soft) }
 .ptab[aria-selected="true"]:is(.gl,.gl *) { background: var(--gl-act); color: var(--gl-act-on); box-shadow: none }
 .pros:is(.gl,.gl *) { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px }
-.pros:is(.gl,.gl *) li { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 12px; align-items: start; padding: 16px; border-radius: 22px; background: var(--gl-band-mint) }
+.pros:is(.gl,.gl *) li { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 12px; align-items: start; padding: 16px; border-radius: 28px; background: var(--gl-band-mint) }
 .pro-ic:is(.gl,.gl *) { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; background: var(--gl-surface); color: var(--gl-act-text) }
 .pro-ic:is(.gl,.gl *) svg.i { width: 18px; height: 18px; stroke-width: 2.4 }
 .pros:is(.gl,.gl *) b { display: block; font: 400 18px/1.2 var(--gl-f-display); margin-bottom: 3px }
 .pros:is(.gl,.gl *) small { font-size: 14px; color: var(--gl-muted); line-height: 1.5 }
 .spec-g:is(.gl,.gl *) + .spec-g { margin-top: 22px }
 .spec-g:is(.gl,.gl *) h3 { font: 400 20px/1.2 var(--gl-f-display); margin-bottom: 8px }
-.spec:is(.gl,.gl *) { margin: 0; display: grid; border-radius: 20px; overflow: hidden; box-shadow: inset 0 0 0 1px var(--gl-line) }
+.spec:is(.gl,.gl *) { margin: 0; display: grid; border-radius: 28px; overflow: hidden; box-shadow: inset 0 0 0 1px var(--gl-line) }
 .spec:is(.gl,.gl *) div { display: grid; grid-template-columns: minmax(130px, 34%) minmax(0, 1fr); gap: 16px; padding: 12px 16px; box-shadow: inset 0 -1px 0 var(--gl-line) }
 .spec:is(.gl,.gl *) div:last-child { box-shadow: none }
 .spec:is(.gl,.gl *) div:nth-child(odd) { background: var(--gl-band-lemon) }
@@ -47,13 +47,13 @@ html.gl-dark .gal-plate:is(.gl,.gl *), html.gl-dark .gthumb:is(.gl,.gl *), html.
 .rev-empty:is(.gl,.gl *) p { color: var(--gl-muted); font-size: 14.5px; margin-top: 4px; line-height: 1.55 }
 .rev-crit:is(.gl,.gl *) { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; width: 100%; max-width: 460px }
 .rev-crit:is(.gl,.gl *) li { display: grid; grid-template-columns: 130px minmax(0, 1fr) auto; gap: 14px; align-items: center; font-size: 14.5px }
-.rev-bar:is(.gl,.gl *) { height: 8px; border-radius: 4px; background: var(--gl-line) }
+.rev-bar:is(.gl,.gl *) { height: 8px; border-radius: 999px; background: var(--gl-line) }
 .rev-none:is(.gl,.gl *) { color: var(--gl-muted); font-size: 13px }
 @media (max-width: 640px) { .pros:is(.gl,.gl *) { grid-template-columns: 1fr } .spec:is(.gl,.gl *) div { grid-template-columns: 1fr; gap: 2px } .rev-crit:is(.gl,.gl *) li { grid-template-columns: 110px minmax(0, 1fr) auto; gap: 10px } }
 
 /* the buy column */
-.pbuy:is(.gl,.gl *) { position: sticky; top: 24px; display: grid; gap: 14px; justify-items: start; padding: 26px 26px 24px; border-radius: 30px; background: var(--gl-band-straw); min-width: 0 }
-.pb-cat:is(.gl,.gl *) { font: 600 12px/1.2 var(--gl-f-body); letter-spacing: .12em; text-transform: uppercase; color: var(--gl-act-text); padding: 4px 0; border-radius: 6px }
+.pbuy:is(.gl,.gl *) { position: sticky; top: 24px; display: grid; gap: 14px; justify-items: start; padding: 26px 26px 24px; border-radius: 28px; background: var(--gl-band-straw); min-width: 0 }
+.pb-cat:is(.gl,.gl *) { font: 600 12px/1.2 var(--gl-f-body); letter-spacing: .12em; text-transform: uppercase; color: var(--gl-act-text); padding: 4px 0; border-radius: 14px }
 .pb-h:is(.gl,.gl *) { font: 400 clamp(32px, 3vw, 42px)/1.04 var(--gl-f-display); overflow-wrap: anywhere; margin-top: -6px }
 .pb-unit:is(.gl,.gl *) { color: var(--gl-muted); font-size: 15px; margin-top: -4px }
 .pb-price:is(.gl,.gl *) { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px }
@@ -83,11 +83,11 @@ html.gl-dark .gal-plate:is(.gl,.gl *), html.gl-dark .gthumb:is(.gl,.gl *), html.
 .pb-meta:is(.gl,.gl *) a:hover { color: var(--gl-act-text) }
 .link--sm:is(.gl,.gl *) { font-size: 13.5px; padding: 3px 2px }
 /* options preview (sample): photo tiles, selected = inset ring + tint, no extra tick */
-.opts:is(.gl,.gl *) { display: grid; gap: 10px; width: 100%; padding: 14px; border-radius: 22px; background: var(--gl-surface) }
+.opts:is(.gl,.gl *) { display: grid; gap: 10px; width: 100%; padding: 14px; border-radius: 28px; background: var(--gl-surface) }
 .opts-lbl:is(.gl,.gl *) { font-size: 14px; color: var(--gl-muted) }
 .opts-lbl:is(.gl,.gl *) b { color: var(--gl-ink) }
 .opt-tiles:is(.gl,.gl *) { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px }
-.opt-tile:is(.gl,.gl *) { display: grid; justify-items: center; gap: 6px; padding: 8px 6px 10px; border-radius: 18px; background: var(--gl-surface); box-shadow: inset 0 0 0 1.5px var(--gl-line); min-width: 0 }
+.opt-tile:is(.gl,.gl *) { display: grid; justify-items: center; gap: 6px; padding: 8px 6px 10px; border-radius: 14px; background: var(--gl-surface); box-shadow: inset 0 0 0 1.5px var(--gl-line); min-width: 0 }
 .opt-tile:hover:is(.gl,.gl *) { box-shadow: inset 0 0 0 1.5px var(--gl-muted) }
 .opt-tile[aria-checked="true"]:is(.gl,.gl *) { background: var(--gl-act-soft); box-shadow: inset 0 0 0 2.5px var(--gl-act-text) }
 .opt-img:is(.gl,.gl *) { width: 100%; aspect-ratio: 1 / 1; border-radius: 50%; overflow: hidden; background: var(--gl-plate); padding: 10%; display: block }
@@ -100,14 +100,14 @@ html.gl-dark .gal-plate:is(.gl,.gl *), html.gl-dark .gthumb:is(.gl,.gl *), html.
   .gal:is(.gl,.gl *) { order: 1 } .pbuy:is(.gl,.gl *) { order: 2; position: static } .ptabs:is(.gl,.gl *) { order: 3 }
   .gal-main:is(.gl,.gl *) { width: min(100%, 400px) }
 }
-@media (max-width: 760px) { .pbuy:is(.gl,.gl *) { padding: 22px 18px 20px; border-radius: 26px } .gal-main:is(.gl,.gl *) { width: min(86%, 340px) } .sticker--big:is(.gl,.gl *) { width: 66px; height: 66px; font-size: 16px } }
+@media (max-width: 760px) { .pbuy:is(.gl,.gl *) { padding: 22px 18px 20px; border-radius: 28px } .gal-main:is(.gl,.gl *) { width: min(86%, 340px) } .sticker--big:is(.gl,.gl *) { width: 66px; height: 66px; font-size: 16px } }
 
 /* floating buy bar on phones */
 .fbar:is(.gl,.gl *) { display: none }
 @media (max-width: 900px) {
   .fbar:is(.gl,.gl *) { display: block; position: fixed; z-index: 50; left: 0; right: 0; bottom: 0; padding: 10px max(12px, env(safe-area-inset-right, 0px)) calc(env(safe-area-inset-bottom, 0px) + 10px) max(12px, env(safe-area-inset-left, 0px)); transform: translateY(16px); opacity: 0; visibility: hidden; transition: transform .25s ease, opacity .25s ease, visibility 0s linear .25s; pointer-events: none }
   .fbar.on:is(.gl,.gl *) { transform: none; opacity: 1; visibility: visible; pointer-events: auto; transition: transform .25s ease, opacity .25s ease, visibility 0s }
-  .fbar-in:is(.gl,.gl *) { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 8px 8px 8px 10px; border-radius: 30px; background: var(--gl-band-cocoa); color: var(--gl-on-cocoa) }
+  .fbar-in:is(.gl,.gl *) { display: grid; grid-template-columns: 44px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 8px 8px 8px 10px; border-radius: 28px; background: var(--gl-band-cocoa); color: var(--gl-on-cocoa) }
   .fbar-plate:is(.gl,.gl *) { width: 44px; height: 44px; border-radius: 50%; overflow: hidden; background: var(--gl-tint); padding: 4px; display: block }
   .fbar-plate:is(.gl,.gl *) img { width: 100%; height: 100%; object-fit: contain }
   .fbar-t:is(.gl,.gl *) { display: grid; gap: 2px; min-width: 0 }
@@ -122,9 +122,9 @@ html.gl-dark .gal-plate:is(.gl,.gl *), html.gl-dark .gthumb:is(.gl,.gl *), html.
 }
 
 /* buy together */
-.bt:is(.gl,.gl *) { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 24px; align-items: center; padding: 22px; border-radius: 30px; background: var(--gl-surface) }
+.bt:is(.gl,.gl *) { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 24px; align-items: center; padding: 22px; border-radius: 28px; background: var(--gl-surface) }
 .bt-items:is(.gl,.gl *) { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr) 28px minmax(0, 1fr) 28px minmax(0, 1fr); gap: 10px; align-items: center }
-.bt-item:is(.gl,.gl *) { position: relative; display: grid; justify-items: center; text-align: center; gap: 10px; padding: 16px 12px 16px; border-radius: 24px; background: var(--gl-bg); box-shadow: inset 0 0 0 1px var(--gl-line); min-width: 0; container: bt / inline-size }
+.bt-item:is(.gl,.gl *) { position: relative; display: grid; justify-items: center; text-align: center; gap: 10px; padding: 16px 12px 16px; border-radius: 28px; background: var(--gl-bg); box-shadow: inset 0 0 0 1px var(--gl-line); min-width: 0; container: bt / inline-size }
 html.gl-dark .bt-item:is(.gl,.gl *) { background: var(--gl-bg) }
 .bt-chk:is(.gl,.gl *) { position: absolute; left: 10px; top: 10px; z-index: 2; padding: 4px }
 .bt-plate:is(.gl,.gl *) { width: min(112px, 70%); aspect-ratio: 1 / 1; border-radius: 50%; overflow: hidden; background: var(--gl-tint); padding: 12%; display: block }
@@ -145,7 +145,7 @@ html.gl-dark .bt-item:is(.gl,.gl *) { background: var(--gl-bg) }
 .bt-note:is(.gl,.gl *) { font-size: 14px; color: var(--gl-muted); min-height: 1px }
 @media (max-width: 1099.98px) { .bt:is(.gl,.gl *) { grid-template-columns: 1fr } }
 @media (max-width: 640px) {
-  .bt:is(.gl,.gl *) { padding: 14px; border-radius: 26px }
+  .bt:is(.gl,.gl *) { padding: 14px; border-radius: 28px }
   .bt-items:is(.gl,.gl *) { grid-template-columns: 1fr; gap: 8px }
   .bt-plus:is(.gl,.gl *) { justify-self: center; width: 26px; height: 26px }
   .bt-item:is(.gl,.gl *) { grid-template-columns: 76px minmax(0, 1fr); text-align: start; justify-items: start; align-items: center; padding: 12px 12px 12px 44px }
@@ -162,7 +162,7 @@ html.gl-dark .bt-item:is(.gl,.gl *) { background: var(--gl-bg) }
 .cmp-head:is(.gl,.gl *) { position: sticky; top: 0; z-index: 5; background: var(--gl-bg); padding: 12px 0 14px; box-shadow: inset 0 -1px 0 var(--gl-line); overflow-x: auto; scrollbar-width: none }
 .cmp-head:is(.gl,.gl *)::-webkit-scrollbar { display: none }
 .ch-lab:is(.gl,.gl *) { align-self: end; font: 600 12px/1.2 var(--gl-f-body); letter-spacing: .1em; text-transform: uppercase; color: var(--gl-muted); padding-bottom: 10px }
-.ch-cell:is(.gl,.gl *) { display: grid; gap: 6px; align-content: start; justify-items: start; padding: 12px; border-radius: 22px; background: var(--gl-surface); box-shadow: inset 0 0 0 1px var(--gl-line); min-width: 0; container: ch / inline-size }
+.ch-cell:is(.gl,.gl *) { display: grid; gap: 6px; align-content: start; justify-items: start; padding: 12px; border-radius: 28px; background: var(--gl-surface); box-shadow: inset 0 0 0 1px var(--gl-line); min-width: 0; container: ch / inline-size }
 .ch-top:is(.gl,.gl *) { display: grid; grid-template-columns: 76px minmax(0, 1fr); gap: 8px; width: 100%; align-items: start }
 .ch-plate:is(.gl,.gl *) { width: 76px; height: 76px; border-radius: 50%; overflow: hidden; background: var(--gl-tint); padding: 8px; display: block }
 .ch-plate:is(.gl,.gl *) img { width: 100%; height: 100%; object-fit: contain }
@@ -180,7 +180,7 @@ html.gl-dark .bt-item:is(.gl,.gl *) { background: var(--gl-bg) }
 .ch-add-ic:is(.gl,.gl *) { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; background: var(--gl-act-soft); color: var(--gl-act-text) }
 .ch-add:is(.gl,.gl *) label { font: 400 17px/1.2 var(--gl-f-display) }
 .sel:is(.gl,.gl *) { position: relative; display: inline-flex; align-items: center; width: 100% }
-.sel:is(.gl,.gl *) select { appearance: none; -webkit-appearance: none; width: 100%; min-height: 40px; border: 0; border-radius: 20px; padding: 0 34px 0 14px; font: 500 14px/1.2 var(--gl-f-body); color: var(--gl-ink); background: var(--gl-surface); box-shadow: inset 0 0 0 1.5px var(--gl-line); cursor: pointer }
+.sel:is(.gl,.gl *) select { appearance: none; -webkit-appearance: none; width: 100%; min-height: 40px; border: 0; border-radius: 999px; padding: 0 34px 0 14px; font: 500 14px/1.2 var(--gl-f-body); color: var(--gl-ink); background: var(--gl-surface); box-shadow: inset 0 0 0 1.5px var(--gl-line); cursor: pointer }
 .sel:is(.gl,.gl *) select:focus-visible { box-shadow: inset 0 0 0 2px var(--gl-ring) }
 .sel:is(.gl,.gl *) > svg.i { position: absolute; right: 12px; width: 16px; height: 16px; pointer-events: none; color: var(--gl-muted) }
 .cmp-body:is(.gl,.gl *) { overflow-x: auto }

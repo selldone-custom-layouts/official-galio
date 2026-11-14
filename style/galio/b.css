@@ -42,7 +42,7 @@
   --gl-script-hero: 400 clamp(62px, 7vw, 120px)/.95 var(--gl-f-display);
   --gl-script-banner: 400 clamp(56px, 6.6vw, 108px)/.98 var(--gl-f-display);
   --gl-script-small: 700 40px/1 var(--gl-f-script);
-  --gl-r-s: 10px; --gl-r-m: 24px; --gl-r-btn: 999px; --gl-r-pill: 999px; --gl-r-hero: 32px; --gl-r-tile: 26px; --gl-r-plate: 50%;
+  --gl-r-s: 14px; --gl-r-m: 28px; --gl-r-btn: 999px; --gl-r-pill: 999px; --gl-r-hero: 28px; --gl-r-tile: 28px; --gl-r-plate: 50%;
   --gl-mos-gap: 16px; --gl-strip-gap: 22px;
 }
 html.gl-dark {
@@ -95,8 +95,8 @@ html.gl-dark .sec--colls:is(.gl,.gl *) .coll-ic { background: color-mix(in oklab
 .mtab:is(.gl,.gl *) { background: var(--gl-surface) }
 .mtab[aria-selected="true"]:is(.gl,.gl *) { background: var(--gl-act); color: var(--gl-act-on) }
 .slide-plate:is(.gl,.gl *) { box-shadow: none }
-.cap:is(.gl,.gl *) { border-radius: 16px }
+.cap:is(.gl,.gl *) { border-radius: 14px }
 .visit-card:is(.gl,.gl *) { box-shadow: none; background: var(--gl-surface) }
 .map:is(.gl,.gl *) { box-shadow: inset 0 0 0 1px var(--gl-line) }
 @media (max-width: 900px) { .sec--banner:is(.gl,.gl *) .banner-script { color: #ffd84d } .sec--banner:is(.gl,.gl *) .banner-plate { background: var(--gl-surface); color: var(--gl-ink) } }
-@media (max-width: 760px) { .card:is(.gl,.gl *) { padding: 12px 12px 14px; border-radius: 22px } .card:is(.gl,.gl *) h3 { font-size: 16.5px } .sticker:is(.gl,.gl *) { width: 52px; height: 52px; font-size: 13px } }
+@media (max-width: 760px) { .card:is(.gl,.gl *) { padding: 12px 12px 14px; border-radius: 28px } .card:is(.gl,.gl *) h3 { font-size: 16.5px } .sticker:is(.gl,.gl *) { width: 52px; height: 52px; font-size: 13px } }

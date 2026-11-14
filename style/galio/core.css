@@ -38,11 +38,11 @@ svg.i:is(.gl,.gl *) { width: 20px; height: 20px; flex: none; stroke: currentColo
 .side-acts:is(.gl,.gl *) { display: grid; gap: 12px; justify-items: center; margin-top: 22px; width: 100% }
 .side-bag:is(.gl,.gl *) { display: inline-flex; align-items: center; gap: 8px; font: var(--gl-nav-font); letter-spacing: var(--gl-nav-track); text-transform: var(--gl-nav-case); padding: 6px 10px; border-radius: var(--gl-r-s) }
 .side-bag:hover:is(.gl,.gl *) { color: var(--gl-side-hover) }
-.count:is(.gl,.gl *) { min-width: 22px; height: 22px; padding: 0 6px; border-radius: 11px; display: inline-grid; place-items: center; font: 600 12px/1 var(--gl-f-body); background: var(--gl-act); color: var(--gl-act-on) }
+.count:is(.gl,.gl *) { min-width: 22px; height: 22px; padding: 0 6px; border-radius: 999px; display: inline-grid; place-items: center; font: 600 12px/1 var(--gl-f-body); background: var(--gl-act); color: var(--gl-act-on) }
 .btn-order:is(.gl,.gl *) { display: inline-flex; align-items: center; justify-content: center; min-height: 46px; padding: 0 26px; font: var(--gl-nav-font); letter-spacing: var(--gl-nav-track); text-transform: var(--gl-nav-case); color: var(--gl-side-ink); border-radius: var(--gl-r-btn);
   box-shadow: inset 0 0 0 1.5px var(--gl-side-ink), inset 0 0 0 4px var(--gl-side-bg-solid), inset 0 0 0 5.5px var(--gl-side-ink) }
 .btn-order:hover:is(.gl,.gl *) { background: var(--gl-side-ink); color: var(--gl-side-bg-solid); box-shadow: inset 0 0 0 1.5px var(--gl-side-ink), inset 0 0 0 4px var(--gl-side-bg-solid), inset 0 0 0 5.5px var(--gl-side-ink) }
-.pill-region:is(.gl,.gl *) { display: inline-flex; align-items: center; gap: 7px; min-height: 34px; padding: 0 12px; border-radius: 17px; font: 500 13px/1 var(--gl-f-body); color: var(--gl-side-ink); box-shadow: inset 0 0 0 1px var(--gl-side-line) }
+.pill-region:is(.gl,.gl *) { display: inline-flex; align-items: center; gap: 7px; min-height: 34px; padding: 0 12px; border-radius: 999px; font: 500 13px/1 var(--gl-f-body); color: var(--gl-side-ink); box-shadow: inset 0 0 0 1px var(--gl-side-line) }
 .pill-region:hover:is(.gl,.gl *) { color: var(--gl-side-hover) }
 .pill-region:is(.gl,.gl *) svg.i { width: 16px; height: 16px }
 .side-foot:is(.gl,.gl *) { margin-top: auto; padding-top: 26px; display: grid; gap: 8px; justify-items: start; font: 400 13px/1.45 var(--gl-f-body); color: var(--gl-side-muted) }
@@ -222,8 +222,8 @@ svg.i:is(.gl,.gl *) { width: 20px; height: 20px; flex: none; stroke: currentColo
 .round-add:is(.gl,.gl *) { width: 36px; height: 36px; border-radius: 50%; display: inline-grid; place-items: center; background: var(--gl-act); color: var(--gl-act-on) }
 .round-add:hover:is(.gl,.gl *) { background: var(--gl-act-deep) }
 .round-add:is(.gl,.gl *) svg.i { width: 18px; height: 18px; stroke-width: 2.4 }
-.step:is(.gl,.gl *) { display: inline-grid; grid-template-columns: 34px minmax(26px, auto) 34px; align-items: center; height: 36px; border-radius: 18px; background: var(--gl-act-soft); box-shadow: inset 0 0 0 1.5px var(--gl-act-text) }
-.step:is(.gl,.gl *) button { height: 36px; display: grid; place-items: center; border-radius: 18px; color: var(--gl-ink) }
+.step:is(.gl,.gl *) { display: inline-grid; grid-template-columns: 34px minmax(26px, auto) 34px; align-items: center; height: 36px; border-radius: 999px; background: var(--gl-act-soft); box-shadow: inset 0 0 0 1.5px var(--gl-act-text) }
+.step:is(.gl,.gl *) button { height: 36px; display: grid; place-items: center; border-radius: 999px; color: var(--gl-ink) }
 .step:is(.gl,.gl *) button:hover { background: var(--gl-act); color: var(--gl-act-on) }
 .step:is(.gl,.gl *) button svg.i { width: 16px; height: 16px; stroke-width: 2.4 }
 .step:is(.gl,.gl *) output { text-align: center; font: 700 14px/1 var(--gl-f-body); font-variant-numeric: tabular-nums }
@@ -338,8 +338,8 @@ svg.i:is(.gl,.gl *) { width: 20px; height: 20px; flex: none; stroke: currentColo
 .sw.custom:is(.gl,.gl *) input { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; border: 0; padding: 0 }
 .gts-note:is(.gl,.gl *) { font-size: 13px; color: var(--gl-foot-muted) }
 .gts-note:is(.gl,.gl *) b { color: var(--gl-foot-ink); font-weight: 600 }
-.seg:is(.gl,.gl *) { display: inline-flex; padding: 3px; border-radius: 22px; box-shadow: inset 0 0 0 1px var(--gl-foot-line) }
-.seg:is(.gl,.gl *) button { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 14px; border-radius: 18px; font-size: 14px; color: var(--gl-foot-ink) }
+.seg:is(.gl,.gl *) { display: inline-flex; padding: 3px; border-radius: 28px; box-shadow: inset 0 0 0 1px var(--gl-foot-line) }
+.seg:is(.gl,.gl *) button { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 14px; border-radius: 999px; font-size: 14px; color: var(--gl-foot-ink) }
 .seg:is(.gl,.gl *) button svg.i { width: 16px; height: 16px }
 .seg:is(.gl,.gl *) button[aria-pressed="true"] { background: var(--gl-foot-ink); color: var(--gl-foot-bg) }
 .seg:is(.gl,.gl *) button:not([aria-pressed="true"]):hover { background: var(--gl-foot-field) }

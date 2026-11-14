@@ -1,0 +1,226 @@
+/*
+ * Galio — shape option B "Awning" (the owner, 14 Nov 2026; galio-design/BUILD-AWNING.md, BRIEF-SHAPES.md,
+ * the mockups home-/product-/category-awning.html and their g/shape-awning.css, ported here by hand).
+ *
+ * One shape language on every edge, with one radius scale used everywhere:
+ *   circle  50%     plates, the sticker, icon discs, round buttons, swatches
+ *   pill    999px   buttons, tabs, chips, inputs, list rows
+ *   panel   28px    cards, panels, the hero, every photo, dialogs, drawers, sheets and the rounded joins
+ *   inner   14px    the few small boxes inside a panel that can't be pills (photo labels, captions,
+ *                   text areas): 28 − 14 px inset, concentric with the panel
+ * The generated layers (style/galio/*.css) already put every fixed radius on this scale
+ * (scripts/galio-css.cjs); this file sets the tokens and the shapes the mockup chose, and brings
+ * Selldone's and Vuetify's own parts (dialogs, sheets, fields, menus, snackbars) onto the scale.
+ *
+ * The scallop lives in one place only: hanging from the lower edge of the inner pages' title band
+ * (shell.css .ptitle). The rail is a straight dark column flush with the window; where a full-bleed
+ * band meets the rail beside white page, a 28px rounded join (a fillet in the band's own colour)
+ * meets it, drawn from data-gl-join, which components/galio/shell/gl-joins.ts sets from the page as
+ * it is drawn (so the joins stay right when a home section empties itself or a page is cloned).
+ */
+
+/* ───────── the scale ───────── */
+:root {
+  --gl-r-panel: 28px;
+  --gl-r-inner: 14px;
+  --gl-r-pill: 999px;
+  --gl-r-circle: 50%;
+  --gl-r-s: var(--gl-r-inner);
+  --gl-r-m: var(--gl-r-panel);
+  --gl-r-btn: var(--gl-r-pill);
+  --gl-r-hero: var(--gl-r-panel);
+  --gl-r-tile: var(--gl-r-panel);
+  --gl-r-plate: 50%;
+  --gl-join: var(--gl-r-panel);
+}
+
+/* ───────── the frame: a straight rail, flush with the window ───────── */
+.gl .side::after,
+[dir="rtl"].gl-shell .side::after {
+  content: none;
+}
+@media (min-width: 1100px) {
+  .gl-frame {
+    padding-inline-start: var(--gl-side-w);
+  }
+  .gl .page {
+    margin-left: var(--gl-side-w);
+  }
+}
+
+/* the hero's slide tabs never sit on a band edge */
+.gl .hero + .sec--colls {
+  margin-top: 28px;
+}
+
+/* ───────── rounded joins where a full-bleed band meets the rail beside white page ─────────
+   gl-joins.ts marks each band: data-gl-join="top" when white page is above it, "bottom" when white
+   page is below it, and --gl-join-fill with the band's own colour. */
+@media (min-width: 1100px) {
+  [data-gl-join] {
+    position: relative;
+  }
+  [data-gl-join~="top"]::before,
+  [data-gl-join~="bottom"]::after {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    inset-inline-start: 0;
+    width: var(--gl-join);
+    height: var(--gl-join);
+    pointer-events: none;
+  }
+  [data-gl-join~="top"]::before {
+    top: calc(-1 * var(--gl-join));
+    background: radial-gradient(circle at 100% 0, transparent calc(var(--gl-join) - 0.6px), var(--gl-join-fill) var(--gl-join));
+  }
+  [data-gl-join~="bottom"]::after {
+    bottom: calc(-1 * var(--gl-join));
+    background: radial-gradient(circle at 100% 100%, transparent calc(var(--gl-join) - 0.6px), var(--gl-join-fill) var(--gl-join));
+  }
+  [dir="rtl"] [data-gl-join~="top"]::before {
+    background: radial-gradient(circle at 0 0, transparent calc(var(--gl-join) - 0.6px), var(--gl-join-fill) var(--gl-join));
+  }
+  [dir="rtl"] [data-gl-join~="bottom"]::after {
+    background: radial-gradient(circle at 0 100%, transparent calc(var(--gl-join) - 0.6px), var(--gl-join-fill) var(--gl-join));
+  }
+}
+
+/* ───────── collection page: one tinted band at a time (the awning, then white) ───────── */
+.gl .sec--shop {
+  background: var(--gl-bg);
+}
+.gl .sec--shop .fpanel,
+.gl .sec--shop .side-card {
+  background: var(--gl-fam-100);
+}
+html:root .gl .sec--shop .fpanel .rb {
+  background: var(--gl-surface);
+}
+
+/* ───────── overlays come in from an edge, inner corners rounded ───────── */
+.gl .lay--dialog {
+  border-radius: var(--gl-r-panel);
+}
+@media (min-width: 401px) {
+  .gl .sheet,
+  .gl .drawer {
+    border-radius: 0;
+    border-start-start-radius: var(--gl-r-panel);
+    border-end-start-radius: var(--gl-r-panel);
+  }
+}
+
+/* ───────── every edge on the scale (the mockup's choices) ───────── */
+.gl .card,
+.gl .pbuy,
+.gl .bt,
+.gl .fpanel,
+.gl .side-card,
+.gl .opts,
+.gl .dr-rc,
+.gl .pros li,
+.gl .spec,
+.gl .fly-coll,
+.gl .bt-item,
+.gl .ch-cell,
+.gl .empty,
+.gl .sp-sug {
+  border-radius: var(--gl-r-panel);
+}
+.gl .cap,
+.gl .opt-tile,
+.gl .fld textarea,
+.gl .lg-ok {
+  border-radius: var(--gl-r-inner);
+}
+.gl .rb,
+.gl .fld input,
+.gl .fld select,
+.gl .inp,
+.gl .sel select,
+.gl .sortsel,
+.gl .sortsel select,
+.gl .busy,
+.gl .sample,
+.gl .region-pop .opt,
+.gl .region-sheet .opt,
+.gl .side-nav a,
+.gl .side-nav button,
+.gl .side-sub a,
+.gl .side-bag,
+.gl .side-acct,
+.gl .foot-links a,
+.gl .link,
+.gl .crumbs a,
+.gl .pb-cat,
+.gl .more-btn,
+.gl .sg-list a,
+.gl .sheet-list a,
+.gl .sheet-list button,
+.gl .fbar-in {
+  border-radius: var(--gl-r-pill);
+}
+.gl .top-btn,
+.gl .chk input {
+  border-radius: 50%;
+}
+
+/* ───────── focus rings keep the control's own shape (inset rings, never outlines) ───────── */
+.gl
+  :is(
+    .btn,
+    .btn-order,
+    .pill-region,
+    .chip,
+    .mtab,
+    .htab,
+    .ptab,
+    .prov,
+    .seg button,
+    .step button,
+    .link,
+    .side-nav a,
+    .side-nav button,
+    .side-sub a,
+    .side-bag,
+    .side-acct,
+    .foot-links a,
+    .crumbs a,
+    .more-btn,
+    .sg-list a,
+    .sheet-list a,
+    .sheet-list button,
+    .pb-cat,
+    .region-pop .opt,
+    .region-sheet .opt
+  ):focus-visible {
+  border-radius: var(--gl-r-pill);
+}
+.gl
+  :is(.round-add, .cbtn, .sw, .x, .brow-x, .qv-btn, .top-btn, .ch-x, .gthumb, .plate, .mthumb, .bt-plate, .ch-plate, .gal-plate, .qv-plate, .nf-plate):focus-visible {
+  border-radius: 50%;
+}
+.gl :is(.coll, .jpost, .fly-coll):focus-visible {
+  border-radius: var(--gl-r-panel);
+}
+
+/* ───────── Selldone's and Vuetify's own parts on the scale ───────── */
+/* buttons are pills, icon buttons circles, at rest and focused alike */
+.v-application .v-btn:not(.v-btn--icon),
+.v-application .v-btn:not(.v-btn--icon):focus-visible,
+.v-overlay .v-btn:not(.v-btn--icon),
+.v-overlay .v-btn:not(.v-btn--icon):focus-visible {
+  border-radius: var(--gl-r-pill);
+}
+.v-application .v-btn.v-btn--icon,
+.v-application .v-btn.v-btn--icon:focus-visible,
+.v-overlay .v-btn.v-btn--icon,
+.v-overlay .v-btn.v-btn--icon:focus-visible {
+  border-radius: 50%;
+}
+/* the region pill keeps its pill when focused */
+.gl .pill-region,
+.gl .pill-region:focus-visible {
+  border-radius: var(--gl-r-pill);
+}

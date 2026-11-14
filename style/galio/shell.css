@@ -47,7 +47,7 @@ html.gl-dark .ptitle:is(.gl,.gl *) { background-image: repeating-linear-gradient
 .crumbs:is(.gl,.gl *) ol { display: flex; flex-wrap: wrap; gap: 2px 0; list-style: none; margin: 0; padding: 0; font-size: 13.5px; color: var(--gl-muted) }
 .crumbs:is(.gl,.gl *) li { display: inline-flex; align-items: center; min-width: 0 }
 .crumbs:is(.gl,.gl *) li + li::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: currentColor; opacity: .6; margin: 0 10px }
-.crumbs:is(.gl,.gl *) a { padding: 4px 2px; border-radius: 6px } .crumbs:is(.gl,.gl *) a:hover { color: var(--gl-act-text) }
+.crumbs:is(.gl,.gl *) a { padding: 4px 2px; border-radius: 14px } .crumbs:is(.gl,.gl *) a:hover { color: var(--gl-act-text) }
 .crumbs:is(.gl,.gl *) [aria-current] { color: var(--gl-ink); font-weight: 600 }
 
 .sec--tight:is(.gl,.gl *) { padding-block: 36px 72px }
@@ -57,19 +57,19 @@ html.gl-dark .ptitle:is(.gl,.gl *) { background-image: repeating-linear-gradient
 
 /* ───────── generic bits ───────── */
 .chips:is(.gl,.gl *) { display: flex; flex-wrap: wrap; gap: 8px }
-.chip:is(.gl,.gl *) { display: inline-flex; align-items: center; gap: 6px; min-height: 38px; padding: 0 14px; border-radius: 19px; font: 500 14px/1 var(--gl-f-body); background: var(--gl-surface); color: var(--gl-ink); box-shadow: inset 0 0 0 1px var(--gl-line); white-space: nowrap }
+.chip:is(.gl,.gl *) { display: inline-flex; align-items: center; gap: 6px; min-height: 38px; padding: 0 14px; border-radius: 999px; font: 500 14px/1 var(--gl-f-body); background: var(--gl-surface); color: var(--gl-ink); box-shadow: inset 0 0 0 1px var(--gl-line); white-space: nowrap }
 .chip:hover:is(.gl,.gl *) { background: var(--gl-act-soft) }
 .chip[aria-pressed="true"]:is(.gl,.gl *), .chip[aria-current="page"]:is(.gl,.gl *), .chip[aria-selected="true"]:is(.gl,.gl *) { background: var(--gl-act); color: var(--gl-act-on); box-shadow: none; font-weight: 600 }
 .chip:is(.gl,.gl *) svg.i { width: 16px; height: 16px }
 .btn--big:is(.gl,.gl *) { min-height: 54px; padding: 0 28px; font-size: 16px }
 .btn--wide:is(.gl,.gl *) { width: 100% }
 .btn[disabled]:is(.gl,.gl *) { background: var(--gl-line); color: var(--gl-muted) !important; cursor: not-allowed }
-.step--big:is(.gl,.gl *) { height: 54px; grid-template-columns: 54px minmax(48px, auto) 54px; border-radius: 27px }
-.step--big:is(.gl,.gl *) button { height: 54px; border-radius: 27px }
+.step--big:is(.gl,.gl *) { height: 54px; grid-template-columns: 54px minmax(48px, auto) 54px; border-radius: 999px }
+.step--big:is(.gl,.gl *) button { height: 54px; border-radius: 999px }
 .step--big:is(.gl,.gl *) output { font-size: 17px }
 .step:is(.gl,.gl *) button[disabled] { color: var(--gl-muted); cursor: not-allowed; background: transparent !important }
 .save:is(.gl,.gl *) { font: 600 13px/1 var(--gl-f-body); color: var(--gl-act-text) }
-.sample:is(.gl,.gl *) { display: inline-flex; align-items: center; gap: 8px; padding: 7px 12px 7px 10px; border-radius: 10px; background: #ffd84d; color: #2b1a12; font: 600 13px/1.3 var(--gl-f-body) }
+.sample:is(.gl,.gl *) { display: inline-flex; align-items: center; gap: 8px; padding: 7px 12px 7px 10px; border-radius: 14px; background: #ffd84d; color: #2b1a12; font: 600 13px/1.3 var(--gl-f-body) }
 .sample:is(.gl,.gl *) svg.i { width: 18px; height: 18px }
 .mark-lg:is(.gl,.gl *) { font: 400 46px/1 var(--gl-f-display) }
 
@@ -107,7 +107,7 @@ html.gl-dark .ptitle:is(.gl,.gl *) { background-image: repeating-linear-gradient
 .fld:is(.gl,.gl *) { display: grid; gap: 6px; min-width: 0 }
 .fld:is(.gl,.gl *) label, .fld:is(.gl,.gl *) .lbl { font: 600 13.5px/1.3 var(--gl-f-body); color: var(--gl-ink) }
 .fld:is(.gl,.gl *) label small, .fld:is(.gl,.gl *) .lbl small { font-weight: 400; color: var(--gl-muted) }
-.inp:is(.gl,.gl *), .fld:is(.gl,.gl *) input, .fld:is(.gl,.gl *) textarea, .fld:is(.gl,.gl *) select { width: 100%; min-height: 50px; border: 0; border-radius: 16px; padding: 0 16px; font: 400 15.5px/1.3 var(--gl-f-body); color: var(--gl-ink); background: var(--gl-surface); box-shadow: inset 0 0 0 1.5px var(--gl-line); min-width: 0 }
+.inp:is(.gl,.gl *), .fld:is(.gl,.gl *) input, .fld:is(.gl,.gl *) textarea, .fld:is(.gl,.gl *) select { width: 100%; min-height: 50px; border: 0; border-radius: 14px; padding: 0 16px; font: 400 15.5px/1.3 var(--gl-f-body); color: var(--gl-ink); background: var(--gl-surface); box-shadow: inset 0 0 0 1.5px var(--gl-line); min-width: 0 }
 .fld:is(.gl,.gl *) textarea { padding: 14px 16px; min-height: 120px; resize: vertical; line-height: 1.5 }
 .inp:is(.gl,.gl *)::placeholder, .fld:is(.gl,.gl *) input::placeholder, .fld:is(.gl,.gl *) textarea::placeholder { color: var(--gl-muted); opacity: 1 }
 .inp:hover:is(.gl,.gl *), .fld:is(.gl,.gl *) input:hover, .fld:is(.gl,.gl *) textarea:hover, .fld:is(.gl,.gl *) select:hover { box-shadow: inset 0 0 0 1.5px var(--gl-muted) }
@@ -117,13 +117,13 @@ html.gl-dark .ptitle:is(.gl,.gl *) { background-image: repeating-linear-gradient
 .fgrid:is(.gl,.gl *) { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px }
 .fgrid:is(.gl,.gl *) .full { grid-column: 1 / -1 }
 @media (max-width: 560px) { .fgrid:is(.gl,.gl *) { grid-template-columns: 1fr } }
-.chk:is(.gl,.gl *) { display: inline-flex; align-items: center; gap: 10px; cursor: pointer; font-size: 15px; padding: 4px 0; border-radius: 8px }
-.chk:is(.gl,.gl *) input { appearance: none; -webkit-appearance: none; width: 22px; height: 22px; margin: 0; border-radius: 7px; background: var(--gl-surface); box-shadow: inset 0 0 0 1.5px var(--gl-muted); display: grid; place-items: center; flex: none; cursor: pointer }
+.chk:is(.gl,.gl *) { display: inline-flex; align-items: center; gap: 10px; cursor: pointer; font-size: 15px; padding: 4px 0; border-radius: 14px }
+.chk:is(.gl,.gl *) input { appearance: none; -webkit-appearance: none; width: 22px; height: 22px; margin: 0; border-radius: 14px; background: var(--gl-surface); box-shadow: inset 0 0 0 1.5px var(--gl-muted); display: grid; place-items: center; flex: none; cursor: pointer }
 .chk:is(.gl,.gl *) input:checked { background: var(--gl-act); box-shadow: none }
 .chk:is(.gl,.gl *) input:checked::after { content: ""; width: 11px; height: 6px; border: solid var(--gl-act-on); border-width: 0 0 2.4px 2.4px; transform: translate(0, -1px) rotate(-45deg) }
 .chk:is(.gl,.gl *) input:focus-visible { box-shadow: inset 0 0 0 2px var(--gl-ring) }
-.switch:is(.gl,.gl *) { display: inline-flex; align-items: center; gap: 10px; cursor: pointer; font: 500 14.5px/1.2 var(--gl-f-body); border-radius: 18px; padding: 2px }
-.switch:is(.gl,.gl *) input { appearance: none; -webkit-appearance: none; width: 44px; height: 26px; margin: 0; border-radius: 13px; background: var(--gl-line); position: relative; cursor: pointer; flex: none }
+.switch:is(.gl,.gl *) { display: inline-flex; align-items: center; gap: 10px; cursor: pointer; font: 500 14.5px/1.2 var(--gl-f-body); border-radius: 14px; padding: 2px }
+.switch:is(.gl,.gl *) input { appearance: none; -webkit-appearance: none; width: 44px; height: 26px; margin: 0; border-radius: 999px; background: var(--gl-line); position: relative; cursor: pointer; flex: none }
 .switch:is(.gl,.gl *) input::after { content: ""; position: absolute; left: 3px; top: 3px; width: 20px; height: 20px; border-radius: 50%; background: #fff; transition: transform .2s ease }
 .switch:is(.gl,.gl *) input:checked { background: var(--gl-act) }
 .switch:is(.gl,.gl *) input:checked::after { transform: translateX(18px) }
@@ -166,7 +166,7 @@ html.gl-dark .switch:is(.gl,.gl *) input:not(:checked) { background: #4a382c }
   .brow-q:is(.gl,.gl *) { display: flex; align-items: center; justify-content: space-between; gap: 12px }
   .brow-x:is(.gl,.gl *) { margin-top: 0 }
 }
-.dr-rc:is(.gl,.gl *) { margin-top: 18px; padding: 18px 18px 16px; border-radius: 22px; background: var(--gl-band-lemon); display: grid; gap: 12px }
+.dr-rc:is(.gl,.gl *) { margin-top: 18px; padding: 18px 18px 16px; border-radius: 28px; background: var(--gl-band-lemon); display: grid; gap: 12px }
 .dr-note:is(.gl,.gl *) { display: grid; grid-template-columns: 22px 1fr; gap: 10px; font-size: 13.5px; color: var(--gl-muted); line-height: 1.45 }
 .dr-note:is(.gl,.gl *) svg.i { width: 20px; height: 20px; color: var(--gl-act-text) }
 .dr-often:is(.gl,.gl *) { margin-top: 22px }
@@ -189,12 +189,12 @@ html.gl-dark .switch:is(.gl,.gl *) input:not(:checked) { background: #4a382c }
 .rs-head:is(.gl,.gl *) { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px }
 .rs-head:is(.gl,.gl *) h2 { font: 400 24px/1.1 var(--gl-f-display) }
 .region-sheet:is(.gl,.gl *) h3 { font: 600 12px/1.2 var(--gl-f-body); letter-spacing: .08em; text-transform: uppercase; color: var(--gl-muted); margin: 6px 0 10px }
-.region-sheet:is(.gl,.gl *) .opt { display: flex; justify-content: space-between; align-items: center; width: 100%; min-height: 52px; padding: 0 16px; border-radius: 16px; background: var(--gl-act-soft); box-shadow: inset 0 0 0 2px var(--gl-act-text); font-weight: 600 }
+.region-sheet:is(.gl,.gl *) .opt { display: flex; justify-content: space-between; align-items: center; width: 100%; min-height: 52px; padding: 0 16px; border-radius: 14px; background: var(--gl-act-soft); box-shadow: inset 0 0 0 2px var(--gl-act-text); font-weight: 600 }
 .region-sheet:is(.gl,.gl *) p { font-size: 14px; color: var(--gl-muted); margin-top: 12px }
 .region-sheet:is(.gl,.gl *) .x { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 50% }
 
 /* dialogs: centred card on wide screens, bottom sheet on phones */
-.lay--dialog:is(.gl,.gl *) { position: fixed; inset: 0; margin: auto; height: fit-content; max-height: calc(100dvh - 48px); width: min(var(--gl-dlg-w, 760px), calc(100vw - 48px)); overflow-y: auto; overscroll-behavior: contain; background: var(--gl-surface); border-radius: 30px; padding: 14px 28px 30px }
+.lay--dialog:is(.gl,.gl *) { position: fixed; inset: 0; margin: auto; height: fit-content; max-height: calc(100dvh - 48px); width: min(var(--gl-dlg-w, 760px), calc(100vw - 48px)); overflow-y: auto; overscroll-behavior: contain; background: var(--gl-surface); border-radius: 28px; padding: 14px 28px 30px }
 .dlg-head:is(.gl,.gl *) { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 48px; margin-right: -14px }
 .dlg-head--center:is(.gl,.gl *) { justify-content: center; position: relative; margin-right: 0 }
 .dlg-head--center:is(.gl,.gl *) .x { position: absolute; right: -14px; top: 2px }
@@ -229,22 +229,22 @@ html.gl-dark .qv-plate:is(.gl,.gl *) { background: color-mix(in oklab, var(--gl-
 .lg:is(.gl,.gl *) h2 { font: 400 28px/1.1 var(--gl-f-display); text-align: center }
 .lg-sub:is(.gl,.gl *) { color: var(--gl-muted); text-align: center; font-size: 14.5px; margin-top: -4px; text-wrap: pretty }
 .provs:is(.gl,.gl *) { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px }
-.prov:is(.gl,.gl *) { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 50px; padding: 0 14px; border-radius: 25px; font: 600 14.5px/1.2 var(--gl-f-body); background: var(--gl-surface); box-shadow: inset 0 0 0 1.5px var(--gl-line); text-align: start }
+.prov:is(.gl,.gl *) { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 50px; padding: 0 14px; border-radius: 999px; font: 600 14.5px/1.2 var(--gl-f-body); background: var(--gl-surface); box-shadow: inset 0 0 0 1.5px var(--gl-line); text-align: start }
 .prov:hover:is(.gl,.gl *) { background: var(--gl-act-soft) }
 .prov:is(.gl,.gl *) svg.i { width: 20px; height: 20px; stroke-width: 1.6 }
 .lg-or:is(.gl,.gl *) { display: flex; align-items: center; gap: 12px; color: var(--gl-muted); font-size: 13px; margin: 2px 0 }
 .lg-or:is(.gl,.gl *)::before, .lg-or:is(.gl,.gl *)::after { content: ""; flex: 1; height: 1px; background: var(--gl-line) }
 .lg-mail:is(.gl,.gl *), .lg-code:is(.gl,.gl *) { display: grid; gap: 10px }
 .lg-mail:is(.gl,.gl *) label { font: 600 13.5px/1.2 var(--gl-f-body) }
-.lg-mail:is(.gl,.gl *) input { min-height: 50px; border: 0; border-radius: 25px; padding: 0 18px; font: 400 15.5px var(--gl-f-body); color: var(--gl-ink); background: var(--gl-surface); box-shadow: inset 0 0 0 1.5px var(--gl-line) }
+.lg-mail:is(.gl,.gl *) input { min-height: 50px; border: 0; border-radius: 999px; padding: 0 18px; font: 400 15.5px var(--gl-f-body); color: var(--gl-ink); background: var(--gl-surface); box-shadow: inset 0 0 0 1.5px var(--gl-line) }
 .lg-mail:is(.gl,.gl *) input:focus-visible { box-shadow: inset 0 0 0 2px var(--gl-ring) }
 .lg-mail:is(.gl,.gl *) input[aria-invalid="true"] { box-shadow: inset 0 0 0 2px var(--gl-act-text) }
 .lg-err:is(.gl,.gl *) { color: var(--gl-act-text); font: 600 13.5px/1.4 var(--gl-f-body) }
-.lg-ok:is(.gl,.gl *) { color: var(--gl-ink); background: var(--gl-band-mint); border-radius: 12px; padding: 10px 12px; font-size: 13.5px; line-height: 1.45 }
+.lg-ok:is(.gl,.gl *) { color: var(--gl-ink); background: var(--gl-band-mint); border-radius: 14px; padding: 10px 12px; font-size: 13.5px; line-height: 1.45 }
 .lg-guest:is(.gl,.gl *) { margin-top: 2px }
 .lg:is(.gl,.gl *) fieldset { border: 0; margin: 0; padding: 0; min-width: 0 }
 .otp:is(.gl,.gl *) { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 8px }
-.otp:is(.gl,.gl *) input { min-width: 0; height: 56px; border: 0; border-radius: 16px; text-align: center; font: 700 22px var(--gl-f-body); color: var(--gl-ink); background: var(--gl-surface); box-shadow: inset 0 0 0 1.5px var(--gl-line) }
+.otp:is(.gl,.gl *) input { min-width: 0; height: 56px; border: 0; border-radius: 14px; text-align: center; font: 700 22px var(--gl-f-body); color: var(--gl-ink); background: var(--gl-surface); box-shadow: inset 0 0 0 1.5px var(--gl-line) }
 .otp:is(.gl,.gl *) input:focus-visible { box-shadow: inset 0 0 0 2px var(--gl-ring) }
 .lg-alt:is(.gl,.gl *) { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 14px }
 .lg-alt:is(.gl,.gl *) .link { font-size: 14px }
@@ -258,7 +258,7 @@ html.gl-dark .qv-plate:is(.gl,.gl *) { background: color-mix(in oklab, var(--gl-
 .fly-head:is(.gl,.gl *) h2 { grid-column: 1; font: 400 32px/1.05 var(--gl-f-display) }
 .fly-head:is(.gl,.gl *) .x { grid-column: 2; grid-row: 1 / span 2; margin-right: -10px }
 .fly-colls:is(.gl,.gl *) { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px }
-.fly-coll:is(.gl,.gl *) { display: grid; justify-items: center; text-align: center; gap: 8px; padding: 16px 10px 14px; border-radius: 22px; background: var(--gl-tint); color: #2b1a12 }
+.fly-coll:is(.gl,.gl *) { display: grid; justify-items: center; text-align: center; gap: 8px; padding: 16px 10px 14px; border-radius: 28px; background: var(--gl-tint); color: #2b1a12 }
 html.gl-dark .fly-coll:is(.gl,.gl *) { background: color-mix(in oklab, var(--gl-tint) 18%, var(--gl-surface)); color: var(--gl-ink) }
 .fly-coll:hover:is(.gl,.gl *) { box-shadow: inset 0 0 0 2px var(--gl-act-text) }
 .fly-coll:is(.gl,.gl *) .coll-ic { width: 64px; height: 64px; background: var(--gl-surface) }
@@ -275,7 +275,7 @@ html.gl-dark .fc-t:is(.gl,.gl *) span { opacity: 1; color: var(--gl-muted) }
 .fly-best:is(.gl,.gl *) .mini-n { font-size: 14px }
 
 .sg:is(.gl,.gl *) { left: calc(var(--gl-side-w) + 26px); width: min(520px, calc(100vw - var(--gl-side-w) - 60px)); max-height: calc(100dvh - 36px); overflow-y: auto; padding: 14px 18px 18px; display: grid; gap: 12px; align-content: start }
-.sg-form:is(.gl,.gl *) { display: grid; grid-template-columns: 22px minmax(0, 1fr) 44px; gap: 10px; align-items: center; min-height: 56px; padding: 0 6px 0 16px; border-radius: 28px; background: var(--gl-band-straw) }
+.sg-form:is(.gl,.gl *) { display: grid; grid-template-columns: 22px minmax(0, 1fr) 44px; gap: 10px; align-items: center; min-height: 56px; padding: 0 6px 0 16px; border-radius: 999px; background: var(--gl-band-straw) }
 .sg-form:is(.gl,.gl *) > svg.i { color: var(--gl-act-text) }
 .sg-form:is(.gl,.gl *) input { border: 0; background: transparent; font: 500 16px/1.2 var(--gl-f-body); color: var(--gl-ink); min-width: 0; height: 52px; padding: 0 }
 .sg-form:is(.gl,.gl *) input::placeholder { color: var(--gl-muted); opacity: 1 }
@@ -286,14 +286,14 @@ html.gl-dark .fc-t:is(.gl,.gl *) span { opacity: 1; color: var(--gl-muted) }
 .sg-pop:is(.gl,.gl *) { display: flex; flex-wrap: wrap; align-items: center; gap: 8px }
 .sg-lbl:is(.gl,.gl *) { font: 600 12px/1 var(--gl-f-body); letter-spacing: .1em; text-transform: uppercase; color: var(--gl-muted); flex-basis: 100% }
 .sg-list:is(.gl,.gl *) { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px }
-.sg-list:is(.gl,.gl *) a { display: grid; grid-template-columns: 48px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 6px 8px; border-radius: 16px }
+.sg-list:is(.gl,.gl *) a { display: grid; grid-template-columns: 48px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 6px 8px; border-radius: 14px }
 .sg-list:is(.gl,.gl *) a:hover { background: var(--gl-act-soft) }
 .sg-list:is(.gl,.gl *) .mthumb { width: 48px; height: 48px; padding: 5px }
 .sg-t:is(.gl,.gl *) { display: grid; gap: 2px; min-width: 0 }
 .sg-t:is(.gl,.gl *) b { font: 600 15px/1.3 var(--gl-f-body); overflow-wrap: anywhere }
 .sg-t:is(.gl,.gl *) small { color: var(--gl-muted); font-size: 13px }
 .sg-p:is(.gl,.gl *) { font: 700 14.5px/1 var(--gl-f-body) }
-mark:where(.gl,.gl *) { background: color-mix(in oklab, #ffd84d 70%, transparent); color: inherit; border-radius: 3px; padding: 0 1px }
+mark:where(.gl,.gl *) { background: color-mix(in oklab, #ffd84d 70%, transparent); color: inherit; border-radius: 14px; padding: 0 1px }
 html.gl-dark mark:where(.gl,.gl *) { background: #5a4510; color: #fff1e6 }
 .sg-none:is(.gl,.gl *) { color: var(--gl-muted); font-size: 14.5px; padding: 6px 2px }
 .sg-all:is(.gl,.gl *) { justify-self: start }

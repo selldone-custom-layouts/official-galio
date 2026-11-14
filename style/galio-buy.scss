@@ -284,7 +284,7 @@
     box-shadow: inset 0 0 0 1px var(--gl-line) !important;
   }
   .k-addr__found {
-    border-radius: 16px;
+    border-radius: 14px;
     background: var(--gl-bg);
   }
   .k-addr__found-ico {
@@ -404,7 +404,7 @@
   }
 }
 .gl .k-odel__map {
-  border-radius: 18px;
+  border-radius: 14px;
   box-shadow: inset 0 0 0 1px var(--gl-line);
 }
 .gl .k-odel__body {
@@ -449,7 +449,7 @@
 .gl .k-odel__ask,
 .gl .k-odel__done {
   border: 0;
-  border-radius: 18px;
+  border-radius: 14px;
   background: var(--gl-bg);
   box-shadow: inset 0 0 0 1px var(--gl-line);
   color: var(--gl-ink);
@@ -528,14 +528,14 @@
 .gl .k-chat__bubble {
   padding: 12px 14px;
   border: 0;
-  border-radius: 18px 18px 18px 6px;
+  border-radius: 14px 14px 14px 14px;
   background: var(--gl-bg);
   color: var(--gl-ink);
   font-size: 14px;
   line-height: 1.5;
 }
 .gl .k-chat__msg.-mine .k-chat__bubble {
-  border-radius: 18px 18px 6px 18px;
+  border-radius: 14px 14px 14px 14px;
   background: var(--gl-act);
   color: var(--gl-act-on);
 }
@@ -585,7 +585,7 @@
   min-height: 44px;
   padding: 11px 16px;
   border: 0;
-  border-radius: 22px;
+  border-radius: 28px;
   background: var(--gl-bg);
   color: var(--gl-ink);
   box-shadow: inset 0 0 0 1px var(--gl-line);
@@ -628,10 +628,10 @@ $gl-ico-gift: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' view
 html.gl-dark .s--storefront-master-payment-dialog,
 .s--storefront-master-payment-dialog {
   font-family: var(--gl-f-body);
-  border-radius: 30px 30px 0 0 !important;
+  border-radius: 28px 28px 0 0 !important;
 
   > .v-card {
-    border-radius: 30px 30px 0 0 !important;
+    border-radius: 28px 28px 0 0 !important;
     background: linear-gradient(165deg, var(--gl-surface, transparent), var(--gl-surface, transparent)), var(--gl-surface) !important;
     color: var(--gl-ink) !important;
     box-shadow: inset 0 0 0 1px var(--gl-line), 0 -30px 80px -40px rgba(0, 0, 0, 0.7) !important;
@@ -666,7 +666,7 @@ html.gl-dark .s--storefront-master-payment-dialog,
   .v-card-text > div > .text-start:first-child {
     background: var(--gl-band-lemon) !important;
     box-shadow: none;
-    border-radius: 24px !important;
+    border-radius: 28px !important;
 
     > small {
       font: 700 11.5px/1.3 var(--gl-f-body) !important;
@@ -697,7 +697,7 @@ html.gl-dark .s--storefront-master-payment-dialog,
   /* Each way to pay */
   .container-btn.container-btn {
     border: 0 !important;
-    border-radius: 22px !important;
+    border-radius: 28px !important;
     background: var(--gl-surface) !important;
     box-shadow: inset 0 0 0 1.5px var(--gl-line) !important;
     color: var(--gl-ink) !important;
@@ -823,11 +823,11 @@ html.gl-dark .s--storefront-master-payment-dialog,
     align-self: center !important;
     margin-block: auto !important;
     max-height: calc(100dvh - 64px) !important;
-    border-radius: 30px !important;
+    border-radius: 28px !important;
   }
   html.gl-dark .s--storefront-master-payment-dialog > .v-card,
   .s--storefront-master-payment-dialog > .v-card {
-    border-radius: 30px !important;
+    border-radius: 28px !important;
     box-shadow: inset 0 0 0 1px var(--gl-line), 0 40px 80px -30px rgba(0, 0, 0, 0.7) !important;
   }
 }
@@ -835,12 +835,12 @@ html.gl-dark .s--storefront-master-payment-dialog,
    16px top corners only, Kalio's paper) outweighed the rules above: live, the window was
    off-white with square bottom corners on a wide screen (14 Nov 2026). This selector is heavier. */
 .v-bottom-sheet > .v-bottom-sheet__content.s--storefront-master-payment-dialog > .v-card {
-  border-radius: 30px 30px 0 0 !important;
+  border-radius: 28px 28px 0 0 !important;
   background: var(--gl-surface) !important;
 }
 @media (min-width: 761px) {
   .v-bottom-sheet > .v-bottom-sheet__content.s--storefront-master-payment-dialog > .v-card {
-    border-radius: 30px !important;
+    border-radius: 28px !important;
   }
 }
 /* On a phone the sheet takes the whole width, as in payment-b (Selldone's 98vw
@@ -898,7 +898,7 @@ html.gl-dark .s--storefront-master-payment-dialog,
   justify-content: space-between;
   gap: 10px 16px;
   padding: 12px 14px 12px 18px;
-  border-radius: 20px;
+  border-radius: 28px;
   background: var(--gl-surface);
   font-weight: 600;
 }
@@ -1025,21 +1025,21 @@ html.gl-dark .s--storefront-master-payment-dialog,
 }
 .gl .gl-ord-chat .k-chat__empty {
   background: var(--gl-surface) !important;
-  border-radius: 20px !important;
+  border-radius: 28px !important;
 }
 .gl .gl-ord-chat .k-chat__bubble {
   background: var(--gl-surface) !important;
   color: var(--gl-ink) !important;
-  border-radius: 18px 18px 18px 6px !important;
+  border-radius: 14px 14px 14px 14px !important;
 }
 .gl .gl-ord-chat .k-chat__msg.-mine .k-chat__bubble {
   background: var(--gl-act) !important;
   color: var(--gl-act-on) !important;
-  border-radius: 18px 18px 6px 18px !important;
+  border-radius: 14px 14px 14px 14px !important;
 }
 .gl .gl-ord-chat .k-chat__box {
   background: var(--gl-surface) !important;
-  border-radius: 26px !important;
+  border-radius: 28px !important;
   box-shadow: none !important;
   border: 0 !important;
   padding: 4px 4px 4px 16px !important;

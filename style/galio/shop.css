@@ -16,24 +16,24 @@
 /* the shop: grid left, sidebar right */
 .shop:is(.gl,.gl *) { display: grid; grid-template-columns: minmax(0, 1fr) 272px; gap: 28px; align-items: start }
 .shop-side:is(.gl,.gl *) { display: grid; gap: 16px }
-.fpanel:is(.gl,.gl *) { display: grid; gap: 18px; padding: 20px 20px 22px; border-radius: 26px; background: var(--gl-surface) }
+.fpanel:is(.gl,.gl *) { display: grid; gap: 18px; padding: 20px 20px 22px; border-radius: 28px; background: var(--gl-surface) }
 .fp-head:is(.gl,.gl *) { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 32px }
 .fp-head:is(.gl,.gl *) h2 { font: 400 24px/1.1 var(--gl-f-display) }
 .fp-head:is(.gl,.gl *) .link { font-size: 14px }
 .fgrp:is(.gl,.gl *) { border: 0; margin: 0; padding: 0; min-width: 0; display: grid; gap: 10px }
 .fgrp:is(.gl,.gl *) legend { font: 600 12px/1.2 var(--gl-f-body); letter-spacing: .1em; text-transform: uppercase; color: var(--gl-muted); padding: 0; margin-bottom: 10px; display: flex; align-items: center; gap: 8px }
-.fcount:is(.gl,.gl *) { min-width: 20px; height: 20px; padding: 0 6px; border-radius: 10px; display: inline-grid; place-items: center; background: var(--gl-act); color: var(--gl-act-on); font: 700 11px/1 var(--gl-f-body); letter-spacing: 0 }
+.fcount:is(.gl,.gl *) { min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px; display: inline-grid; place-items: center; background: var(--gl-act); color: var(--gl-act-on); font: 700 11px/1 var(--gl-f-body); letter-spacing: 0 }
 .fchips:is(.gl,.gl *) { display: flex; flex-wrap: wrap; gap: 6px }
 .fchip:is(.gl,.gl *) { min-height: 34px; padding: 0 12px; font-size: 13.5px; white-space: normal; text-align: start; line-height: 1.2; background: var(--gl-bg) }
 html.gl-dark .fchip:is(.gl,.gl *) { background: var(--gl-bg) }
 .fchip[aria-pressed="true"]:is(.gl,.gl *) { background: var(--gl-act); color: var(--gl-act-on) }
-.more-btn:is(.gl,.gl *) { display: inline-flex; align-items: center; gap: 8px; min-height: 34px; padding: 0 6px 0 0; font: 700 13.5px/1 var(--gl-f-body); color: var(--gl-act-text); border-radius: 17px; flex-basis: 100% }
+.more-btn:is(.gl,.gl *) { display: inline-flex; align-items: center; gap: 8px; min-height: 34px; padding: 0 6px 0 0; font: 700 13.5px/1 var(--gl-f-body); color: var(--gl-act-text); border-radius: 999px; flex-basis: 100% }
 .more-ic:is(.gl,.gl *) { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: var(--gl-act-soft) }
 .more-ic:is(.gl,.gl *) svg.i { width: 15px; height: 15px; stroke-width: 2.4 }
 .fgrp--sw:is(.gl,.gl *) { padding: 2px 0 }
 /* price range: thumbs centred on the line, short min/max boxes */
 .range:is(.gl,.gl *) { position: relative; height: 28px; --gl-a: 0%; --gl-b: 100% }
-.range-track:is(.gl,.gl *) { position: absolute; left: 11px; right: 11px; top: 50%; height: 4px; margin-top: -2px; border-radius: 2px; background: linear-gradient(90deg, var(--gl-line) var(--gl-a), var(--gl-act) var(--gl-a), var(--gl-act) var(--gl-b), var(--gl-line) var(--gl-b)) }
+.range-track:is(.gl,.gl *) { position: absolute; left: 11px; right: 11px; top: 50%; height: 4px; margin-top: -2px; border-radius: 999px; background: linear-gradient(90deg, var(--gl-line) var(--gl-a), var(--gl-act) var(--gl-a), var(--gl-act) var(--gl-b), var(--gl-line) var(--gl-b)) }
 .range:is(.gl,.gl *) input { position: absolute; inset: 0; width: 100%; height: 28px; margin: 0; background: none; pointer-events: none; -webkit-appearance: none; appearance: none }
 .range:is(.gl,.gl *) input::-webkit-slider-runnable-track { height: 28px; background: none }
 .range:is(.gl,.gl *) input::-webkit-slider-thumb { -webkit-appearance: none; pointer-events: auto; width: 22px; height: 22px; margin-top: 3px; border-radius: 50%; background: var(--gl-surface); box-shadow: inset 0 0 0 6px var(--gl-act); cursor: pointer }
@@ -42,13 +42,13 @@ html.gl-dark .fchip:is(.gl,.gl *) { background: var(--gl-bg) }
 .range:is(.gl,.gl *) input:focus-visible { box-shadow: none !important }
 .range-boxes:is(.gl,.gl *) { display: flex; align-items: end; gap: 10px }
 .range-boxes:is(.gl,.gl *) label { display: grid; gap: 4px; font: 600 12px/1 var(--gl-f-body); color: var(--gl-muted) }
-.rb:is(.gl,.gl *) { display: inline-flex; align-items: center; gap: 2px; height: 40px; width: 88px; padding: 0 10px; border-radius: 12px; background: var(--gl-bg); box-shadow: inset 0 0 0 1.5px var(--gl-line); color: var(--gl-ink); font: 600 14px/1 var(--gl-f-body) }
+.rb:is(.gl,.gl *) { display: inline-flex; align-items: center; gap: 2px; height: 40px; width: 88px; padding: 0 10px; border-radius: 14px; background: var(--gl-bg); box-shadow: inset 0 0 0 1.5px var(--gl-line); color: var(--gl-ink); font: 600 14px/1 var(--gl-f-body) }
 .rb:focus-within:is(.gl,.gl *) { box-shadow: inset 0 0 0 2px var(--gl-ring) }
 .rb:is(.gl,.gl *) input { width: 100%; min-width: 0; border: 0; background: transparent; font: 600 14px/1 var(--gl-f-body); color: var(--gl-ink); padding: 0; -moz-appearance: textfield }
 .rb:is(.gl,.gl *) input::-webkit-outer-spin-button, .rb:is(.gl,.gl *) input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0 }
 .rb:is(.gl,.gl *) input:focus-visible { box-shadow: none !important }
 .rb-dash:is(.gl,.gl *) { width: 12px; height: 2px; background: var(--gl-muted); margin-bottom: 19px }
-.side-card:is(.gl,.gl *) { padding: 20px; border-radius: 26px; background: var(--gl-surface) }
+.side-card:is(.gl,.gl *) { padding: 20px; border-radius: 28px; background: var(--gl-surface) }
 .side-card:is(.gl,.gl *) h2 { font: 400 20px/1.15 var(--gl-f-display); margin-bottom: 8px }
 
 .toolbar:is(.gl,.gl *) { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; margin-bottom: 18px; min-height: 46px }
@@ -57,15 +57,15 @@ html.gl-dark .fchip:is(.gl,.gl *) { background: var(--gl-bg) }
 .act-chips:is(.gl,.gl *) { display: flex; flex-wrap: wrap; gap: 6px; flex: 1; min-width: 0 }
 .chip--on:is(.gl,.gl *) { background: var(--gl-surface); box-shadow: inset 0 0 0 1.5px var(--gl-act-text); font-weight: 600; min-height: 36px; padding: 0 10px 0 14px }
 .chip--on:is(.gl,.gl *) svg.i { width: 15px; height: 15px; stroke-width: 2.4 }
-.sortsel:is(.gl,.gl *) { position: relative; display: inline-flex; align-items: center; margin-left: auto; border-radius: 22px; background: var(--gl-surface); box-shadow: inset 0 0 0 1px var(--gl-line) }
+.sortsel:is(.gl,.gl *) { position: relative; display: inline-flex; align-items: center; margin-left: auto; border-radius: 28px; background: var(--gl-surface); box-shadow: inset 0 0 0 1px var(--gl-line) }
 .sortsel:focus-within:is(.gl,.gl *) { box-shadow: inset 0 0 0 2px var(--gl-ring) }
 .sortsel:is(.gl,.gl *) > svg.i { position: absolute; pointer-events: none; width: 17px; height: 17px; color: var(--gl-muted) }
 .sortsel:is(.gl,.gl *) > svg.i:first-of-type { left: 14px }
 .sortsel:is(.gl,.gl *) > svg.i:last-of-type { right: 12px }
-.sortsel:is(.gl,.gl *) select { appearance: none; -webkit-appearance: none; border: 0; background: transparent; min-height: 44px; padding: 0 38px 0 40px; font: 600 14px/1.2 var(--gl-f-body); color: var(--gl-ink); cursor: pointer; max-width: 100%; border-radius: 22px }
+.sortsel:is(.gl,.gl *) select { appearance: none; -webkit-appearance: none; border: 0; background: transparent; min-height: 44px; padding: 0 38px 0 40px; font: 600 14px/1.2 var(--gl-f-body); color: var(--gl-ink); cursor: pointer; max-width: 100%; border-radius: 999px }
 .sortsel:is(.gl,.gl *) select:focus-visible { box-shadow: none !important }
 html.gl-dark .sortsel:is(.gl,.gl *) select option { background: var(--gl-surface); color: var(--gl-ink) }
-.busy:is(.gl,.gl *) { display: inline-flex; align-items: center; gap: 10px; margin: -6px 0 14px; padding: 8px 14px 8px 10px; border-radius: 18px; background: var(--gl-surface); font: 600 13.5px/1 var(--gl-f-body); color: var(--gl-ink) }
+.busy:is(.gl,.gl *) { display: inline-flex; align-items: center; gap: 10px; margin: -6px 0 14px; padding: 8px 14px 8px 10px; border-radius: 14px; background: var(--gl-surface); font: 600 13.5px/1 var(--gl-f-body); color: var(--gl-ink) }
 .spin:is(.gl,.gl *) { width: 16px; height: 16px; border-radius: 50%; box-shadow: inset 0 0 0 2.5px var(--gl-line); position: relative }
 .spin:is(.gl,.gl *)::after { content: ""; position: absolute; inset: 0; border-radius: 50%; border: 2.5px solid transparent; border-top-color: var(--gl-act-text); animation: gl-spin .8s linear infinite }
 @keyframes gl-spin { to { transform: rotate(360deg) } }
@@ -96,14 +96,14 @@ html.gl-dark .sortsel:is(.gl,.gl *) select option { background: var(--gl-surface
 @media (max-width: 760px) { .grid-cards--5:is(.gl,.gl *), .shop:is(.gl,.gl *) .grid-cards { grid-template-columns: repeat(2, minmax(0, 1fr)) } }
 
 /* search */
-.sp-form:is(.gl,.gl *) { position: relative; display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; gap: 10px; align-items: center; width: min(620px, 100%); margin-top: 10px; padding: 5px 5px 5px 18px; border-radius: 30px; background: var(--gl-surface) }
+.sp-form:is(.gl,.gl *) { position: relative; display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; gap: 10px; align-items: center; width: min(620px, 100%); margin-top: 10px; padding: 5px 5px 5px 18px; border-radius: 28px; background: var(--gl-surface) }
 .sp-form:is(.gl,.gl *) > svg.i { color: var(--gl-act-text) }
 .sp-form:is(.gl,.gl *) input { border: 0; background: transparent; min-width: 0; height: 48px; font: 500 16px/1.2 var(--gl-f-body); color: var(--gl-ink); padding: 0 }
 .sp-form:is(.gl,.gl *) input::placeholder { color: var(--gl-muted); opacity: 1 }
 .sp-form:is(.gl,.gl *) input::-webkit-search-cancel-button { display: none }
 .sp-form:focus-within:is(.gl,.gl *) { box-shadow: inset 0 0 0 2px var(--gl-ring) }
 .sp-form:is(.gl,.gl *) input:focus-visible { box-shadow: none !important }
-.sp-sug:is(.gl,.gl *) { position: absolute; z-index: 30; left: 0; right: 0; top: calc(100% + 8px); display: grid; gap: 12px; padding: 14px; border-radius: 24px; background: var(--gl-surface); box-shadow: inset 0 0 0 1px var(--gl-line), 0 24px 50px -24px rgba(30, 14, 6, .4) }
+.sp-sug:is(.gl,.gl *) { position: absolute; z-index: 30; left: 0; right: 0; top: calc(100% + 8px); display: grid; gap: 12px; padding: 14px; border-radius: 28px; background: var(--gl-surface); box-shadow: inset 0 0 0 1px var(--gl-line), 0 24px 50px -24px rgba(30, 14, 6, .4) }
 .res-line:is(.gl,.gl *) { color: var(--gl-muted); font-size: 14.5px; margin: -4px 0 14px }
 @media (max-width: 480px) { .sp-form:is(.gl,.gl *) { grid-template-columns: 20px minmax(0, 1fr) auto; padding-left: 14px } .sp-form:is(.gl,.gl *) .btn { padding: 0 16px } }
 

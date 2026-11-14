@@ -201,6 +201,7 @@ import { journalRoute } from "../../kalio/pages/kalio-journal";
 import { dealsRoute } from "../../kalio/kalio-catalog";
 import { allOff, catTitle, catTo, closeLayer, closeOnRoute, fromPrice, layer, loadShop, money, openLayer, routes, shopAllTo, shopData, shopFacts, telOf, toggleLayer, wireLayers } from "../galio";
 import { t } from "../../kalio/i18n/kalio-i18n";
+import { bootJoins } from "./gl-joins";
 
 export default {
   name: "GlShell",
@@ -361,6 +362,8 @@ export default {
   },
 
   mounted() {
+    /* Awning (1.0.4): the rounded joins where a band meets the rail beside white page */
+    bootJoins();
     this.onResize = () => {
       if (this.layer.open === "gregion") this.placePop();
       /* A layer of the other size closes when the window crosses the rail's breakpoint. */

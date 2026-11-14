@@ -34,6 +34,12 @@ for (const mode of MODES)
     const page = await ctx.newPage();
     await page.route((u) => !/^(localhost|127\.0\.0\.1)$/.test(u.hostname) && /\/buy\//.test(u.pathname), (r) => r.abort());
     const push = (to) => page.evaluate((p) => window.$global_router.push(p).catch(() => {}), to);
+    const settled = async () => {
+      for (let quiet = 0, i = 0; quiet < 4 && i < 60; i++) {
+        await sleep(500);
+        quiet = (await page.evaluate(() => !!document.querySelector("#co-pay .sumcard.-busy"))) ? 0 : quiet + 1;
+      }
+    };
     const report = (what, fails) => {
       total += fails.length;
       console.log(`${mode} ${W} ${what}: ${fails.length ? "\n  " + fails.slice(0, 30).join("\n  ") : "ok"}`);
@@ -53,12 +59,16 @@ for (const mode of MODES)
       await page.locator("#co-f-phone").blur();
       const n = await page.locator("#co-delivery .mcard").count();
       await page.locator("#co-delivery .mcard").nth(n - 1).click();
-      await sleep(4000);
+      /* the order summary fades (.sumcard.-busy) while Selldone works out the bill, and the basket config is
+         saved a second time a few seconds after a pick: audit it once it has been settled for 2 s, not mid-fade */
+      await settled();
       const coupons = await page.evaluate(() => !!document.querySelector("#co-offers .gl-offers"));
       report(`checkout (coupons card ${coupons ? "shown" : "not shown"})`, (await page.evaluate(probe)).fails);
       await page.locator("#co-pay .btn--big").click();
       await page.waitForSelector(".s--storefront-master-payment-dialog .v-card", { state: "visible", timeout: 20000 });
-      await sleep(2500);
+      await sleep(1000);
+      /* "Place order" saves the basket once more: the summary behind the window fades meanwhile */
+      await settled();
       report("payment window", (await page.evaluate(probe)).fails);
       await page.locator(".s--storefront-master-payment-dialog .v-toolbar .v-btn").last().click();
       await sleep(1500);

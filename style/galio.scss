@@ -325,7 +325,7 @@ html body {
   min-height: 52px;
   padding: 0 16px;
   border: 0;
-  border-radius: 16px;
+  border-radius: 14px;
   background: var(--gl-surface);
   box-shadow: inset 0 0 0 1.5px var(--gl-line);
   color: var(--gl-ink) !important;
@@ -821,7 +821,7 @@ html:not(.gl-dark) .gl .gl-map-img {
 .gl .card.gl-skel i {
   display: block;
   height: 14px;
-  border-radius: 7px;
+  border-radius: 14px;
   background: var(--gl-line);
 }
 .gl .card.gl-skel i:nth-of-type(2) {
@@ -830,7 +830,7 @@ html:not(.gl-dark) .gl .gl-map-img {
 .gl .card.gl-skel i:nth-of-type(3) {
   width: 45%;
   height: 40px;
-  border-radius: 20px;
+  border-radius: 28px;
   margin-top: auto;
 }
 @media (prefers-reduced-motion: no-preference) {
@@ -881,7 +881,7 @@ html:not(.gl-dark) .gl .gl-map-img {
   display: block;
   height: 18px;
   margin: 0 0 14px;
-  border-radius: 9px;
+  border-radius: 14px;
   background: color-mix(in srgb, currentColor 10%, transparent);
 }
 .gl .gl-pd-skel .pbuy i:first-child {
@@ -917,7 +917,7 @@ html:root .gl.bg-white:not(.gl-x) {
 }
 .gl .gl-comments textarea,
 .gl .gl-comments .v-field {
-  border-radius: 20px !important;
+  border-radius: 28px !important;
 }
 .gl .gl-more {
   display: flex;
@@ -928,7 +928,7 @@ html:root .gl.bg-white:not(.gl-x) {
   display: block;
   height: 22px;
   margin: 0 0 14px;
-  border-radius: 11px;
+  border-radius: 14px;
   background: var(--gl-plate);
 }
 .gl .gl-art-skel .art-head i:first-child {
@@ -962,10 +962,10 @@ html:root .gl.bg-white:not(.gl-x) {
 @media (max-width: 760px) {
   .gl .cmap .map {
     height: 300px;
-    border-radius: 24px;
+    border-radius: 28px;
   }
   .gl .v2-map .map {
-    border-radius: 24px;
+    border-radius: 28px;
   }
 }
 .gl .gl-own {
@@ -981,7 +981,7 @@ html:root .gl.bg-white:not(.gl-x) {
   display: block;
   height: 64px;
   margin-bottom: 12px;
-  border-radius: 22px;
+  border-radius: 28px;
   background: var(--gl-plate);
   animation: gl-skel 1.4s ease-in-out infinite;
 }

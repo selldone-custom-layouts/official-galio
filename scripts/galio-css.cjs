@@ -37,6 +37,14 @@ const DROP = /^(\.ph-tag|\.ph-cam|\.note-bar)\b/;
 
 const renameVars = (v) => v.replace(/var\(\s*--(?!gl-)([\w-]+)/g, "var(--gl-$1");
 
+/* one px radius -> the Awning scale (pills, 0 and anything that is not a plain px length stay) */
+const toScale = (v) =>
+  v.replace(/(^|[\s/])(\d*\.?\d+)px\b/g, (m, pre, n) => {
+    const x = parseFloat(n);
+    if (x === 0 || x >= 200) return m;
+    return pre + (x >= 20 ? "28px" : "14px");
+  });
+
 function scopeSelector(sel) {
   sel = sel
     .replace(/html\[data-mode=["']?dark["']?\]/g, "html.gl-dark")
@@ -111,6 +119,19 @@ for (const name of FILES) {
   root.walkDecls((d) => {
     if (d.prop.startsWith("--") && !d.prop.startsWith("--gl-")) d.prop = "--gl-" + d.prop.slice(2);
     d.value = renameVars(d.value);
+    // Shape option B "Awning" (1.0.4): every radius on the scale (circle 50%, pill 999px, panel 28px,
+    // inner 14px). A fixed px radius goes to the nearest step (20px and up -> 28, under 20 -> 14);
+    // 0, percentages, pills and var() tokens stay (the tokens are set in style/galio-shape.scss).
+    // A radius that is half the rule's own height or min-height is a pill (the chips' 19px on 38px): 999px.
+    if (/^border(-(top|bottom)-(left|right))?-radius$/.test(d.prop) && /^\d*\.?\d+px$/.test(d.value.trim()) && d.parent) {
+      const r = parseFloat(d.value);
+      let half = false;
+      d.parent.each((o) => {
+        if (o.type === "decl" && /^(min-)?height$/.test(o.prop) && /^\d*\.?\d+px$/.test(o.value.trim()) && Math.abs(parseFloat(o.value) - 2 * r) <= 1) half = true;
+      });
+      if (half) d.value = "999px";
+    }
+    if (/^border(-(top|bottom)-(left|right))?-radius$/.test(d.prop) || /^--gl-r-/.test(d.prop)) d.value = toScale(d.value);
     if (/^animation(-name)?$/.test(d.prop)) for (const [a, b] of KEYFRAMES) d.value = d.value.replace(new RegExp(`\\b${a}\\b`, "g"), b);
   });
   // A media query left empty by the drops goes too.

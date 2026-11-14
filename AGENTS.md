@@ -29,7 +29,7 @@ When a merchant asks for a theme ("use the yellow theme", "my brand colour is #F
 | `palette` | `"cherry"` (the brand; the default), `"pistachio"`, `"blueberry"`, `"cocoa"` |
 | `brandColor` | any `"#RRGGBB"`; when set it replaces `palette` |
 | `mode` | `"light"` (white pages on sorbet bands; the default) or `"dark"` (the cocoa night) |
-| `themeSwitcher` | `"showcase"` (the visitor switcher shows only on the Layout's own showcase shop, Bakio 15740; the default), `"on"` (the merchant's visitors get the Theme row in the footer), `"off"` |
+| `themeSwitcher` | `"showcase"` (the visitor switcher shows only on the showcase shops listed in `showcaseShops` in `components/galio/galio-theme.ts`, Bakio 15740 among them; the default), `"on"` (the merchant's visitors get the Theme row in the footer), `"off"` |
 | `textOnBrand` | only with `brandColor`: `"auto"` (a light brand such as yellow keeps its colour, with dark words on it) or `"white"` (white words; a light colour is darkened) |
 
 Worked examples (change only these lines; leave the rest of the file as it is):
@@ -45,7 +45,7 @@ The switcher itself is the shared package in `components/theme-switcher/` (the s
 
 Then release and check:
 
-1. Build and upload: `LAYOUT_ID=<your Layout id> SELLDONE_CLI_SRC=<cli clone> bash scripts/release.sh <new version> desk`. Put the version live.
+1. Build and upload: `LAYOUT_ID=<your Layout id> PW=<playwright>/index.js SELLDONE_CLI_SRC=<cli clone> bash scripts/release.sh <new version> desk` (`PW` is the Playwright install the release's production check uses; see "Releases" below). Put the version live.
 2. Check the contrast on the live shop. It must print `TOTAL 0`:
    ```sh
    PAGES="home=/,category=/<a category>,product=/product/<id>" node components/theme-switcher/tools/contrast-audit.cjs https://<your shop> ".gl-ftr footer"
@@ -54,4 +54,12 @@ Then release and check:
 
 ## Words and languages
 
-Bakini's own words go through `t("bakini.<area>.<name>", "English")` (`components/kalio/i18n/kalio-i18n.ts`, the shared i18n runtime). The English is `components/kalio/i18n/base/en.ts` (the shared Kalio words) plus `bakini.en.ts` (Bakini's own, `bakini.*`), both generated from the code by the kit's `i18n-extract.cjs`; Arabic is `base/ar.ts` + `bakini.ar.ts`, merged by `lang-ar.ts` and listed in `index.ts` (`LOADERS`), fetched only when a visitor picks it. The basket is a **bag** everywhere ("Add to bag", "Your bag"), in the Layout's words and in Selldone's own English strings (`components/kalio/kalio-brand.ts`, `bagWords()`). To add a language the shop enables: translate `bakini.en.ts` to `bakini.<code>.ts` (same keys, keep every `{…}`, add the language's plural forms), copy `base/<code>.ts` from the shared set, add `lang-<code>.ts` and one `LOADERS` line. A new visible word always gets a `t()` key; a word still in English after a language pick is an unwrapped string. Use logical CSS (`margin-inline`, `inset-inline`, `text-align: start`) so a right-to-left language mirrors.
+Galio's own words go through `t("galio.<area>.<name>", "English")` (`components/kalio/i18n/kalio-i18n.ts`, the shared i18n runtime). The English is `components/kalio/i18n/base/en.ts` (the shared Kalio words), `bakini.en.ts` (only the 159 `bakini.*` words Galio still uses from the Layout it started from: badges, delivery way names, units) and `galio.en.ts` (Galio's own, `galio.*`), generated from the code by the kit's `i18n-extract.cjs`; `index.ts` merges them into `EN`. Arabic is `base/ar.ts` + `bakini.ar.ts` + `galio.ar.ts`, merged by `lang-ar.ts` and listed in `index.ts` (`LOADERS`), fetched only when a visitor picks it. A new word goes into `galio.*`, never into `bakini.*`. The basket is a **bag** everywhere ("Add to bag", "Your bag"), in the Layout's words and in Selldone's own English strings (`components/kalio/kalio-brand.ts`, `bagWords()`). Bakio, the showcase shop, sells in English only; on the dev server `localStorage["galio-dev-languages"] = "ar"` adds Arabic to the shop's languages in that browser (`mixin/StorefrontMixin.ts`, development only, not in the build). To add a language the shop enables: translate `galio.en.ts` to `galio.<code>.ts` and `bakini.en.ts` to `bakini.<code>.ts` (same keys, keep every `{…}`, add the language's plural forms), copy `base/<code>.ts` from the shared set, add `lang-<code>.ts` (three imports, like `lang-ar.ts`) and one `LOADERS` line. A new visible word always gets a `t()` key; a word still in English after a language pick is an unwrapped string. Use logical CSS (`margin-inline`, `inset-inline`, `text-align: start`) so a right-to-left language mirrors.
+
+## Where Galio's parts are
+
+Galio's components are in `components/galio/` (`shell/`, `home/`, `shop/`, `product/`, `compare/`, `buy/`, `account/`, `read/`, and the shared `gl-data.ts`, `galio.ts`, `gl-icons.ts`, `gl-photos.ts`, `Gl*.vue`). Every one wraps its markup in an element with the class `gl`; its tokens are `--gl-*`. The mockup's stylesheets are generated into `style/galio/*.css` by `scripts/galio-css.cjs` and never edited by hand; the Layout's own touches go in `style/galio.scss` and `style/galio-buy.scss`. The parts Selldone and the shared Kalio base still draw read `--bk-*` tokens, which Galio's switcher writes from the palette, and `html.bk-dark`, which follows `html.gl-dark`. `GALIO.md` is the project's notes: how each page was built, the data rules, the checks and the releases.
+
+## Releases
+
+Release with `scripts/release.sh` only (see the wiki page "Build and Upload"). Its step 5b, `scripts/galio-prod-check.mjs`, loads the **built** bundle through the shop's real storefront HTML in headless Chromium before anything is uploaded, and stops the release on any page error. Never skip it: dev checks never see chunking bugs (Galio 1.0.0 was blank live from `ReferenceError: Prism is not defined` after every dev check had passed). Keep `coreChunk` in `vite.config.ts` limited to the Layout's own source. On Bakio, the showcase shop, Galio is Layout 39, pinned on its own domain `galio.selldone.shop` (Selldone domain 1249) only; the shop default is Bakini Noir (Layout 36) and is never changed by a Galio release.

@@ -50,6 +50,25 @@ After a custom project has integrated the helper prerequisites documented in
 official base repository intentionally does not wire this command into its
 package scripts.
 
+## This repository: Galio Sundae Patisserie
+
+This copy is the customized Layout **Galio Sundae Patisserie** (package
+`galio-sundae-patisserie`). It has not wired the helper's package scripts
+(`workflow`, `doctor`, `release:prepare`, `deploy`), so the npm commands above
+do not exist here. Its release path is `scripts/release.sh` (build, SVG
+flattening, MIME and chunk checks, the production check
+`scripts/galio-prod-check.mjs` that loads the built bundle in a browser,
+packaging with `--force`, upload with `scripts/kalio-deploy.mjs` and the server
+check `scripts/kalio-verify-deploy.mjs`); see `docs/wiki/Build-and-Upload.md`.
+The rules above still apply: a new `manifest.version` for every upload, the
+`package` never changes, and the server check, not an exit code, is the proof.
+
+Galio's own code is in `components/galio/` (markup inside `.gl`, tokens
+`--gl-*`), its generated mockup styles in `style/galio/` (never edited by
+hand), its own touches in `style/galio.scss` and `style/galio-buy.scss`, and
+its words in `components/kalio/i18n/galio.<lang>.ts`. `GALIO.md` holds the
+project's notes and release history.
+
 ## Theme
 
-A merchant's theme (palette, brand colour, light or dark, the visitor switcher) is set in one file, `components/argon/argon-theme.settings.ts`: see the "Theme" section in the root [`AGENTS.md`](../AGENTS.md).
+A merchant's theme (palette, brand colour, light or dark, the visitor switcher) is set in one file, `components/galio/galio-theme.settings.ts`: see the "Theme" section in the root [`AGENTS.md`](../AGENTS.md).

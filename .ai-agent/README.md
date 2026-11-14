@@ -31,6 +31,9 @@ project-owned prerequisites it validates:
 - reproducible submodule setup with no silent dependency upgrades
 
 The helper should fail until those safeguards are deliberately integrated.
+This repository (the Galio Sundae Patisserie Layout) has not integrated them:
+it releases with `scripts/release.sh` instead (see `AGENTS.md` here and
+`docs/wiki/Build-and-Upload.md`).
 Future independent skills can be grouped under
 `.ai-agent/skills/<domain>/<skill-name>/`; shared references and design assets
 can live under `.ai-agent/references/` and `.ai-agent/assets/` as they are added.

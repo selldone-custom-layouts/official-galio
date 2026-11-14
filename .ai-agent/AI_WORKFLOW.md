@@ -19,6 +19,12 @@ The authoritative sources are:
 Recheck those official sources before changing the toolchain. Do not silently
 upgrade Selldone CLI and storefront dependencies in the same release.
 
+> **In this repository (Galio Sundae Patisserie):** the helper's package
+> scripts (`npm run doctor`, `release:prepare`, `deploy`) are not wired. Use
+> the Git, secret-handling and verification rules of this workflow, and release
+> with `scripts/release.sh` as `docs/wiki/Build-and-Upload.md` describes. Its
+> scripts run `node --use-system-ca`, which needs Node.js 22.15 or newer.
+
 ## How to give this workflow to an AI
 
 Give the AI access to this repository and use this instruction:

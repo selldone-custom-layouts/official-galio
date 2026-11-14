@@ -1,12 +1,12 @@
 # Go Live
 
-An uploaded version changes nothing until it is **attached** to your shop, or to one domain of it. Bakini goes live on **one domain first**: you see it on a real address while your other addresses stay as they are. Move the whole shop over only when you are happy.
+An uploaded version changes nothing until it is **attached** to your shop, or to one domain of it. Galio goes live on **one domain first**: you see it on a real address while your other addresses stay as they are. Move the whole shop over only when you are happy.
 
 Before you go live, check that your shop's **OAuth client id** is set up (see [Shop Requirements](Shop-Requirements)). Without it, sign-in on the Layout leaves for Selldone and shows an error.
 
-## 1. Attach the version to one domain (how Bakini runs)
+## 1. Attach the version to one domain (how Galio runs)
 
-A shop can show a different Layout on one of its domains. Bakini started on `bakini.selldone.shop` alone, one domain of the shop Bakio, while the shop's default and its other addresses still carried the older Layout. Once the owner was happy, it became the shop default as well (step 2).
+A shop can show a different Layout on one of its domains. Galio runs on `galio.selldone.shop` alone, one domain of the shop Bakio (Selldone domain 1249, Layout 39, version 1.0.2), while the shop's default and its other addresses carry Bakio's default Layout, Bakini Noir. A Galio release never touches the shop default.
 
 **In the dashboard:** shop › **Domains**, open the domain's settings and pick your Layout and the exact version for that domain.
 
@@ -17,14 +17,14 @@ A shop can show a different Layout on one of its domains. Bakini started on `bak
 
 ```json
 api.shops.domains.layout.set   path { "domain_key": "<the domain's id>" }
-body { "mode": "private", "layout_id": <your Layout id>, "layout_version": "1.0.4" }
+body { "mode": "private", "layout_id": <your Layout id>, "layout_version": "1.0.2" }
 ```
 
 Your Layout id is the one printed after your first upload. Pin the **exact** version, never `latest`, so an unverified upload never goes live.
 
 Set that domain's own Home to the shop page too: `selldone_shop_home_domain_set` with `domain_address` and `page_id: "shop"`.
 
-While you test on one domain, **don't** pin the shop default when you release this Layout: that would move every other address too. Check both addresses' `window.sdShopLayout` after a release.
+While you test on one domain, **don't** pin the shop default when you release this Layout: that would move every other address too. Check both addresses' `window.sdShopLayout` after a release: the domain should name your package and the new version, the other addresses their own Layout.
 
 ## 2. The whole shop (when you are ready)
 
@@ -33,7 +33,7 @@ While you test on one domain, **don't** pin the shop default when you release th
 **With the MCP connector:** `selldone_api_call` → `api.shops.layout.set`, with `confirm: true` and this body:
 
 ```json
-{ "mode": "private", "layout_id": <your Layout id>, "layout_version": "1.0.4" }
+{ "mode": "private", "layout_id": <your Layout id>, "layout_version": "1.0.2" }
 ```
 
 Read `api.shops.layout.options` before and after.
@@ -45,9 +45,9 @@ A custom domain **keeps its own Layout selection**. It can stay on an old versio
 - Set each domain to **inherit**: `api.shops.domains.layout.set` with `{ "mode": "inherit" }`, or the same setting on the domain in the dashboard. This also ends the one-domain setup of step 1.
 - Check every address after a release: `name.myselldone.com`, your custom domain, and any sub-domain.
 
-Skip this for a domain that carries its own Layout on purpose.
+Skip this for a domain that carries its own Layout on purpose, as `galio.selldone.shop` does on Bakio.
 
-Or keep the domain's own pin. Bakio kept `bakini.selldone.shop` pinned on its own, so it survives if the default is ever switched back. The cost is that every release is pinned twice: on the shop default and on that domain, both with the same exact version.
+Or keep the domain's own pin. The cost is that every release is pinned twice: on the shop default and on that domain, both with the same exact version.
 
 ## 3. Home = Shop page
 
@@ -61,11 +61,11 @@ If `/` shows a Page Builder landing page while `/shop` shows the Layout, the Hom
 Open the address **without a query** (a query shows the catalogue instead of the home). Then:
 
 - the page source's `window.sdShopLayout` → `"saved"` block names your package and the new version;
-- the header shows your shop's title as the wordmark, and the home starts with the line "Pastry, in the spotlight." and the carousel of arched collection cards, then "Explore the collections";
+- on a computer, the cocoa side rail shows your shop's title as the wordmark, and the home starts with the hero slider of your collections, then "Pick your pastry" on the lemon band;
 - no blank page and no flash of an old design;
-- Sign in opens the sign-in sheet with your shop's own ways in;
-- the bag drawer opens from the header, and the checkout lists your delivery ways and their windows;
-- check on a phone-sized screen too.
+- Sign in opens the sign-in dialog with your shop's own ways in;
+- the bag drawer opens from Bag (n), and the checkout lists your delivery ways and their windows;
+- check on a phone-sized screen too: the cocoa top bar and the menu sheet.
 
 A headless browser that opens a `/product/` link directly gets Selldone's SEO page, not the Layout. Open the home first and move with the Layout's own links, or test in a normal browser.
 

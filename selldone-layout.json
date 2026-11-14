@@ -26,5 +26,5 @@
   ],
   "package": "galio-sundae-patisserie",
   "base": "selldone/storefront",
-  "status": "building"
+  "status": "live"
 }

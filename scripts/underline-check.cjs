@@ -30,7 +30,9 @@ const MAX = Number(process.env.MAX || 80);
     await pg.goto(base + "/", { waitUntil: "domcontentloaded", timeout: 90000 });
     await pg.waitForSelector(WAIT, { timeout: 90000 });
     for (const [label, to] of PAGES) {
-      if (to !== "/") await pg.evaluate((p) => window.$global_router.push(p).catch(() => {}), to);
+      /* the push is not awaited in the page: a returned router promise was sometimes collected
+         ("Resulting promise was garbage collected") and stopped the run (live, 14 Nov 2026) */
+      if (to !== "/") await pg.evaluate((p) => { window.$global_router.push(p).catch(() => {}); }, to);
       await pg.waitForTimeout(4000);
       const n = await pg.evaluate((max) => {
         const vis = (e) => { const r = e.getBoundingClientRect(); const s = getComputedStyle(e); return r.width > 2 && r.height > 2 && s.visibility !== "hidden" && s.display !== "none" && +s.opacity > 0.05; };

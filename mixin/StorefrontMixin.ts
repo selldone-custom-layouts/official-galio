@@ -513,6 +513,16 @@ const StorefrontMixin = defineComponent({
             this.setOrdersState(orders_state);
 
             //...........................................................................
+            /* Galio, dev server only (dropped from the build): the kit's checks run in Arabic on a shop that
+               sells in English only. localStorage "galio-dev-languages" = "ar" adds those languages to the
+               shop's language option in this browser, so the saved "ar" pick is accepted. */
+            if (import.meta.env.DEV) {
+              const extra = (localStorage.getItem("galio-dev-languages") || "").split(",").filter(Boolean);
+              if (extra.length) {
+                shop.options = (shop.options || []).filter((o) => o.code !== "languages");
+                shop.options.push({ code: "languages", value: [shop.language || "en", ...extra] });
+              }
+            }
             // Set language by shop language:
             // 1. Saved by user on local:
             let saved_local =

@@ -1,5 +1,6 @@
-/* Bakini in this language: the shared Kalio base and Bakini's own words, one chunk. */
+/* Galio in Arabic: the shared Kalio base, the Bakini words Galio still uses and Galio's own, one chunk. */
 import base from "./base/ar";
-import own from "./bakini.ar";
+import bakini from "./bakini.ar";
+import galio from "./galio.ar";
 
-export default { ...base, ...own } as Record<string, string>;
+export default { ...base, ...bakini, ...galio } as Record<string, string>;

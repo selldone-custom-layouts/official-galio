@@ -20,8 +20,8 @@ W3="1440,1100,390"
 DARK="{\"$SK\":\"{\\\"palette\\\":\\\"cherry\\\",\\\"mode\\\":\\\"dark\\\"}\"}"
 LIGHT="{\"$SK\":\"{\\\"palette\\\":\\\"cherry\\\",\\\"mode\\\":\\\"light\\\"}\"}"
 YELLOW="{\"$SK\":\"{\\\"palette\\\":\\\"custom\\\",\\\"custom\\\":\\\"#ffff00\\\",\\\"mode\\\":\\\"light\\\"}\"}"
-AR="{\"local-shop-bakio\":\"ar\"}"
-ARDARK="{\"local-shop-bakio\":\"ar\",\"$SK\":\"{\\\"palette\\\":\\\"cherry\\\",\\\"mode\\\":\\\"dark\\\"}\"}"
+AR="{\"local-shop-bakio\":\"ar\",\"galio-dev-languages\":\"ar\"}"
+ARDARK="{\"local-shop-bakio\":\"ar\",\"galio-dev-languages\":\"ar\",\"$SK\":\"{\\\"palette\\\":\\\"cherry\\\",\\\"mode\\\":\\\"dark\\\"}\"}"
 PAGES_ALL='home=/,category=/croissants-category,deals=/?filter={"only_has_discount":true},search=/?search=pistachio,product=/product/720375,product2=/product/720359,compare=/comparison?list=p720375_p720378_p720380,blog=/blog,article=/blog/pickup-or-delivery-36222,about=/about-us,terms=/terms,privacy=/privacy,contact=/contact-us,faq=/faq,404=/no-such-page,cart=/basket/PHYSICAL,checkout=/basket/PHYSICAL?step=checkout,account=/user'
 PAGES_MAIN='home=/,category=/croissants-category,deals=/?filter={"only_has_discount":true},search=/?search=pistachio,product=/product/720375,compare=/comparison?list=p720375_p720378_p720380,blog=/blog,about=/about-us,404=/no-such-page'
 BOX_PAGES='home=/,category=/croissants-category,deals=/?filter=%7B%22only_has_discount%22%3Atrue%7D,search=/?search=pistachio,product=/product/720375,product2=/product/720359,compare=/comparison?list=p720375_p720378_p720380,blog=/blog,article=/blog/pickup-or-delivery-36222,404=/no-such-page,faq=/faq,contact=/contact-us,about=/about-us,terms=/terms,privacy=/privacy,account=/user'
@@ -64,6 +64,7 @@ run currency    env WIDTHS="$W3" SHOP=bakio MENU=".menu-btn" MEGA="[aria-control
 run box-dark    env WIDTHS="$W3" PAGES="$BOX_PAGES" STORAGE="$DARK"  node "$ROOT/scripts/box-check.cjs" "$BASE" "$WAIT"
 run box-light   env WIDTHS="$W3" PAGES="$BOX_PAGES" STORAGE="$LIGHT" node "$ROOT/scripts/box-check.cjs" "$BASE" "$WAIT"
 run box-ar      env PAGES="$BOX_PAGES" STORAGE="$AR" STATES=0 node "$ROOT/scripts/box-check.cjs" "$BASE" "$WAIT"
+run i18n-ar     env I18N="$ROOT/components/kalio/i18n" LANGUAGES=ar SHOP=bakio MENU=".menu-btn" CART="$BAG" CATEGORY="@a[href$=\"-category\"]" PAGES="about=/about-us,contact=/contact-us,blog=/blog,terms=/terms,privacy=/privacy,account=/user,cart=/basket/PHYSICAL,compare=/comparison?list=p720375_p720378_p720380" node "$ROOT/scripts/i18n-check-forced.cjs" "$BASE" "$WAIT"
 run underline-dark  env PAGES="$UL_PAGES" STORAGE="$DARK"  node "$ROOT/scripts/underline-check.cjs" "$BASE" "$WAIT"
 run underline-light env PAGES="$UL_PAGES" STORAGE="$LIGHT" WIDTHS=1440 node "$ROOT/scripts/underline-check.cjs" "$BASE" "$WAIT"
 echo "done"

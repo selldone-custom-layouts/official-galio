@@ -7,7 +7,7 @@
 # Needs MSYS_NO_PATHCONV=1 on Git Bash (set here). Dev: http://localhost:9145 · live: https://galio.selldone.shop
 # Widths: 1440 and 390 everywhere, plus 1100 (the side rail's first width) where a check takes WIDTHS.
 # i18n-ar IGNORE: Bakio's own data that equals an English string of the Layout (its gateway "Cash on delivery",
-# its way "Worldwide shipping", the flavour "Pistachio", its counter note "Pickup counter at …").
+# its way "Worldwide shipping", the flavour "Pistachio", the cookies' spec key "Style", its counter note "Pickup counter at …").
 set -u
 export MSYS_NO_PATHCONV=1
 BASE="${1:-http://localhost:9145}"
@@ -66,7 +66,7 @@ run currency    env WIDTHS="$W3" SHOP=bakio MENU=".menu-btn" MEGA="[aria-control
 run box-dark    env WIDTHS="$W3" PAGES="$BOX_PAGES" STORAGE="$DARK"  node "$ROOT/scripts/box-check.cjs" "$BASE" "$WAIT"
 run box-light   env WIDTHS="$W3" PAGES="$BOX_PAGES" STORAGE="$LIGHT" node "$ROOT/scripts/box-check.cjs" "$BASE" "$WAIT"
 run box-ar      env PAGES="$BOX_PAGES" STORAGE="$AR" STATES=0 node "$ROOT/scripts/box-check.cjs" "$BASE" "$WAIT"
-run i18n-ar     env IGNORE="Cash on delivery|Worldwide shipping|Pistachio|/^Pickup counter at /" I18N="$ROOT/components/kalio/i18n" LANGUAGES=ar SHOP=bakio MENU=".menu-btn" CART="$BAG" CATEGORY="@a[href$=\"-category\"]" PAGES="about=/about-us,contact=/contact-us,blog=/blog,terms=/terms,privacy=/privacy,account=/user,cart=/basket/PHYSICAL,compare=/comparison?list=p720375_p720378_p720380" node "$ROOT/scripts/i18n-check-forced.cjs" "$BASE" "$WAIT"
+run i18n-ar     env IGNORE="Cash on delivery|Worldwide shipping|Pistachio|Style|/^Pickup counter at /" I18N="$ROOT/components/kalio/i18n" LANGUAGES=ar SHOP=bakio MENU=".menu-btn" CART="$BAG" CATEGORY="@a[href$=\"-category\"]" PAGES="about=/about-us,contact=/contact-us,blog=/blog,terms=/terms,privacy=/privacy,account=/user,cart=/basket/PHYSICAL,compare=/comparison?list=p720375_p720378_p720380" node "$ROOT/scripts/i18n-check-forced.cjs" "$BASE" "$WAIT"
 run underline-dark  env PAGES="$UL_PAGES" STORAGE="$DARK"  node "$ROOT/scripts/underline-check.cjs" "$BASE" "$WAIT"
 run underline-light env PAGES="$UL_PAGES" STORAGE="$LIGHT" WIDTHS=1440 node "$ROOT/scripts/underline-check.cjs" "$BASE" "$WAIT"
 echo "done"

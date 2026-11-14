@@ -323,7 +323,14 @@
                 @changed="setBasketConfig"
               ></s-order-checkout-form>
 
-              <!-- Coupons and prizes, only when the shopper has some -->
+              <!-- Coupons and prizes, only when the shopper has some: a numbered card like the
+                   others (live 14 Nov 2026: Selldone's strip sat in a bare box with a tiny toggle);
+                   the card hides itself when Selldone draws neither list -->
+              <section id="co-offers" class="ckc ckc--offers">
+                <div class="ckc-h">
+                  <span class="ckc-n">{{ gc_n_address + (has_delivery ? 1 : 0) + (has_delivery && !isService ? 1 : 0) + 1 }}</span>
+                  <h2>{{ t("galio.co.coupons", "Coupons") }}</h2>
+                </div>
               <s-storefront-coupons-list
                 v-if="!isSubscription"
                 v-model="basket.coupon"
@@ -344,6 +351,7 @@
                 @loading="(val) => (refreshing_price = val)"
                 @update:model-value="selectLottery"
               ></s-storefront-lottery-prizes-list>
+              </section>
             </form>
 
             <!-- Your order -->

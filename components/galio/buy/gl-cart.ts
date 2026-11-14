@@ -46,11 +46,18 @@ export function windowWord(value: string): string {
   return words[value] || value;
 }
 
-/** "<way> · <window>" when the shopper chose one window. */
+/** The way offers parts of the day to choose from (Selldone's ETA "timeframe" kinds). A window left
+    over from another way means nothing for it ("Worldwide shipping · Morning", live 14 Nov 2026). */
+export function wayHasWindows(way: any): boolean {
+  return ["weekday-timeframe", "timeframe"].includes(way?.eta);
+}
+
+/** "<way> · <window>" when the shopper chose one window of a way that has windows. */
 export function wayWindowLine(shop: any, info: any): string {
   if (!info?.type) return "";
-  const name = wayTitle(shopWay(shop, { type: info.type }), shop);
-  const win = info.custom && (info.time_spans || []).length === 1 ? windowWord(info.time_spans[0]) : "";
+  const way = shopWay(shop, { type: info.type });
+  const name = wayTitle(way, shop);
+  const win = info.custom && (info.time_spans || []).length === 1 && wayHasWindows(way) ? windowWord(info.time_spans[0]) : "";
   return win ? `${name} · ${win}` : name;
 }
 
@@ -65,6 +72,16 @@ export function wayReach(shop: any, given: any): string {
   if (item.type === "Global") return t("galio.co.shipsAnywhere", "Ships anywhere");
   if (item.distance && item.distance < 1000) return t("galio.co.within", "Local delivery within {km} km of the bakery", { km: item.distance });
   return "";
+}
+
+/** The counter's hours for a line after its own note ("open every day 8:00–18:00"), or nothing when
+    the note already gives them (Bakio's note says "Open every day 8:00–18:00." itself: the delivery
+    sheet said the hours twice, live 14 Nov 2026). */
+export function counterHours(note: string, facts: any): string {
+  if (!facts?.hours) return "";
+  const flat = (x: string) => String(x || "").replace(/[\s–—-]+/g, "").toLowerCase();
+  if (flat(note).includes(flat(facts.hours))) return "";
+  return facts.everyDay ? t("galio.co.openEvery", "open every day {hours}", { hours: facts.hours }) : facts.hours;
 }
 
 /** "Morning, Evening, Night or Instant". */
@@ -87,10 +104,12 @@ export function waySmall(shop: any, given: any, stage: "bag" | "checkout", picku
     return [street, hours].filter(Boolean).join(", ");
   }
   const days = Array.isArray(item.days) && item.days.length >= 7 ? t("galio.co.everyDay", "every day") : "";
-  const wins = orWords((item.time_spans || []).map(windowWord));
+  /* windows only for a way that lets the shopper pick one (the bag said "Anywhere · Morning or Evening"
+     for shipping, whose checkout offers no window) */
+  const wins = wayHasWindows(item) ? orWords((item.time_spans || []).map(windowWord)) : "";
   const global = ["Global", "Post", "Airplane", "Ship"].includes(item.type);
   const reach = global ? t("galio.co.anywhere", "Anywhere") : item.distance && item.distance < 1000 ? (stage === "checkout" ? t("galio.co.withinOf", "Within {km} km of the bakery", { km: item.distance }) : t("galio.co.withinKm", "Within {km} km", { km: item.distance })) : "";
-  if (stage === "bag") return [reach, wins].filter(Boolean).join(" · ");
+  if (stage === "bag") return [reach, wins || days].filter(Boolean).join(" · ");
   return [reach, days].filter(Boolean).join(", ");
 }
 
@@ -131,8 +150,7 @@ export default {
     /* "Counter at the … entrance, open every day 8:00–18:00": the counter's own note and the hours. */
     gc_pickup_line(this: any): string {
       const note = this.gc_pickup_point?.message || "";
-      const f = this.gc_facts;
-      const hours = f.hours ? (f.everyDay ? t("galio.co.openEvery", "open every day {hours}", { hours: f.hours }) : f.hours) : "";
+      const hours = counterHours(note, this.gc_facts);
       const line = [note, hours].filter(Boolean).join(", ");
       return line ? line.charAt(0).toUpperCase() + line.slice(1) + (/[.!?]$/.test(line) ? "" : ".") : "";
     },
@@ -282,7 +300,7 @@ export default {
       const way = this.gc_way;
       if (!way) return "";
       const name = wayTitle(way, this.$shop);
-      const spans = this.delivery_info?.custom && this.delivery_info?.time_spans?.length === 1 ? windowWord(this.delivery_info.time_spans[0]) : "";
+      const spans = this.delivery_info?.custom && this.delivery_info?.time_spans?.length === 1 && wayHasWindows({ ...way, ...shopWay(this.$shop, way) }) ? windowWord(this.delivery_info.time_spans[0]) : "";
       return spans ? `${name} · ${spans}` : name;
     },
     gc_delivery_label(this: any): string {

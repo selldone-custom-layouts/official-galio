@@ -284,6 +284,7 @@ const ar: Record<string, string> = {
   "galio.co.oneGateway": "{gateway} لكل الطرق.",
   "galio.co.openEvery": "مفتوح كل يوم {hours}",
   "galio.co.optional": "اختياري",
+  "galio.co.coupons": "القسائم",
   "galio.co.or": " أو ",
   "galio.co.other": "عنوان فاتورة مختلف",
   "galio.co.otherP": "أضف عنوانًا آخر للإيصال",

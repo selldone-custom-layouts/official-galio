@@ -152,6 +152,41 @@
   color: var(--gl-muted);
   font-size: 12.5px;
 }
+/* A coupon this bag cannot use: Selldone fades its words to 70% (3.4:1, under the
+   4.5 the audit asks, live 14 Nov 2026). The words stay readable; it only greys and
+   takes no click (Selldone's own cursor and select rules). */
+.gl .gl-offers .s--coupon-card .op-0-7 {
+  opacity: 1 !important;
+}
+/* The coupons card (#co-offers): a numbered card like the others, gone when
+   Selldone draws neither list; the strip sits in it without a box of its own and
+   its show/hide pill reads as one of Galio's small links. */
+.gl .ckc--offers:not(:has(.gl-offers)) {
+  display: none;
+}
+.gl .ckc--offers .gl-offers {
+  padding: 0;
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
+}
+.gl .ckc--offers .gl-offers + .gl-offers {
+  margin-top: 16px;
+}
+.gl .ckc--offers .gl-offers > p {
+  margin: 0 0 12px;
+}
+.gl .ckc--offers .gl-offers > p .v-btn {
+  height: auto !important;
+  min-height: 0 !important;
+  padding: 2px 0 !important;
+  background: transparent !important;
+  color: var(--gl-act-text) !important;
+  font-size: 13.5px !important;
+}
+.gl .ckc--offers .gl-offers > p .v-btn:hover {
+  color: var(--gl-ink) !important;
+}
 .gl .gl-coform:empty {
   display: none;
 }
@@ -794,6 +829,26 @@ html.gl-dark .s--storefront-master-payment-dialog,
   .s--storefront-master-payment-dialog > .v-card {
     border-radius: 30px !important;
     box-shadow: inset 0 0 0 1px var(--gl-line), 0 40px 80px -30px rgba(0, 0, 0, 0.7) !important;
+  }
+}
+/* Kalio's rule for every bottom sheet's card (.v-bottom-sheet>.v-bottom-sheet__content>.v-card:
+   16px top corners only, Kalio's paper) outweighed the rules above: live, the window was
+   off-white with square bottom corners on a wide screen (14 Nov 2026). This selector is heavier. */
+.v-bottom-sheet > .v-bottom-sheet__content.s--storefront-master-payment-dialog > .v-card {
+  border-radius: 30px 30px 0 0 !important;
+  background: var(--gl-surface) !important;
+}
+@media (min-width: 761px) {
+  .v-bottom-sheet > .v-bottom-sheet__content.s--storefront-master-payment-dialog > .v-card {
+    border-radius: 30px !important;
+  }
+}
+/* On a phone the sheet takes the whole width, as in payment-b (Selldone's 98vw
+   left a 4px strip of the page on each side, live 14 Nov 2026). */
+@media (max-width: 760px) {
+  .v-bottom-sheet > .v-overlay__content.s--storefront-master-payment-dialog {
+    width: 100% !important;
+    max-width: 100% !important;
   }
 }
 

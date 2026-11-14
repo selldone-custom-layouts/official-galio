@@ -62,6 +62,8 @@ run contrast-ar      env PAGES="$PAGES_MAIN" STORAGE="$AR" node "$ROOT/component
 run contrast-ar-dark env PAGES="$PAGES_MAIN" STORAGE="$ARDARK" node "$ROOT/components/theme-switcher/tools/contrast-audit.cjs" "$BASE" "$WAIT"
 run cart-dark   env SHOP=bakio WAIT="$WAIT" CART=".gl-bag-btn" STORAGE_KEY="$SK" node "$ROOT/components/theme-switcher/tools/cart-audit.cjs" "$BASE" cherry dark
 run cart-light  env SHOP=bakio WAIT="$WAIT" CART=".gl-bag-btn" STORAGE_KEY="$SK" node "$ROOT/components/theme-switcher/tools/cart-audit.cjs" "$BASE" cherry light
+# the checkout with a piece in the bag (coupons card, summary) and Selldone's payment window, light and dark; the bag is emptied after
+run filled-checkout env WIDTHS="$W3" node --use-system-ca "$ROOT/scripts/galio-filled-checkout-audit.mjs" "$BASE"
 run currency    env WIDTHS="$W3" SHOP=bakio MENU=".menu-btn" MEGA="[aria-controls=gshop]" CART="$BAG" CATEGORY=/croissants-category DEALS='/?filter={"only_has_discount":true}' node "$ROOT/components/region-switcher/tools/currency-check.cjs" "$BASE" "$WAIT"
 run box-dark    env WIDTHS="$W3" PAGES="$BOX_PAGES" STORAGE="$DARK"  node "$ROOT/scripts/box-check.cjs" "$BASE" "$WAIT"
 run box-light   env WIDTHS="$W3" PAGES="$BOX_PAGES" STORAGE="$LIGHT" node "$ROOT/scripts/box-check.cjs" "$BASE" "$WAIT"

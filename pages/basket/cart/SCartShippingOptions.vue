@@ -175,7 +175,7 @@ import TemplateMixin from "@selldone/components-vue/mixin/template/TemplateMixin
 import ProductMixin from "@selldone/components-vue/mixin/product/ProductMixin.ts";
 import MapMixin from "@selldone/components-vue/mixin/map/MapMixin.ts";
 import GlIcon from "../../../components/galio/GlIcon.vue";
-import { orWords, shopWay, wayIcon, waySmall, windowWord } from "../../../components/galio/buy/gl-cart";
+import { counterHours, orWords, shopWay, wayIcon, waySmall, windowWord } from "../../../components/galio/buy/gl-cart";
 import { shopFacts, wayTitle } from "../../../components/galio/galio";
 
 export default defineComponent({
@@ -433,6 +433,13 @@ export default defineComponent({
       if (!this.has_delivery) return;
 
       this.deliveryInfo.type = transportation ? transportation.type : null;
+      /* Galio: a way without windows or a date keeps no window from the way before it
+         (the basket said "Worldwide shipping · Morning", live 14 Nov 2026). */
+      if (transportation && !this.windowsOn && !this.need_ask_shipping_date && this.deliveryInfo.custom) {
+        this.customDeliveryTimes = false;
+        this.deliveryInfo.custom = false;
+        this.deliveryInfo.time_spans = [];
+      }
       this.$nextTick(() => this.firstWindow());
     },
 
@@ -519,13 +526,15 @@ export default defineComponent({
     pickupShort(pickup) {
       return this.pickup_transportation?.title || t("galio.co.pickupCounter", "Pickup at the counter");
     },
+    /* The counter as a shopper writes it ("1 The Embarcadero, San Francisco, California 94111"):
+       Selldone's full address adds "Building number: 1" (live, 14 Nov 2026). */
     pickupAddress(pickup) {
-      return MapHelper.GenerateFullAddressFromMapInfo(pickup) || pickup.address || "";
+      const place = [pickup.state, pickup.postal].filter(Boolean).join(" ");
+      return [pickup.address, pickup.city, place].filter(Boolean).join(", ") || MapHelper.GenerateFullAddressFromMapInfo(pickup) || "";
     },
+    /* The counter's own note, then its hours unless the note gives them. */
     pickupNote(pickup) {
-      const facts = shopFacts(this.$shop);
-      const hours = facts.hours ? (facts.everyDay ? t("galio.co.openEvery", "open every day {hours}", { hours: facts.hours }) : facts.hours) : "";
-      return [pickup.message, hours].filter(Boolean).join(" · ");
+      return [pickup.message, counterHours(pickup.message, shopFacts(this.$shop))].filter(Boolean).join(" · ");
     },
     feeOf(given) {
       if (!given) return "";

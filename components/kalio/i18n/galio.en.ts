@@ -253,6 +253,7 @@ const en: Record<string, string> = {
   "galio.co.oneGateway": "{gateway} for every method.",
   "galio.co.openEvery": "open every day {hours}",
   "galio.co.optional": "optional",
+  "galio.co.coupons": "Coupons",
   "galio.co.or": " or ",
   "galio.co.other": "Different billing address",
   "galio.co.otherP": "Add another address for the receipt",

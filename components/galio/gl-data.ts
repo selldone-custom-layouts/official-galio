@@ -212,7 +212,9 @@ export function deliveryWays(shop: any): DeliveryWay[] {
         id: x.id,
         type: x.type,
         title: wayTitle(x, shop),
-        windows: Array.isArray(x.time_spans) ? x.time_spans : [],
+        /* only a way whose checkout lets the shopper pick a window (Selldone's "timeframe" kinds):
+           Bakio's shipping keeps time_spans but offers no window to choose */
+        windows: ["weekday-timeframe", "timeframe"].includes(x.eta) && Array.isArray(x.time_spans) ? x.time_spans : [],
         fee: free ? 0 : Number(x.const) || 0,
         freeOver: x.free_shipping && Number(x.free_shipping_limit) > 0 ? Number(x.free_shipping_limit) : null,
         free,

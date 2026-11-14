@@ -44,6 +44,7 @@ import {SetupService} from "@selldone/core-js/server";
 import {Shop} from "@selldone/core-js/models";
 import { bootThemeSwitcher } from "./components/theme-switcher/theme-switcher"; // the shared theme switcher
 import { GALIO_THEME } from "./components/galio/galio-theme";
+import { bootFamily } from "./components/galio/galio-family"; // one colour family from the chosen palette
 import { themeState } from "./components/theme-switcher/theme-switcher";
 import { watchEffect } from "vue";
 import { bootRegion, prepareLanguage } from "./components/region-switcher/region"; // language + currency (the owner's choice B)
@@ -60,6 +61,8 @@ try { vuetify.theme.themes.value.light.colors.error = "#c4122f"; } catch (e) {}
 // footer's Theme row lets a shopper pick a palette and Light / Dark, kept in
 // the browser.
 bootThemeSwitcher(GALIO_THEME, vuetify);
+// Galio's "one colour family": bands, plates, rail and footer from the chosen palette's hue (14 Nov 2026).
+bootFamily(vuetify);
 // The pages still drawn by the base Layout (until each is ported, phase 2)
 // read their dark rules under html.bk-dark: it follows Galio's dark class.
 watchEffect(() => {

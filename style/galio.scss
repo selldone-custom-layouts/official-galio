@@ -497,19 +497,19 @@ html body {
   max-width: 150px;
   justify-self: center;
 }
-/* The mosaic's tiles: a sorbet tint with the way's line drawing, or the shop's own pieces, small,
-   in the upper part (the caption sits low on the tile). */
+/* The mosaic's tiles: the family's tint with the way's line drawing, or the shop's own pieces, small,
+   in the upper part (the caption sits low on the tile). One colour family (14 Nov 2026): the four
+   sorbet tints became two steps of the palette's family, taking turns (courier and the counter on
+   the lighter, cash and shipping on the deeper). */
 .gl .ph.-tile {
-  background: var(--gl-band-lemon);
+  background: var(--gl-fam-100);
 }
-.gl .ph.-tile.-straw {
-  background: var(--gl-band-straw);
+.gl .ph.-tile.-straw,
+.gl .ph.-tile.-sky {
+  background: var(--gl-fam-200);
 }
 .gl .ph.-tile.-mint {
-  background: var(--gl-band-mint);
-}
-.gl .ph.-tile.-sky {
-  background: var(--gl-band-sky);
+  background: var(--gl-fam-100);
 }
 .gl .ph.-tile.-photo {
   background: var(--gl-ph);
@@ -700,7 +700,7 @@ html:not(.gl-dark) .gl .gl-map-img {
   --ts-line: var(--gl-foot-line);
   --ts-ring: var(--gl-foot-ink);
   --ts-font: var(--gl-f-body);
-  --ts-swatch-edge: rgba(255, 244, 234, 0.42);
+  --ts-swatch-edge: color-mix(in srgb, var(--gl-on-ink) 42%, transparent); /* the family's light on its dark footer */
   width: 100%;
   gap: 10px 16px;
 }
@@ -1078,4 +1078,36 @@ html.gl-dark .gl .pod {
 .gl-shell .side-me > .side-bag {
   width: 128px;
   justify-content: flex-start;
+}
+
+/* ── One colour family (14 Nov 2026, galio-design/BUILD-ONE-FAMILY.md) ──
+   style/galio/one.css (generated from the mockups' g/one.css) maps Galio's tokens onto the chosen
+   palette's family; components/galio/galio-family.ts writes the family. What the generated layer
+   cannot reach: */
+/* the product page's "More …" band is white (one tinted band at a time: crumbs, product white, Buy
+   together tinted, More white, footer dark); the mockup's id is h-more, the Layout's gl-h-more */
+.gl .sec.bg-mint[aria-labelledby="gl-h-more"] {
+  background: var(--gl-bg);
+}
+/* the base Layout's grounds, words and plates (Selldone's and Kalio's parts still read --bk-*) follow
+   the family too, in both modes (html:root outweighs the base's :root and comes after html.bk-dark) */
+html:root {
+  --bk-bg: var(--gl-bg);
+  --bk-bg-2: var(--gl-fam-100);
+  --bk-s1: var(--gl-surface);
+  --bk-s2: var(--gl-fam-100);
+  --bk-s3: var(--gl-fam-200);
+  --bk-ink: var(--gl-ink);
+  --bk-ink-2: var(--gl-ink);
+  --bk-mut: var(--gl-muted);
+  --bk-line: var(--gl-line);
+  --bk-plate: var(--gl-fam-200);
+  --bk-plate-2: var(--gl-fam-300);
+  --bk-foot-bg: var(--gl-fam-100);
+  --bk-scrim: var(--gl-fam-scrim);
+}
+/* the journal's date roundel (read.css .droll, yellow in B) wears the brand, like the saving sticker */
+.gl .droll {
+  background: var(--gl-act);
+  color: var(--gl-act-on);
 }

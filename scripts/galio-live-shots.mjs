@@ -8,8 +8,8 @@
  * bag is emptied at the end. Nothing is ordered.
  *
  * Usage: node --use-system-ca scripts/galio-live-shots.mjs [base] [out-folder]
- *   WIDTHS=1440,390 · MODES=light,dark · ONLY=home,product (page names)
- * Files: <out>/<page>-<width>-<mode>.png
+ *   WIDTHS=1440,390 · MODES=light,dark · ONLY=home,product (page names) · PALETTE=cherry|pistachio|blueberry|cocoa
+ * Files: <out>/<page>-<width>-<mode>[-<palette>].png
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -19,6 +19,7 @@ const OUT = path.resolve(process.argv[3] || ".shots/live");
 const WIDTHS = (process.env.WIDTHS || "1440,390").split(",").map(Number);
 const MODES = (process.env.MODES || "light").split(",");
 const ONLY = process.env.ONLY ? process.env.ONLY.split(",") : null;
+const PALETTE = process.env.PALETTE || "cherry";
 const PW = process.env.PW || "D:/Kalio Sample Shop Claude/kalio-marketplace/node_modules/playwright/index.js";
 const PAGES = [
   ["home", "/"],
@@ -51,11 +52,14 @@ for (const MODE of MODES)
   for (const W of WIDTHS) {
     const H = W < 768 ? 844 : 900;
     const ctx = await browser.newContext({ viewport: { width: W, height: H }, deviceScaleFactor: 1, isMobile: W < 768, hasTouch: W < 768 });
-    await ctx.addInitScript((mode) => {
-      try {
-        localStorage.setItem("galio-theme", JSON.stringify({ palette: "cherry", mode }));
-      } catch {}
-    }, MODE);
+    await ctx.addInitScript(
+      ([mode, palette]) => {
+        try {
+          localStorage.setItem("galio-theme", JSON.stringify({ palette, mode }));
+        } catch {}
+      },
+      [MODE, PALETTE],
+    );
     const page = await ctx.newPage();
     /* Selldone's /buy/ calls (never the dev server's own modules: components/galio/buy/) */
     await page.route((u) => !/^(localhost|127\.0\.0\.1)$/.test(u.hostname) && /\/buy\//.test(u.pathname), (r) => r.abort());
@@ -89,7 +93,7 @@ for (const MODE of MODES)
         }
         await page.evaluate(() => window.scrollTo(0, 0));
         await sleep(1500);
-        const file = path.join(OUT, `${name}-${W}-${MODE}.png`);
+        const file = path.join(OUT, `${name}-${W}-${MODE}${PALETTE === "cherry" ? "" : "-" + PALETTE}.png`);
         await page.screenshot({ path: file, fullPage: true });
         const st = await page.evaluate(() => ({ path: location.pathname + location.search, gl: document.querySelectorAll(".gl").length, w: document.documentElement.scrollWidth }));
         const side = st.w > W + 1;

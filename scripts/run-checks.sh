@@ -22,6 +22,11 @@ W3="1440,1100,390"
 DARK="{\"$SK\":\"{\\\"palette\\\":\\\"cherry\\\",\\\"mode\\\":\\\"dark\\\"}\"}"
 LIGHT="{\"$SK\":\"{\\\"palette\\\":\\\"cherry\\\",\\\"mode\\\":\\\"light\\\"}\"}"
 YELLOW="{\"$SK\":\"{\\\"palette\\\":\\\"custom\\\",\\\"custom\\\":\\\"#ffff00\\\",\\\"mode\\\":\\\"light\\\"}\"}"
+# theme_of <palette> <light|dark> [custom #hex]: the storage value for that theme
+theme_of() {
+  if [ -n "${3:-}" ]; then echo "{\"$SK\":\"{\\\"palette\\\":\\\"custom\\\",\\\"custom\\\":\\\"$3\\\",\\\"mode\\\":\\\"$2\\\"}\"}"
+  else echo "{\"$SK\":\"{\\\"palette\\\":\\\"$1\\\",\\\"mode\\\":\\\"$2\\\"}\"}"; fi
+}
 AR="{\"local-shop-bakio\":\"ar\",\"galio-dev-languages\":\"ar\"}"
 ARDARK="{\"local-shop-bakio\":\"ar\",\"galio-dev-languages\":\"ar\",\"$SK\":\"{\\\"palette\\\":\\\"cherry\\\",\\\"mode\\\":\\\"dark\\\"}\"}"
 PAGES_ALL='home=/,category=/croissants-category,deals=/?filter={"only_has_discount":true},search=/?search=pistachio,product=/product/720375,product2=/product/720359,compare=/comparison?list=p720375_p720378_p720380,blog=/blog,article=/blog/pickup-or-delivery-36222,about=/about-us,terms=/terms,privacy=/privacy,contact=/contact-us,faq=/faq,404=/no-such-page,cart=/basket/PHYSICAL,checkout=/basket/PHYSICAL?step=checkout,account=/user'
@@ -54,6 +59,15 @@ run circle-ar   env PAGES='home=/,deals=/?filter={"only_has_discount":true},blog
 run contrast-dark   env WIDTHS="$W3" PAGES="$PAGES_ALL" STORAGE="$DARK"   node "$ROOT/components/theme-switcher/tools/contrast-audit.cjs" "$BASE" "$WAIT"
 run contrast-light  env WIDTHS="$W3" PAGES="$PAGES_ALL" STORAGE="$LIGHT"  node "$ROOT/components/theme-switcher/tools/contrast-audit.cjs" "$BASE" "$WAIT"
 run contrast-yellow env PAGES="$PAGES_MAIN" STORAGE="$YELLOW" node "$ROOT/components/theme-switcher/tools/contrast-audit.cjs" "$BASE" "$WAIT"
+# One colour family (1.0.3): a palette re-tints every ground, so each palette is audited light and dark,
+# and the custom colours the owner names (#ffff00, #00ffff, #111111) in both modes too.
+for p in pistachio blueberry cocoa; do for m in light dark; do
+  run "contrast-$p-$m" env WIDTHS="$W3" PAGES="$PAGES_MAIN" STORAGE="$(theme_of "$p" "$m")" node "$ROOT/components/theme-switcher/tools/contrast-audit.cjs" "$BASE" "$WAIT"
+done; done
+run contrast-yellow-dark env PAGES="$PAGES_MAIN" STORAGE="$(theme_of custom dark '#ffff00')" node "$ROOT/components/theme-switcher/tools/contrast-audit.cjs" "$BASE" "$WAIT"
+for c in 00ffff 111111; do for m in light dark; do
+  run "contrast-$c-$m" env PAGES="$PAGES_MAIN" STORAGE="$(theme_of custom "$m" "#$c")" node "$ROOT/components/theme-switcher/tools/contrast-audit.cjs" "$BASE" "$WAIT"
+done; done
 run contrast-states-dark  env WIDTHS="$W3" PAGES='home=/' STORAGE="$DARK"  OPEN="$OPEN_STATES" node "$ROOT/components/theme-switcher/tools/contrast-audit.cjs" "$BASE" "$WAIT"
 run contrast-states-light env WIDTHS="$W3" PAGES='home=/' STORAGE="$LIGHT" OPEN="$OPEN_STATES" node "$ROOT/components/theme-switcher/tools/contrast-audit.cjs" "$BASE" "$WAIT"
 run contrast-signin-dark  env PAGES='home=/' STORAGE="$DARK"  OPEN="$OPEN_SIGNIN" node "$ROOT/components/theme-switcher/tools/contrast-audit.cjs" "$BASE" "$WAIT"

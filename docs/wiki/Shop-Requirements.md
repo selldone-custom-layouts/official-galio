@@ -32,7 +32,7 @@ The facts on the home, the rail, the footer, About, Contact and the sample pages
 - Each **top-level category** with products is a collection: a card in the home's "Pick your pastry", a tab in "Today's prices", an entry in the rail's Shop menu and the phone menu, a chip on every listing, and its own listing page.
 - Galio draws each collection with a **line drawing**, matched by its name or address name: cookie / biscuit / macaron, croissant / brioche, danish / pastry / puff, muffin / cupcake, cake / gâteau / torte, tart / pie / quiche. A collection that matches none gets a generic pastry. Its image in Selldone is not needed for that.
 - Give each one a short **description**: its line in "Pick your pastry".
-- Order them in Selldone; the Layout keeps your order. The six sorbet tints of the plates and the collection discs are given to the collections in that order, then repeat.
+- Order them in Selldone; the Layout keeps your order. Every collection's plates and disc take the same tint, the palette's family (see [Theme and colours](Theme-and-colours)), so the order changes no colour.
 - The hero slider shows up to three collections, those with their own photo first (see below), then by **sales** (the sum of their products' sales). Each slide names the collection's three best sellers.
 
 ## Photo slots (the hero, the mosaic and the banner)
@@ -50,11 +50,11 @@ These photos are part of the **Layout**, not of your shop: files in `assets/gali
 | `galio-banner-wide.webp` | 2400 × 1000 | the "Sold by the piece" banner |
 | `galio-banner-square.webp` | 1200 × 1200 | the same banner, phones |
 
-`<collection name>` is the collection's address name in Selldone. The repository ships **none** of these files. Without its file, a slot is a designed fallback, never a caption: the hero and the banner keep a warm painted ground with the collection's best sellers as small cut-outs (never blown up), and the mosaic's tiles are sorbet tints with a line drawing or your own pastries. Each photo adds a file to the release: keep the total under ~360 (see [Build and Upload](Build-and-Upload)).
+`<collection name>` is the collection's address name in Selldone. The repository ships **none** of these files. Without its file, a slot is a designed fallback, never a caption: the hero and the banner keep a painted ground in the family's hue with the collection's best sellers as small cut-outs (never blown up), and the mosaic's tiles are two tints of the palette's family, in turn, with a line drawing or your own pastries. Each photo adds a file to the release: keep the total under ~360 (see [Build and Upload](Build-and-Upload)).
 
 ## Products
 
-- The **main photo** as a **transparent cut-out** (PNG or WebP, the pastry alone on no ground). Every card, the price list, the quick look and the product page set it on a round plate in its collection's tint; a photo with its own ground shows as a square on the plate. More photos make the product page's gallery. A product without a main photo is left out of Galio's lists.
+- The **main photo** as a **transparent cut-out** (PNG or WebP, the pastry alone on no ground). Every card, the price list, the quick look and the product page set it on a round plate in the family's tint; a photo with its own ground shows as a square on the plate. More photos make the product page's gallery. A product without a main photo is left out of Galio's lists.
 - A **unit** (Selldone's `unit` field, for example "croissant"): "per croissant" on every card and price-list row, "Sold by the piece · per croissant" on the product page, and the home banner's "a cookie, a croissant and a cake". Without one, the Layout says "piece".
 - A **price**, and a **discount** for a saving: the price before, the tilted sticker with the percentage, "Save $X", the Deals page and its "Biggest savings". When every product has the same saving, the hero and the listings say so once ("25% off").
 - **Discount dates:** a deal with a real end date gets a clock on the product page. Without an end date there is no clock; no date is ever invented.

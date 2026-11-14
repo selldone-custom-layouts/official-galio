@@ -4,15 +4,15 @@ Galio's design lives in its own components and style sheets. Selldone's commerce
 
 ## The name and the wordmark
 
-The wordmark is your **shop's title**, read live. `components/galio/GlMark.vue` draws it in lower case in Shrikhand, then a round lemon dot, in the rail, the top bar, the menu sheet, the sign-in dialog and the footer. A long title shrinks until it fits its place; it is never cut. The page titles and the messages use the same title. Rename the shop in Selldone and the Layout follows.
+The wordmark is your **shop's title**, read live. `components/galio/GlMark.vue` draws it in lower case in Shrikhand, then a round dot in the brand colour (a light tone of it on the dark bars), in the rail, the top bar, the menu sheet, the sign-in dialog and the footer. A long title shrinks until it fits its place; it is never cut. The page titles and the messages use the same title. Rename the shop in Selldone and the Layout follows.
 
 `components/kalio/kalio-brand.ts`: `BRAND.name = null` keeps the shop's title. A string there replaces it everywhere the storefront names the shop.
 
-The mark (the browser tab's icon) is drawn from the title's first letter by `markFor()` in the same file: the letter in Shrikhand, cream on a cocoa rounded square, with the lemon dot. It is an inline SVG, so there is no image file to replace.
+The mark (the browser tab's icon) is drawn from the title's first letter by `markFor()` in the same file: the letter in Shrikhand, light (`#fff4f4`) on a rounded square in the Cherry family's near-black (`#2e181a`), with a brand dot (`#ff8292`). These are fixed Cherry values: the mark does not follow the palette. It is an inline SVG, so there is no image file to replace.
 
 ## The colours, light or dark
 
-One file: `components/galio/galio-theme.settings.ts`. See [Theme and colours](Theme-and-colours). Do not edit the palettes in `components/galio/galio-theme.ts` or the tokens in `style/galio/b.css` for a merchant's theme.
+One file: `components/galio/galio-theme.settings.ts`. See [Theme and colours](Theme-and-colours). Do not edit the palettes in `components/galio/galio-theme.ts`, the family in `components/galio/galio-family.ts` or the tokens in `style/galio/` for a merchant's theme: a palette or brand colour in the settings file already re-tints the whole page.
 
 ## Type, tokens and words
 
@@ -20,8 +20,9 @@ One file: `components/galio/galio-theme.settings.ts`. See [Theme and colours](Th
 | --- | --- |
 | Fonts (Shrikhand for display, Caveat for the kickers, Outfit for text; Material Symbols Rounded for the icons of the parts the shared base still draws) | `components/kalio/kalio-fonts.ts` |
 | Icons (the mockup's inline line icons and the collections' line drawings) | `components/galio/gl-icons.ts`, drawn by `GlIcon.vue`; `collKey()` matches a collection to its drawing by name |
-| Colour, type and radius tokens for both modes (white pages, the four sorbet bands, cocoa rail and footer, plates, stickers, map, the action colour) | `style/galio/b.css` (generated from the mockup): `:root` is light, `html.gl-dark` the cocoa night. To change one for good, change the mockup and re-run `scripts/galio-css.cjs`, or override it in `style/galio.scss` |
-| The collections' sorbet tints (six, given in the shop's order, then repeated) | `TINTS` in `components/galio/galio.ts` |
+| The one colour family: `--gl-fam-50`, `-100`, `-200`, `-300`, `--gl-fam-ink-bg` (the near-black), `--gl-fam-bg`, `-surface`, `-ink`, `-muted`, `-line`, `--gl-on-ink*` (words on the dark bars), the photo slots' ground and the scrim, for light and dark | computed from the palette's colour by `components/galio/galio-family.ts` and written on `<html>`; the Cherry values as plain CSS for the first paint in `style/galio/one.css` (generated). See [Theme and colours](Theme-and-colours#the-family) |
+| Galio's colour, type and radius tokens (grounds, bands, plates, rail, footer, stickers, notes, map, the action colour) | `style/galio/b.css` holds the mockup's base tokens (`:root` light, `html.gl-dark` dark); `style/galio/one.css` points the colour tokens at the family. Both are generated: to change one for good, change the mockup and re-run `scripts/galio-css.cjs`, or override it in `style/galio.scss` |
+| The plate tint of a collection | `tintOf()` in `components/galio/galio.ts` returns `var(--gl-fam-200)` for every collection (there is no per-collection tint) |
 | "Bag" instead of basket in Selldone's own English strings | `components/kalio/kalio-brand.ts` (`bagWords()`) |
 | Galio's own words (every one through `t("galio.…", "English")`) | the components; the English in `components/kalio/i18n/galio.en.ts`, the languages in `galio.<code>.ts` (see [Languages](#languages)) |
 
@@ -31,11 +32,11 @@ Every pastry, collection fact and article picture is your shop's own; a few phot
 
 | Picture | Where it comes from |
 | --- | --- |
-| Pastries on every card, the price list, the bag, the quick look, the product page | each product's main photo, a transparent cut-out (PNG or WebP), set on a round plate in its collection's tint; more photos make the gallery |
+| Pastries on every card, the price list, the bag, the quick look, the product page | each product's main photo, a transparent cut-out (PNG or WebP), set on a round plate in the family's tint; more photos make the gallery |
 | Collections in the rail's Shop menu, the menu sheet and "Pick your pastry" | a line drawing matched by the collection's name (`components/galio/gl-icons.ts`) |
 | The journal and each post | each article's cover image |
 | Visit the counter, About and Contact | a static map of the shop's location (Selldone's map service) |
-| The hero slides, the "How it reaches you" mosaic, the "Sold by the piece" banner | the photo slots: `assets/galio/<file>` when the file is in the repository (`components/galio/gl-photos.ts`), else a designed fallback with your own cut-outs or a sorbet tint and a line drawing |
+| The hero slides, the "How it reaches you" mosaic, the "Sold by the piece" banner | the photo slots: `assets/galio/<file>` when the file is in the repository (`components/galio/gl-photos.ts`), else a designed fallback with your own cut-outs or a family tint and a line drawing |
 
 So a pastry photo is changed in the Selldone dashboard, not in the code. The cut-outs matter: a photo with its own ground shows as a square on the round plate. See [Shop Requirements](Shop-Requirements#products).
 
@@ -66,10 +67,10 @@ A shop with its own custom header or footer code in Selldone keeps Selldone's he
 
 | File | Holds |
 | --- | --- |
-| `style/galio/core.css`, `b.css`, `shell.css`, `shop.css`, `product.css`, `buy.css`, `read.css` | the mockup's seven stylesheets, converted by `scripts/galio-css.cjs`: every rule scoped to Galio's own markup (`.gl`), the custom properties renamed `--gl-…`, dark mode as `html.gl-dark`. **Generated: never edit them.** |
+| `style/galio/core.css`, `b.css`, `shell.css`, `shop.css`, `product.css`, `buy.css`, `read.css`, `one.css` | the mockup's eight stylesheets, converted by `scripts/galio-css.cjs`: every rule scoped to Galio's own markup (`.gl`), the custom properties renamed `--gl-…`, dark mode as `html.gl-dark`. `one.css` is the one colour family layer (the Cherry family and Galio's tokens mapped onto it). **Generated: never edit them.** |
 | `style/galio.scss` | the Layout's own touches on the shell, home, listings, product and reading pages (for example Selldone's own `.link`, `.dot` and `.card` names, which the mockup shares, set back inside `.gl`) |
 | `style/galio-buy.scss` | the Layout's own touches on the bag, checkout, sheets, Selldone's payment window, the account and the order page |
-| `style/storefront.scss` and the files it loads (`kalio-*.scss`, `bakini-*.scss`, `walio-*.scss`) | the shared base the Layout started from, for the parts Selldone and Kalio still draw; Galio's switcher writes its palette into their `--bk-act*` colours, `--bk-ft` / `--bk-fd` point at Outfit and Shrikhand, and `html.bk-dark` follows `html.gl-dark` (`storefront.ts`) |
+| `style/storefront.scss` and the files it loads (`kalio-*.scss`, `bakini-*.scss`, `walio-*.scss`) | the shared base the Layout started from, for the parts Selldone and Kalio still draw; Galio's switcher writes its palette into their `--bk-act*` colours, their grounds, words and plates (`--bk-bg`, `--bk-ink`, `--bk-plate`…) are mapped onto the family at the end of `style/galio.scss`, `--bk-ft` / `--bk-fd` point at Outfit and Shrikhand, and `html.bk-dark` follows `html.gl-dark` (`storefront.ts`) |
 
 The Galio files are loaded from `StorefrontApp.vue`. Every Galio component wraps its markup in an element with the class `gl`, so the Galio rules never touch Selldone's or Vuetify's parts outside it. The theme switcher's build step (`postcss-dark-tokens`, in `vite.config.ts`) gives the shared base its dark values under `html.gl-dark`; it leaves Galio's own styles alone, because they hold both modes themselves.
 
@@ -108,10 +109,10 @@ Right to left, Galio keeps these rules:
 
 ## Rules the design keeps
 
-- **One action colour.** Cherry (or your palette) for every button, chosen state and link. Every colour is a token.
+- **One colour family.** Every colour comes from the palette's hue, plus white and the family's near-black, and one action colour (Cherry or your palette) for every button, chosen state and link. Every colour is a token.
 - **Flat.** Pill buttons without shadows; hover changes the colour only; no line under any word or icon. The only underlined words are the links inside a post's own text.
 - **Rings inside the box.** Every selection ring and card edge is an inset shadow, never an outline.
-- **Cut-outs on round plates.** Product photos are transparent cut-outs on a plate in their collection's tint; the tints darken in dark mode, so there is no white tile in either mode.
+- **Cut-outs on round plates.** Product photos are transparent cut-outs on a plate in the family's plate tint (`--gl-fam-200`), a deep tone of the same hue in dark mode, so there is no white tile in either mode.
 - **Bag, not cart.** In the Layout's words and in Selldone's own English strings.
 - **Honest words.** No invented history, awards, names, counts or reviews; sample pages say they are samples; delivery lines and windows only from the shop's own delivery ways (a window only where the shopper can pick one); counter hours only from the pickup note; deal clocks only to a deal's real end date; "not taking payment" when there is no payment method.
 - **Live data.** Nothing names a product, price, collection, delivery way or opening hour; another bakery gets its own.

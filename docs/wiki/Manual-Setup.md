@@ -62,9 +62,9 @@ The repository ships with `VITE_APP_SAMPLE_SHOP_NAME=bakio`, the showcase shop. 
 
 ## 4. Your name and theme
 
-- **Name:** the wordmark is your **shop's title**, drawn by `components/galio/GlMark.vue` in lower case, in Shrikhand, then a round lemon dot. A long title shrinks until it fits its place (the rail, the top bar, the footer); it is never cut. Change the title in the Selldone dashboard and the Layout follows. `BRAND.name` in `components/kalio/kalio-brand.ts` is `null`; a string there replaces the shop's title everywhere the storefront names the shop.
-- **Mark:** the tab icon is drawn from the title's first letter (`markFor` in `components/kalio/kalio-brand.ts`): the letter in Shrikhand, cream on a cocoa rounded square, with the lemon dot. It is an inline SVG, so there is no image file to replace.
-- **Theme:** `components/galio/galio-theme.settings.ts`, the one file for colours, light or dark and the visitor switcher. See [Theme and colours](Theme-and-colours).
+- **Name:** the wordmark is your **shop's title**, drawn by `components/galio/GlMark.vue` in lower case, in Shrikhand, then a round dot in the brand colour (a light tone of it on the dark rail, top bar and footer). A long title shrinks until it fits its place (the rail, the top bar, the footer); it is never cut. Change the title in the Selldone dashboard and the Layout follows. `BRAND.name` in `components/kalio/kalio-brand.ts` is `null`; a string there replaces the shop's title everywhere the storefront names the shop.
+- **Mark:** the tab icon is drawn from the title's first letter (`markFor` in `components/kalio/kalio-brand.ts`): the letter in Shrikhand, light (`#fff4f4`) on a rounded square in the Cherry family's near-black (`#2e181a`), with a brand dot (`#ff8292`). The mark keeps these Cherry values in every palette. It is an inline SVG, so there is no image file to replace.
+- **Theme:** `components/galio/galio-theme.settings.ts`, the one file for colours, light or dark and the visitor switcher. A palette or brand colour there re-tints the whole page (its one colour family), not just the buttons. See [Theme and colours](Theme-and-colours).
 
 ## 5. Run it
 

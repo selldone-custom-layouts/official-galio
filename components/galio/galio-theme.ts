@@ -3,20 +3,19 @@
  * palettes, a custom colour and Light / Dark, a click changes the whole site; the same shared package
  * in every Layout, components/theme-switcher/).
  *
- * Galio is light first (Bakio's Noir Layout is dark first): white pages on sorbet bands, with a cocoa night as the
- * dark mode. The mode's grounds, lines and words are the mockup's own tokens (style/galio/b.css, :root
- * and html.gl-dark, generated from galio-design/g/b.css); this config writes only the palette's action
- * colour (--gl-act*, --gl-accent, --gl-ring) and Vuetify's theme.
+ * Galio is light first (Bakio's Noir Layout is dark first): white pages and one colour family, with a
+ * night of the same family as the dark mode. Since 1.0.3 ("one colour family", 14 Nov 2026) every ground,
+ * band, plate, the rail and the footer come from the chosen palette's hue: components/galio/galio-family.ts
+ * computes the family (OKLCH) and style/galio/one.css maps Galio's tokens onto it, with the Cherry
+ * family as plain CSS for the first paint. This config writes the palette's action colour (--gl-act*,
+ * --gl-accent, --gl-ring) and Vuetify's theme; the family follows the palette it paints.
  *
  * The palettes are the mockup's (galio-design/g/home.js PRESETS, set B): Cherry (the brand, the
- * mockup's hand-set values), Pistachio, Blueberry and Cocoa, each built by paletteFromColor() with the
- * mockup's surfaces (lightSurfaces: white and the four sorbet bands; darkSurfaces: the cocoa night),
- * the same function the Custom swatch uses.
- *
- * Contrast (WCAG 2.1, paletteFromColor and the surfaces below, 13 November 2026). White on each light
- * primary: Cherry #a3213f 7.38, Pistachio 5.49, Blueberry 6.16, Cocoa 7.39; Cherry on the strawberry
- * band 6.11 and on the lemon band 6.50. White on each dark primary 5.04 or more; each dark "text"
- * colour on the dark surface #251a13 7.86 or more (Cherry's #f59ab0 8.20).
+ * mockup's hand-set values), Pistachio, Blueberry and Cocoa, built by paletteFromColor() (13 November
+ * 2026), the same function the Custom swatch uses. White on each light primary: Cherry #a3213f 7.38,
+ * Pistachio 5.49, Blueberry 6.16, Cocoa 7.39; white on each dark primary 5.04 or more. Their contrast on
+ * the family's grounds (every palette, light and dark, and the custom colours) is checked by
+ * scripts/run-checks.sh (the contrast-<palette>-<mode> and custom runs).
  */
 import type { ThemeSwitcherConfig } from "../theme-switcher/theme-switcher";
 import { THEME_SETTINGS } from "./galio-theme.settings";
@@ -107,29 +106,30 @@ export const GALIO_THEME: ThemeSwitcherConfig = {
     light: "light",
     dark: "dark",
     paletteColors: { primary: "primary", "on-primary": "onPrimary" },
-    /* The cocoa night: Selldone's fields, menus, dialogs and sheets are dark too. */
+    /* The night: Selldone's fields, menus, dialogs and sheets are dark too. These are the Cherry family's
+       dark values; components/galio/galio-family.ts rewrites them for the chosen palette. */
     darkColors: {
-      background: "#1a120d",
-      surface: "#251a13",
-      "surface-bright": "#2f2019",
-      "surface-variant": "#3b2b21",
-      "on-background": "#fff1e6",
-      "on-surface": "#fff1e6",
-      "on-surface-variant": "#e8d8cc",
+      background: "#140d0e",
+      surface: "#1d1314",
+      "surface-bright": "#241617",
+      "surface-variant": "#40292b",
+      "on-background": "#faeced",
+      "on-surface": "#faeced",
+      "on-surface-variant": "#cab9ba",
       "on-primary": "#ffffff",
-      secondary: "#dca685",
-      "on-secondary": "#1a120d",
+      secondary: "#ff8292",
+      "on-secondary": "#140d0e",
       error: "#f59ab0",
-      info: "#dca685",
+      info: "#ff8292",
       success: "#8ebe7a",
-      warning: "#ffd84d",
+      warning: "#fbbfc3",
     },
     lightColors: {
       background: "#ffffff",
       surface: "#ffffff",
-      "on-background": "#2b1a12",
-      "on-surface": "#2b1a12",
-      secondary: "#7a4a2c",
+      "on-background": "#2a1e1f",
+      "on-surface": "#2a1e1f",
+      secondary: "#2e181a",
       "on-secondary": "#ffffff",
       error: "#c4122f",
     },
@@ -170,11 +170,13 @@ export const GALIO_THEME: ThemeSwitcherConfig = {
   },
 
   /* "Custom colour" (the owner, 9 November 2026): any colour, made readable by paletteFromColor()
-     against Galio's own surfaces (the mockup's OPTS for set B). */
+     against Galio's grounds. With the one colour family (14 Nov 2026) the grounds are the picked
+     colour's own family, so they are given here as greys of the family's lightness (white, fam-100,
+     fam-200; dark: fam-bg, fam-surface, fam-200, fam-300): the same contrast for any hue. */
   custom: {
     headerContrast: 4.5,
-    lightSurfaces: ["#ffffff", "#fbf1c7", "#fce4e7", "#ddf1e6", "#e2ecf8"],
-    darkSurfaces: ["#1a120d", "#251a13", "#2f1c1f", "#172821"],
-    darkText: "#2b1a12",
+    lightSurfaces: ["#ffffff", "#f2f2f2", "#e6e6e6"],
+    darkSurfaces: ["#101010", "#1a1a1a", "#232323", "#303030"],
+    darkText: "#2a1e1f",
   },
 };

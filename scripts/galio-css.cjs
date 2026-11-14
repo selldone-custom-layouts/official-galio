@@ -12,7 +12,11 @@
 // - Custom properties take the --gl- prefix. The token blocks (:root and the dark block) are kept as
 //   they are (renamed), so the mockup's tokens stay the single source; the theme switcher writes the
 //   palette's action colours inline on <html>, which outranks them.
-// - html[data-mode="dark"] -> html.gl-dark (the theme switcher's dark class).
+// - html[data-mode="dark"] -> html.gl-dark (the theme switcher's dark class); html[data-mode] (one.css,
+//   "either mode") -> html:root.
+// - one.css (14 Nov 2026) is the "one colour family" layer: the Cherry family as plain CSS (light and
+//   dark, right on the first paint), the B tokens mapped onto it, every plate, band and sticker from the
+//   family. components/galio/galio-family.ts writes the chosen palette's family over it at run time.
 // - body -> the .gl root itself, without the page background (the Layout paints the page and the
 //   rail's strip itself, style/galio.scss); body::before (the safe-area paint) and the bare html rule
 //   are left out (Selldone owns <html>).
@@ -27,7 +31,7 @@ const sp = require("postcss-selector-parser");
 
 const SRC = process.argv[2] || path.resolve(__dirname, "../../galio-design/g");
 const OUT = path.resolve(__dirname, "../style/galio");
-const FILES = ["core", "b", "shell", "shop", "product", "buy", "read"];
+const FILES = ["core", "b", "shell", "shop", "product", "buy", "read", "one"];
 const KEYFRAMES = new Map();
 const DROP = /^(\.ph-tag|\.ph-cam|\.note-bar)\b/;
 
@@ -37,9 +41,12 @@ function scopeSelector(sel) {
   sel = sel
     .replace(/html\[data-mode=["']?dark["']?\]/g, "html.gl-dark")
     .replace(/html:not\(\[data-mode=["']?dark["']?\]\)/g, "html:not(.gl-dark)")
+    // one.css: html[data-mode] means "either mode". html:root weighs as much as html.gl-dark, so its
+    // token block (generated after b.css) wins in both modes, as in the mockup.
+    .replace(/html\[data-mode\](?!=)/g, "html:root")
     .replace(/\.ts(?=[\s.:,[>+~)]|$)/g, ".gts")
     .replace(/\.ts-/g, ".gts-");
-  if (/^\s*(:root|html|html\.gl-dark)\s*$/.test(sel)) return sel;
+  if (/^\s*(:root|html|html\.gl-dark|html:root)\s*$/.test(sel)) return sel;
   return sp((root) => {
     root.each((selector) => {
       const nodes = selector.nodes;

@@ -16,13 +16,12 @@ declare const window: any;
 
 /* ━━━━━━━━━━━━ Collections ━━━━━━━━━━━━ */
 
-/** The mockup's sorbet tints, given to the collections in the shop's order (Bakio: cookies,
-    croissants, Danish, mini cakes, muffins, tarts get the mockup's exact tints), cycled for more. */
-export const TINTS = ["#f6e3c2", "#fbefc2", "#fcdfe4", "#f9dde8", "#e0e9f8", "#dbefe2"];
-
-export function tintOf(catId: number | null | undefined): string {
-  const i = shopData.cats.findIndex((c) => c.id === catId);
-  return TINTS[(i < 0 ? 0 : i) % TINTS.length];
+/** Every collection's plate, mini row and card ground: the family's plate colour (the "one colour family",
+    14 Nov 2026). The B design gave each collection its own sorbet tint (cookies peach, croissants yellow,
+    Danish pink…); the owner found it too many colours, so the per-collection map is gone and every
+    `--gl-tint` reads the chosen palette's family (style/galio/one.css, components/galio/galio-family.ts). */
+export function tintOf(_catId?: number | null): string {
+  return "var(--gl-fam-200)";
 }
 
 /** Collections with products, most sold first (the sum of their products' sales), the shop's order on a tie. */

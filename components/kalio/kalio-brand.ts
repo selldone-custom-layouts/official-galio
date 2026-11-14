@@ -17,17 +17,18 @@ export const BRAND: { name: string | null; mark: string } = {
 };
 
 /** The mark as an SVG data URL: the title's first letter in Galio's fat
-    display face, cream on the cocoa of the rail, with the wordmark's lemon dot. */
+    display face, light on the Cherry family's dark (the rail's colour), with the wordmark's brand dot
+    (the one colour family, 14 Nov 2026: no lemon). */
 export function markFor(title: string): string {
   const letter = (String(title || "").trim().charAt(0) || "·").toLowerCase();
   const esc = letter.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c] as string);
   const svg =
     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">' +
-    '<rect width="64" height="64" rx="18" fill="#2e1c12"/>' +
-    '<text x="28" y="46" text-anchor="middle" font-family="Shrikhand, Cooper Black, Georgia, serif" font-size="40" fill="#fff4ea">' +
+    '<rect width="64" height="64" rx="18" fill="#2e181a"/>' +
+    '<text x="28" y="46" text-anchor="middle" font-family="Shrikhand, Cooper Black, Georgia, serif" font-size="40" fill="#fff4f4">' +
     esc +
     "</text>" +
-    '<circle cx="48" cy="43" r="5" fill="#ffd84d"/>' +
+    '<circle cx="48" cy="43" r="5" fill="#ff8292"/>' +
     "</svg>";
   return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
 }

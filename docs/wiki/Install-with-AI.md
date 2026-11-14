@@ -10,7 +10,7 @@ An AI coding agent (for example **Claude Code** or **OpenAI Codex**) can set Gal
 | Your shop's **OAuth client id**, set up for the shop | Shopper sign-in. Without it, sign-in leaves for Selldone and shows an error. **Do this first.** | Shop dashboard (the shop's login / OAuth client settings), or the Selldone MCP connector (`selldone_shop_client_list`, `selldone_shop_client_create`) |
 | Your shop's **handle** (the name in `name.myselldone.com`) and **shop id** | The agent uses them in `.env` and when attaching | Shop dashboard |
 | Your shop's title | It is drawn as the wordmark, so set it the way you want it read | Shop dashboard |
-| Your theme | One file for the colours | You choose: a palette (`cherry`, `pistachio`, `blueberry`, `cocoa`) or a brand colour `#RRGGBB`, and light or dark |
+| Your theme | One file for the colours; the colour you pick tints the whole page (bands, plates, rail and footer as well as the buttons) | You choose: a palette (`cherry`, `pistachio`, `blueberry`, `cocoa`) or a brand colour `#RRGGBB`, and light or dark |
 | A domain to try it on | Galio goes live on one domain first; the whole shop only when you say | A domain of your shop, for example `shop.example.com` (see [Go Live](Go-Live)) |
 | A GitHub account | Your own copy (fork) of this repository | [github.com](https://github.com) |
 | A computer with **Git**, **Node.js 22.15 or newer**, **Python 3** and **Bash** (Git Bash on Windows) | Building and packaging | — |
@@ -115,8 +115,8 @@ login modes). Do not place real orders.
 
 ## 4. Check the result yourself
 
-- Open your domain on a computer. You should see the cocoa side rail with your shop's title as the wordmark (lower case, in Shrikhand, with a lemon dot), and the hero slider of your best-selling collections with filling tabs. Not Selldone's default home.
-- On a phone you should see the cocoa top bar with the wordmark, search, the bag and the menu.
+- Open your domain on a computer. You should see the side rail in your palette's near-black (a deep wine-brown for Cherry) with your shop's title as the wordmark (lower case, in Shrikhand, with a dot in a light tone of your brand colour), and the hero slider of your best-selling collections with filling tabs. Not Selldone's default home.
+- On a phone you should see the top bar in the same near-black with the wordmark, search, the bag and the menu.
 - Tap "Add to bag" on a best seller: it becomes "− 1 +" in place, and the bag's count goes up.
 - Tap Account, then Sign in: the sign-in dialog opens with your shop's own ways in. It should never end on an error page at Selldone.
 - Open the bag, then Checkout: the step pills, the numbered cards, your delivery ways as cards and their time windows.

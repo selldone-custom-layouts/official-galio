@@ -49,13 +49,17 @@ Selldone stores the MIME type it sniffs from each file. Every JS file must start
 - You checked a URL with a query. Open the plain address and read `window.sdShopLayout`.
 - The ZIP was stale: always package with `--force` and compare `shop.js` with `cmp`.
 
+## The page still shows the old pastel bands
+
+Lemon, strawberry, mint or sky bands, a brown rail in every palette, or yellow stickers are the look before 1.0.3. The page is running an old cached release: check that the domain is pinned to 1.0.3 or newer (see [The upload worked but the shop still shows the old version](#the-upload-worked-but-the-shop-still-shows-the-old-version)) and reload without the cache. Since 1.0.3 the palette's family is written by `components/galio/galio-family.ts`: in the browser's console, `getComputedStyle(document.documentElement).getPropertyValue("--gl-fam-200")` must give a colour. If it is empty, the page runs a release older than 1.0.3 (or `style/galio/one.css` is missing from the build). If it stays Cherry's `#ffdcde` in light mode after you pick another palette, `bootFamily()` (called in `storefront.ts`) is not running.
+
 ## `/` shows a landing page, the Layout is only on `/shop`
 
 The Home is a Page Builder page. Set Home to **Shop** for the shop, or for that domain: see [Go Live](Go-Live).
 
 ## A pastry sits on a white or coloured square inside its round plate
 
-Its photo has its own ground. Galio sets every pastry on a round plate in its collection's tint, so the main photo must be a **transparent cut-out** (PNG or WebP). Replace the photo in Selldone; no release is needed. See [Shop Requirements](Shop-Requirements#products).
+Its photo has its own ground. Galio sets every pastry on a round plate in the palette's family tint, so the main photo must be a **transparent cut-out** (PNG or WebP). Replace the photo in Selldone; no release is needed. See [Shop Requirements](Shop-Requirements#products).
 
 ## A home section is missing
 
@@ -129,7 +133,7 @@ That is by design: with `themeSwitcher: "showcase"` it shows only on the Layout'
 
 ## Selldone's default purple appears in some places
 
-Those are Selldone's own components using the theme colour. Galio's switcher writes the palette into `--gl-act*` and the shared base's `--bk-act*`, `style/kalio-tokens.scss` points `--v-theme-primary` at it, and Vuetify's theme takes the palette from `components/galio/galio-theme.ts`; if a part still shows Selldone's purple, make it read that variable rather than a fixed colour. To change the colours themselves, use the settings file, not the tokens.
+Those are Selldone's own components using the theme colour. Galio's switcher writes the palette into `--gl-act*` and the shared base's `--bk-act*`, `style/kalio-tokens.scss` points `--v-theme-primary` at it, and Vuetify's theme takes the palette from `components/galio/galio-theme.ts` (its dark surfaces from the family, `paintFamily()` in `components/galio/galio-family.ts`); if a part still shows Selldone's purple, make it read that variable rather than a fixed colour. To change the colours themselves, use the settings file, not the tokens.
 
 ## Selldone's header or footer shows instead of Galio's
 

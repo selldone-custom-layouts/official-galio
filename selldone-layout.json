@@ -2,7 +2,7 @@
   "name": "Galio Sundae Patisserie",
   "shop": "Bakio",
   "kind": "Pâtisserie · single bakery",
-  "summary": "A single bakery dressed as a sorbet parlour: white pages on lemon, strawberry, mint and sky bands, cherry for every action, Shrikhand over Outfit with Caveat script kickers; a cocoa side rail with a scalloped awning edge (a top bar and menu sheet on phones), a hero slider of the best-selling collections, line-drawn collections, a mosaic of the real ways to get an order, a price list with dot leaders, best sellers on round tinted plates with tilted stickers, the real counter on a map and the journal. Light by default, with a dark mode and a footer Theme row.",
+  "summary": "A single bakery dressed as a pastry parlour in one colour family: every ground, band and plate is a tint of the chosen palette's hue (cherry by default), with white pages taking turns with tinted bands, Shrikhand over Outfit with Caveat script kickers; a side rail in the family's near-black with a scalloped awning edge (a top bar and menu sheet on phones), a hero slider of the best-selling collections, line-drawn collections, a mosaic of the real ways to get an order, a price list with dot leaders, best sellers on round plates with tilted stickers in the brand colour, the real counter on a map and the journal. Light by default, with a dark mode in the same family and a footer Theme row; switching the palette re-tints the whole page.",
   "live": "https://galio.selldone.shop",
   "cover": "docs/screenshots/cover.jpg",
   "screenshots": [
@@ -20,7 +20,7 @@
     "patisserie",
     "single-vendor",
     "light",
-    "sorbet",
+    "one-colour-family",
     "cherry",
     "rtl"
   ],

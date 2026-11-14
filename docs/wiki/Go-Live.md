@@ -61,11 +61,11 @@ If `/` shows a Page Builder landing page while `/shop` shows the Layout, the Hom
 Open the address **without a query** (a query shows the catalogue instead of the home). Then:
 
 - the page source's `window.sdShopLayout` → `"saved"` block names your package and the new version;
-- on a computer, the cocoa side rail shows your shop's title as the wordmark, and the home starts with the hero slider of your collections, then "Pick your pastry" on the lemon band;
+- on a computer, the side rail (the family's near-black) shows your shop's title as the wordmark, and the home starts with the hero slider of your collections, then "Pick your pastry" on a light band of your palette's family;
 - no blank page and no flash of an old design;
 - Sign in opens the sign-in dialog with your shop's own ways in;
 - the bag drawer opens from Bag (n), and the checkout lists your delivery ways and their windows;
-- check on a phone-sized screen too: the cocoa top bar and the menu sheet.
+- check on a phone-sized screen too: the top bar in the same near-black and the menu sheet.
 
 A headless browser that opens a `/product/` link directly gets Selldone's SEO page, not the Layout. Open the home first and move with the Layout's own links, or test in a normal browser.
 

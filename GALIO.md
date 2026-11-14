@@ -138,6 +138,20 @@ On galio.selldone.shop, one check at a time: contrast for Pistachio, Blueberry a
 
 **Arabic on a live shop that sells in English only.** The first live run of the Arabic checks stayed in English (`<html lang="en">`, LTR; Arabic words 1902), because Bakio offers no Arabic: on the dev server `mixin/StorefrontMixin.ts` adds it for the checks, but that switch is development only. Not a bug of the Layout (no visitor of this shop can pick Arabic); the Arabic checks of earlier live passes had only run on dev. `scripts/pw-shop-languages.cjs` is a Playwright wrapper that does the same at the network level in the test browser only: it answers the shop-info call (`/shops/@bakio/info`) with the shop's own JSON plus a "languages" option (English and `EXTRA_LANGUAGES`, default Arabic). With `PW=scripts/pw-shop-languages.cjs` the live production bundle switches to Arabic (`lang="ar"`, RTL, the rail in Arabic) and Arabic contrast light/dark and the Arabic words check are TOTAL 0. Nothing is written to the shop.
 
+## 1.0.5 — focus: no outline, one ring per control (14 November 2026)
+
+**The owner's bug.** Clicking the Min/Max price box of the collection filter (live 1.0.4, the desktop panel and the phone sheet) showed three rings at once: a sharp rectangle around the bare input, a 14px ring around the whole label (over the word "Min") and the right one, the `.rb` pill. Causes: the base Layout's `.v-application :focus-visible { outline: 2px solid; outline-offset: 2px }` (`style/kalio-tokens.scss`), which outweighed core.css's `input:focus { outline: none }` and reached every focused element with no rule of its own; and the mockup's `label:focus-within` ring (`style/galio/core.css`), drawn on any label that wraps a field.
+
+**Fix** (`style/galio-shape.scss`): no outline on anything focused, in Galio and in Selldone's and Vuetify's parts; a label that wraps a field never rings (the field, or its own wrapper such as `.rb` or `.sortsel`, carries the one ring on its own shape; checkboxes and switches ring on their own box); and anything outside Galio's markup with no ring of its own (a link, a button, a `[tabindex="0"]`) gets an inset ring on its own radius, so nothing lost its focus look.
+
+**The check that missed it.** The ring sweep and the shape audit looked at pages at rest and at links and buttons focused from the keyboard, never at a clicked field. `scripts/shape-check.cjs` now clicks and tabs into every input, select and text area of every page and every overlay it opens (the filter panel and sheet, sort, search, the newsletter, the sign-in sheet, the checkout fields and the address sheet with `FILLED=1`) and fails on any outline on the field or its ancestors, on more than one ring that appears around it, and on a field whose look does not change at all. On live 1.0.4 it reports the owner's bug (the price boxes: an outline and 2 rings, the sort select and the newsletter: an outline). Run it with `MSYS_NO_PATHCONV=1` from Git Bash (run-checks.sh sets it): otherwise Git Bash turns the page paths into Windows paths.
+
+**A second gap the new check found:** a field in error (`[aria-invalid]`, e.g. the checkout's phone once the contact was saved empty) already wears a 2px ring in the action colour, so focusing it changed nothing. Focused, an error field now takes a 3px ring on the plain ground.
+
+**Dev (14 Nov 2026), the checks a focus change can affect:** ring dark/light/Arabic, underline dark/light, contrast with the bag drawer or phone menu open (light), shapes light/dark (with the field test, the overlays and the filled checkout, 1440/1100/390), shapes teal and Arabic: all **TOTAL 0**.
+
+**Arabic (the "i18n-ar" item).** Not a Layout bug: see "Live pass on 1.0.4"; the live Arabic checks run with `PW=scripts/pw-shop-languages.cjs` and are TOTAL 0. No code change.
+
 ## Releases
 
 Next uploads: `bash "../new-shop-kits/upload-guard.sh" env LAYOUT_ID=39 SELLDONE_CLI="$(npm root -g)/selldone-cli" SELLDONE_CLI_SRC="../selldone-cli-src" bash scripts/release.sh <version> desk` (a new version number every time), then `node --use-system-ca scripts/kalio-verify-deploy.mjs <cli> 39 dist/app`.

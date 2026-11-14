@@ -224,3 +224,38 @@ html:root .gl .sec--shop .fpanel .rb {
 .gl .pill-region:focus-visible {
   border-radius: var(--gl-r-pill);
 }
+
+/* ───────── focus: no outline anywhere, one ring per control (the owner, 14 Nov 2026) ─────────
+   Clicking the collection filter's Min box showed three rings: the base Layout's outline
+   (kalio-tokens.scss `.v-application :focus-visible { outline: 2px solid; outline-offset: 2px }`, which
+   outweighed core.css's `input:focus { outline: none }`), the mockup's `label:focus-within` ring around
+   the whole label (over the word "Min"), and the right one, the `.rb` pill. Now: */
+/* 1. no outline on anything focused, in Galio and in Selldone's and Vuetify's parts */
+.v-application :focus-visible,
+.v-application :focus,
+.v-overlay :focus-visible,
+.v-overlay :focus,
+.gl :focus-visible,
+.gl :focus {
+  outline: none !important;
+}
+/* 2. a label that wraps a field never rings: the field (or its own wrapper, .rb, .sortsel, .chk input,
+      .switch input) carries the one ring, on its own shape */
+.gl label:focus-within:not(.sortsel),
+.v-overlay label:focus-within:not(.sortsel) {
+  box-shadow: none !important;
+}
+/* 3. what has no ring of its own still shows focus: an inset ring on its own radius, outside Galio's
+      markup (Galio's links and buttons ring in core.css; Vuetify's buttons show their focus overlay) */
+:where(.v-application, .v-overlay)
+  :where(a[href], button, [role="button"], [tabindex="0"], summary):where(:focus-visible):not(.v-btn, .gl, .gl *) {
+  box-shadow: inset 0 0 0 2px var(--gl-ring, currentColor);
+}
+/* 4. a field in error already wears a 2px ring in the action colour on a tinted ground (shell.css
+      [aria-invalid]); focused, it looked exactly the same. Focused, the error field takes a 3px ring
+      on the plain ground, so focus always shows (one ring, its own shape). */
+.gl .fld [aria-invalid="true"]:focus,
+.gl .lg-mail input[aria-invalid="true"]:focus {
+  box-shadow: inset 0 0 0 3px var(--gl-ring) !important;
+  background: var(--gl-surface);
+}

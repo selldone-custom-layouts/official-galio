@@ -176,6 +176,52 @@ function focusShapes(SCALE) {
   return [...new Set(out)];
 }
 
+/* runs in the page: number the visible fields (text-like inputs, selects, text areas, checkboxes, switches) */
+function markFields(scope) {
+  const root = (scope && document.querySelector(scope)) || document;
+  const vis = (el) => {
+    const r = el.getBoundingClientRect();
+    if (r.width < 2 || r.height < 2) return false;
+    for (let e = el; e && e !== document.documentElement; e = e.parentElement) {
+      const s = getComputedStyle(e);
+      if (s.display === "none" || s.visibility === "hidden" || +s.opacity === 0) return false;
+    }
+    return true;
+  };
+  document.querySelectorAll("[data-fc]").forEach((e) => e.removeAttribute("data-fc"));
+  const els = [...root.querySelectorAll("input:not([type=hidden]):not([type=range]):not([type=file]), select, textarea")].filter((e) => vis(e) && !e.disabled && !e.readOnly);
+  return els.slice(0, 30).map((e, i) => {
+    e.setAttribute("data-fc", String(i));
+    return { i, type: (e.type || e.tagName).toLowerCase(), click: !/^(checkbox|radio)$/.test(e.type || "") };
+  });
+}
+/* runs in the page: the focus look of a field, its five ancestors and (Vuetify) its field outline */
+function focusLook(i) {
+  const el = document.querySelector('[data-fc="' + i + '"]');
+  if (!el) return null;
+  const chain = [];
+  for (let e = el, k = 0; e && e !== document.body && k < 6; e = e.parentElement, k++) chain.push(e);
+  const vf = el.closest(".v-field");
+  if (vf) vf.querySelectorAll(".v-field__outline, .v-field__outline *").forEach((x) => chain.push(x));
+  const name = (e) => (e.className && typeof e.className === "string" ? "." + e.className.trim().split(/\s+/).slice(0, 2).join(".") : e.tagName.toLowerCase());
+  return chain.map((e) => {
+    const c = getComputedStyle(e);
+    const ring = c.boxShadow.split(/,(?![^(]*\))/).some((sh) => {
+      if (!/inset/.test(sh)) return false;
+      if (/rgba\([^)]*,\s*0\)/.test(sh)) return false;
+      const n = sh.replace(/rgba?\([^)]*\)/, "").match(/-?[\d.]+px/g) || [];
+      return n.length >= 4 && +parseFloat(n[0]) === 0 && +parseFloat(n[1]) === 0 && parseFloat(n[3]) > 0;
+    });
+    return {
+      name: name(e),
+      outline: c.outlineStyle !== "none" && parseFloat(c.outlineWidth) > 0 ? c.outlineStyle + " " + c.outlineWidth : "",
+      shadow: c.boxShadow,
+      ring,
+      look: [c.boxShadow, c.borderTopColor, c.borderBottomColor, c.backgroundColor, c.outlineStyle, c.outlineColor].join("|"),
+    };
+  });
+}
+
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 (async () => {
@@ -202,6 +248,44 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
       total += n;
       console.log(tag, n ? "ISSUES " + n : "ok");
       if (n) for (const k in R) if (R[k].length) console.log("    " + k + ": " + R[k].slice(0, VERBOSE ? 99 : 10).join(" | ") + (!VERBOSE && R[k].length > 10 ? " …+" + (R[k].length - 10) : ""));
+    };
+    /* every field, clicked and reached from the keyboard: no outline on it or its ancestors, at most
+       one ring that appears on focus, and some visible change (no field may lose its focus look) */
+    const fieldsTest = async (tag, scope) => {
+      const fields = await pg.evaluate(markFields, scope || null);
+      if (process.env.DEBUG_FIELDS) console.log("    (fields: " + fields.map((x) => x.type + "#" + x.i).join(" ") + " at " + (await pg.evaluate(() => location.pathname)) + ")");
+      const out = [];
+      for (const fd of fields) {
+        for (const how of fd.click ? ["click", "key"] : ["key"]) {
+          try {
+            await pg.evaluate(() => document.activeElement && document.activeElement !== document.body && document.activeElement.blur());
+            const before = await pg.evaluate(focusLook, fd.i);
+            if (!before) continue;
+            if (how === "click") await pg.click('[data-fc="' + fd.i + '"]', { timeout: 4000, force: true });
+            else {
+              await pg.keyboard.press("Shift");
+              await pg.evaluate((i) => document.querySelector('[data-fc="' + i + '"]')?.focus(), fd.i);
+            }
+            await sleep(160);
+            const after = await pg.evaluate(focusLook, fd.i);
+            const focused = await pg.evaluate((i) => document.activeElement === document.querySelector('[data-fc="' + i + '"]'), fd.i);
+            if (!after || !focused) continue;
+            const label = fd.type + "#" + fd.i + " (" + how + ")";
+            const outlines = after.filter((x) => x.outline).map((x) => x.name + " " + x.outline);
+            if (outlines.length) out.push(label + " outline on " + outlines.join(", "));
+            const rings = after.filter((x, k) => x.ring && before[k] && x.shadow !== before[k].shadow).map((x) => x.name);
+            if (rings.length > 1) out.push(label + " " + rings.length + " rings: " + rings.join(" + "));
+            if (!after.some((x, k) => before[k] && x.look !== before[k].look)) out.push(label + " no focus look");
+          } catch (e) {
+            out.push(fd.type + "#" + fd.i + " (" + how + ") " + String(e.message || e).split(String.fromCharCode(10))[0].slice(0, 80));
+          }
+        }
+      }
+      await pg.evaluate(() => document.activeElement && document.activeElement !== document.body && document.activeElement.blur());
+      const uniq = [...new Set(out)];
+      total += uniq.length;
+      console.log(tag, uniq.length ? "FIELDS " + uniq.length : "fields ok (" + fields.length + ")");
+      if (uniq.length) console.log("    fields: " + uniq.slice(0, VERBOSE ? 99 : 10).join(" | "));
     };
     const clickVis = async (sel) => {
       const ok = await pg.evaluate((s) => {
@@ -232,6 +316,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
         await pg.evaluate(() => window.scrollTo(0, 0));
         const tag = (s) => `${label.padEnd(10)} ${String(w).padEnd(5)} ${s.padEnd(13)}`;
         await report(tag("page"), true);
+        await fieldsTest(tag("page fields"));
         if (process.env.STATES === "0") continue;
         const states = [];
         if (w < 1100) states.push(["menu", ".menu-btn"]);
@@ -256,6 +341,8 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
             } else await clickVis(sel);
             await sleep(900);
             await report(tag(st), false);
+            const scope = { menu: "#pmenu", "shop-flyout": "#gshop", region: "#gregion", search: "#gsrch", bag: "#drawer", "filter-sheet": "#fsheet", quick: ".lay--dialog", signin: ".gl-signin, .lay--dialog" }[st];
+            await fieldsTest(tag(st + " fields"), scope);
           } catch (e) {
             total++;
             console.log(tag(st), "FAILED", String(e.message || e).split("\n")[0].slice(0, 140));
@@ -286,6 +373,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
         await pg.waitForSelector("#co-delivery .mcard", { timeout: 45000 });
         await sleep(3000);
         await report(tag("page"), true);
+        await fieldsTest(tag("page fields"), ".gl-cartpage");
         await pg.locator("#co-f-email").fill("galio.walk@example.com");
         await pg.locator("#co-f-phone").fill("+44 20 7946 0123");
         await pg.locator("#co-f-phone").blur();
@@ -297,6 +385,7 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
         await clickVis("#co-address .addr button");
         await sleep(2500);
         await report(tag("address"), false);
+        await fieldsTest(tag("address fields"), ".k-addr");
         await clickVis(".k-sheet__foot .k-sheet__ghost");
         await sleep(800);
         const n = await pg.locator("#co-delivery .mcard").count();

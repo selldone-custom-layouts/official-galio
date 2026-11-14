@@ -409,10 +409,13 @@ export default {
     window.addEventListener("scroll", this.onScroll, { passive: true });
     this.fit();
     document.fonts?.ready?.then(() => this.fit());
+    this.onResize = () => this.fit();
+    window.addEventListener("resize", this.onResize, { passive: true });
   },
 
   beforeUnmount() {
     window.removeEventListener("scroll", this.onScroll);
+    window.removeEventListener("resize", this.onResize);
     clearTimeout(this.copyTimer);
   },
 

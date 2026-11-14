@@ -72,6 +72,12 @@ export default {
   mounted() {
     this.fit();
     document.fonts?.ready?.then(() => this.fit());
+    /* The sticker fits again when the window changes (fit-in-circle.ts asks for it). */
+    this.onResize = () => this.fit();
+    window.addEventListener("resize", this.onResize, { passive: true });
+  },
+  beforeUnmount() {
+    window.removeEventListener("resize", this.onResize);
   },
   methods: {
     t,

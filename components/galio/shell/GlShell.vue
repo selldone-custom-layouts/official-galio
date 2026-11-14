@@ -52,10 +52,12 @@
           </button>
         </nav>
         <div class="side-acts">
-          <router-link :aria-current="onAccount ? 'page' : undefined" :to="accountTo" class="side-acct"><gl-icon name="user" /><span>{{ t("galio.shell.account", "Account") }}</span></router-link>
-          <button :aria-label="bagAria" aria-controls="drawer" aria-haspopup="dialog" class="side-bag gl-bag-btn" type="button" @click="toggle('drawer', $event)">
-            <gl-icon name="bag" /><span aria-hidden="true">{{ t("galio.shell.bagN", "Bag ({n})", { n: units }) }}</span>
-          </button>
+          <div class="side-me">
+            <router-link :aria-current="onAccount ? 'page' : undefined" :to="accountTo" class="side-acct"><gl-icon name="user" /><span>{{ t("galio.shell.account", "Account") }}</span></router-link>
+            <button :aria-label="bagAria" aria-controls="drawer" aria-haspopup="dialog" class="side-bag gl-bag-btn" type="button" @click="toggle('drawer', $event)">
+              <gl-icon name="bag" /><span aria-hidden="true">{{ t("galio.shell.bagN", "Bag ({n})", { n: units }) }}</span>
+            </button>
+          </div>
           <router-link :to="shopAllTo" class="btn-order">{{ t("galio.shell.order", "Order now") }}</router-link>
           <button
             v-if="regionOn"

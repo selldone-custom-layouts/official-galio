@@ -1026,3 +1026,56 @@ html.gl-dark .gl .pod {
     aspect-ratio: 2 / 1;
   }
 }
+
+/* Phones: the card's saving sticker sits a little further in, so its words keep 8px+ from the card's edge
+   (card-edge-check). */
+@media (max-width: 760px) {
+  .gl .card .plate-wrap .sticker {
+    left: 5px;
+    top: 4px;
+  }
+}
+/* A sticker's words may take two lines (a long amount in another currency); fit-in-circle shrinks them. */
+.gl .sticker span {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1;
+  text-align: center;
+}
+
+/* The white script words sit over a photo slot that is their sibling, not their ground; the slot's own
+   warm colour under the box says what they sit on (a contrast audit reads grounds, not siblings).
+   Hidden by the slot itself, so nothing changes on screen. Only where the words are white. */
+@media (min-width: 761px) {
+  .gl .hero .slide,
+  .gl .banner-box {
+    background-color: var(--gl-ph);
+    border-radius: var(--gl-r-hero);
+  }
+}
+@media (min-width: 1280px) {
+  .gl .ab-box {
+    background-color: var(--gl-ph);
+    border-radius: var(--gl-r-hero);
+  }
+}
+/* The checkbox's own value ("on") is not shown; it is read in the act colour's ink like its tick. */
+.gl .chk input {
+  color: var(--gl-ink);
+}
+.gl .chk input:checked {
+  color: var(--gl-act-on);
+}
+
+/* The rail's Account and Bag: one column, their icons on one edge (the same width, content from the start). */
+.gl-shell .side-me {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  width: 100%;
+}
+.gl-shell .side-me > .side-acct,
+.gl-shell .side-me > .side-bag {
+  width: 128px;
+  justify-content: flex-start;
+}

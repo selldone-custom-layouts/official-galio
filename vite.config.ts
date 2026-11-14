@@ -259,6 +259,12 @@ let entryStaticGraph: Set<string> | null = null;
 /* Galio: small modules that join the core (see coreChunk). */
 let smallCore: Set<string> | null = null;
 const SMALL = 6000;
+/* The Layout's own source files: under this folder, not a package, not a virtual or query module. */
+const OWN_ROOT = path.resolve("").split(path.sep).join("/") + "/";
+function isOwnSource(id: string): boolean {
+  const p = id.split("\\").join("/");
+  return !p.startsWith("\u0000") && p.startsWith(OWN_ROOT) && !p.includes("/node_modules/") && !p.includes("?") && /\.(vue|ts|js|mjs)$/.test(p);
+}
 
 function coreChunk(id: string, { getModuleInfo, getModuleIds }: any) {
   if (!entryStaticGraph) {
@@ -287,6 +293,9 @@ function coreChunk(id: string, { getModuleInfo, getModuleIds }: any) {
         if (inCore(m)) continue;
         const mi = getModuleInfo(m);
         if (!mi || mi.isEntry || mi.isExternal) continue;
+        /* Only the Layout's own source joins (never a package): a Prism language file from node_modules
+           joined the core on its own, ran before Prism itself and blanked Galio 1.0.0 live. */
+        if (!isOwnSource(m)) continue;
         const code = mi.code || "";
         if (!code || code.length >= SMALL || /\.(css|scss|sass)($|\?)/.test(m) || /[?&]type=style/.test(m)) continue;
         if ((mi.importedIds || []).every(inCore)) {
@@ -295,6 +304,7 @@ function coreChunk(id: string, { getModuleInfo, getModuleIds }: any) {
         }
       }
     }
+    if (process.env.GALIO_CHUNK_LOG) fs.writeFileSync(process.env.GALIO_CHUNK_LOG, [...smallCore].sort().join("\n"));
   }
   const info = getModuleInfo(id);
   if (info?.isEntry) return undefined;

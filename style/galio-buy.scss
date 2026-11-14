@@ -582,21 +582,21 @@
   color: var(--gl-muted);
 }
 
-/* ── Selldone's payment window (payment-b): the sheet in the mockup's
-   glass, the total on the stone, each way to pay as the mockup's card
-   (an icon tile, its kind and name; the act ring on hover). Its logic and
+/* ── Selldone's payment window (payment-b): a white sheet with a display-font
+   title, the total on a lemon plate, each way to pay as the mockup's method card
+   (a round lemon icon, its kind and name; the act ring on hover). Its logic and
    words stay Selldone's (gateways, gift cards, wallet, Stripe…). ── */
-$nx-ico-cash: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='6.5' width='18' height='11' rx='2'/%3E%3Ccircle cx='12' cy='12' r='2.6'/%3E%3Cpath d='M6.5 9.5v5M17.5 9.5v5'/%3E%3C/svg%3E";
-$nx-ico-card: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='5.5' width='18' height='13' rx='2.5'/%3E%3Cpath d='M3 10h18M7 15h4'/%3E%3C/svg%3E";
-$nx-ico-gift: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4' y='9' width='16' height='11' rx='2'/%3E%3Cpath d='M3 9h18M12 9v11M12 9S10.5 4 8 4.8 9.5 9 12 9zM12 9s1.5-5 4-4.2S14.5 9 12 9z'/%3E%3C/svg%3E";
+$gl-ico-cash: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='6.5' width='18' height='11' rx='2'/%3E%3Ccircle cx='12' cy='12' r='2.6'/%3E%3Cpath d='M6.5 9.5v5M17.5 9.5v5'/%3E%3C/svg%3E";
+$gl-ico-card: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='5.5' width='18' height='13' rx='2.5'/%3E%3Cpath d='M3 10h18M7 15h4'/%3E%3C/svg%3E";
+$gl-ico-gift: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='4' y='9' width='16' height='11' rx='2'/%3E%3Cpath d='M3 9h18M12 9v11M12 9S10.5 4 8 4.8 9.5 9 12 9zM12 9s1.5-5 4-4.2S14.5 9 12 9z'/%3E%3C/svg%3E";
 
 html.gl-dark .s--storefront-master-payment-dialog,
 .s--storefront-master-payment-dialog {
   font-family: var(--gl-f-body);
-  border-radius: 28px 28px 0 0 !important;
+  border-radius: 30px 30px 0 0 !important;
 
   > .v-card {
-    border-radius: 28px 28px 0 0 !important;
+    border-radius: 30px 30px 0 0 !important;
     background: linear-gradient(165deg, var(--gl-surface, transparent), var(--gl-surface, transparent)), var(--gl-surface) !important;
     color: var(--gl-ink) !important;
     box-shadow: inset 0 0 0 1px var(--gl-line), 0 -30px 80px -40px rgba(0, 0, 0, 0.7) !important;
@@ -629,14 +629,14 @@ html.gl-dark .s--storefront-master-payment-dialog,
 
   /* The total */
   .v-card-text > div > .text-start:first-child {
-    background: var(--gl-bg) !important;
-    box-shadow: inset 0 0 0 1px var(--gl-line);
-    border-radius: 18px !important;
+    background: var(--gl-band-lemon) !important;
+    box-shadow: none;
+    border-radius: 24px !important;
 
     > small {
       font: 700 11.5px/1.3 var(--gl-f-body) !important;
-      letter-spacing: 0.16em !important;
-      color: var(--gl-act-text) !important;
+      letter-spacing: 0.1em !important;
+      color: var(--gl-muted) !important;
     }
 
     > .v-icon {
@@ -662,9 +662,9 @@ html.gl-dark .s--storefront-master-payment-dialog,
   /* Each way to pay */
   .container-btn.container-btn {
     border: 0 !important;
-    border-radius: 18px !important;
-    background: var(--gl-bg) !important;
-    box-shadow: inset 0 0 0 1px var(--gl-line) !important;
+    border-radius: 22px !important;
+    background: var(--gl-surface) !important;
+    box-shadow: inset 0 0 0 1.5px var(--gl-line) !important;
     color: var(--gl-ink) !important;
 
     &:hover,
@@ -684,9 +684,9 @@ html.gl-dark .s--storefront-master-payment-dialog,
         position: absolute;
         width: 44px;
         height: 44px;
-        border-radius: 14px;
-        background: var(--gl-surface);
-        box-shadow: inset 0 0 0 1px var(--gl-line);
+        border-radius: 50%;
+        background: var(--gl-band-lemon);
+        box-shadow: none;
       }
 
       &::after {
@@ -694,20 +694,20 @@ html.gl-dark .s--storefront-master-payment-dialog,
         width: 22px !important;
         height: 22px !important;
         border-radius: 0 !important;
-        background: var(--gl-act-text) !important;
-        -webkit-mask: url($nx-ico-card) center / 22px no-repeat;
-        mask: url($nx-ico-card) center / 22px no-repeat;
+        background: var(--gl-ink) !important;
+        -webkit-mask: url($gl-ico-card) center / 22px no-repeat;
+        mask: url($gl-ico-card) center / 22px no-repeat;
       }
     }
 
     &.-blue .left-side::after {
-      -webkit-mask-image: url($nx-ico-cash);
-      mask-image: url($nx-ico-cash);
+      -webkit-mask-image: url($gl-ico-cash);
+      mask-image: url($gl-ico-cash);
     }
 
     &.-purple .left-side::after {
-      -webkit-mask-image: url($nx-ico-gift);
-      mask-image: url($nx-ico-gift);
+      -webkit-mask-image: url($gl-ico-gift);
+      mask-image: url($gl-ico-gift);
     }
 
     .-right-side-container {
@@ -767,7 +767,7 @@ html.gl-dark .s--storefront-master-payment-dialog,
 }
 
 /* The delivery sheet itself takes the focus when it opens (not a control: no ring). */
-.gl #dlsheet:focus {
+.gl #gl-dlsheet:focus {
   outline: none;
 }
 
@@ -788,11 +788,11 @@ html.gl-dark .s--storefront-master-payment-dialog,
     align-self: center !important;
     margin-block: auto !important;
     max-height: calc(100dvh - 64px) !important;
-    border-radius: 28px !important;
+    border-radius: 30px !important;
   }
   html.gl-dark .s--storefront-master-payment-dialog > .v-card,
   .s--storefront-master-payment-dialog > .v-card {
-    border-radius: 28px !important;
+    border-radius: 30px !important;
     box-shadow: inset 0 0 0 1px var(--gl-line), 0 40px 80px -30px rgba(0, 0, 0, 0.7) !important;
   }
 }

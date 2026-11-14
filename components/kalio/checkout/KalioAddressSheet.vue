@@ -35,8 +35,8 @@
     <div class="k-sheet k-addr">
       <div class="k-sheet__head">
         <div>
-          <!-- Galio Sundae (map-b): the eyebrow over the serif heading. -->
-          <p class="k-addr__eyebrow">{{ lede || t("address.lede.default", "Your address, for the receipt and the seller.") }}</p>
+          <!-- Galio Sundae (map-b): the display heading, with a small line over it only when it says something else. -->
+          <p v-if="lede && lede !== heading" class="k-addr__eyebrow">{{ lede }}</p>
           <h2>{{ heading || t("address.title.go", "Where should it go?") }}</h2>
         </div>
         <button :aria-label="t('common.close', 'Close')" class="k-sheet__x" type="button" @click="$emit('update:modelValue', false)">

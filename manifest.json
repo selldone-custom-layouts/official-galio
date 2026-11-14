@@ -3,7 +3,7 @@
   "deploy_path": "",
   "package": "galio-sundae-patisserie",
   "name": "Galio Sundae Patisserie",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "storefront": true,
   "backoffice": false,
   "description": "A pastry parlour for a single bakery in one colour family: every ground, band, plate, the rail and the footer are tints of the chosen palette's hue (cherry by default), white pages taking turns with tinted bands. One shape language: circles, pills and 28px panels, a straight side rail in the family's near-black with rounded joins, and a scalloped awning only under each inner page's title. A hero slider of the best-selling collections, line-drawn collections, a mosaic of the real ways to get an order, a price list with dot leaders, best sellers on round plates with tilted stickers, the real counter on a map, the journal, and a footer with the newsletter and the theme row; light by default with a dark mode in the same family."

@@ -488,7 +488,25 @@ export default {
         return;
       }
       this.setBasketConfig();
-      this.onPay();
+      /* Selldone's payment window shows the bill the page holds: open it only once the last update has come
+         back (busy_save), so a way chosen a moment ago is the one priced (1.0.7). At most 15 s, then open anyway. */
+      if (this.gc_pay_waiting) return;
+      this.gc_pay_waiting = true;
+      const open = () => {
+        if (!this.gc_pay_waiting) return;
+        this.gc_pay_waiting = false;
+        stop();
+        clearTimeout(timer);
+        this.onPay();
+      };
+      const stop = this.$watch(
+        () => this.busy_save || this.busy_bill,
+        (busy: boolean) => {
+          if (!busy) open();
+        },
+      );
+      const timer = setTimeout(open, 15000);
+      if (!this.busy_save && !this.busy_bill) open();
     },
   },
 };

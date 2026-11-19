@@ -1350,11 +1350,16 @@ export default {
 
     setBasketConfig() {
       this.PENDING_UPDATE = true;
+      /* Galio 1.0.7: the bill is not settled while an update waits for the throttle or is on its way. The answer
+         to an update is dropped when a newer one waits (below), so without this the receipt and Place order kept
+         the old bill for up to ~4 s (shipping, then pickup: "pay $12.81 on pickup" for a $2.81 order). */
+      this.busy_save = true;
       this.setBasketConfigThrottle();
     },
     setBasketConfigThrottle: throttle(
       function setBasketConfig() {
         this.PENDING_UPDATE = false;
+        this.gc_inflight = (this.gc_inflight || 0) + 1;
 
         this.busy_save = true;
         //console.log("🧨 setBasketConfig");
@@ -1402,7 +1407,9 @@ export default {
             NotificationService.showLaravelError(error);
           })
           .finally(() => {
-            this.busy_save = false;
+            this.gc_inflight = Math.max(0, (this.gc_inflight || 0) - 1);
+            /* settled only when no update waits and none is on its way */
+            if (!this.PENDING_UPDATE && !this.gc_inflight) this.busy_save = false;
           });
       },
       3000,

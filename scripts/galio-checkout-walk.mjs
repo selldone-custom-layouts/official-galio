@@ -274,6 +274,7 @@ for (const W of WIDTHS) {
     } else bad(W, "no way that needs an address");
 
     // ── each way: Place order → the payment window → its ✕
+    const wayTotals = {};
     for (const w of wayInfo) {
       await page.locator("#co-delivery .mcard").nth(w.i).scrollIntoViewIfNeeded();
       await page.locator("#co-delivery .mcard").nth(w.i).click();
@@ -313,6 +314,13 @@ for (const W of WIDTHS) {
       });
       console.log(`  way "${w.name}": "${label}" → payment window [${pay.box}]${pay.over ? " SIDE-SCROLL" : ""}: ${pay.text}`);
       if (pay.box[2] > W + 1 || pay.box[0] < -1) bad(W, `payment window is off the screen: ${pay.box}`);
+      /* the button (read now, the bill settled) and the payment window name the same total (1.0.6 kept the
+         shipping fee on pickup for a few seconds: "$12.81 on pickup" for a $2.81 order) */
+      const nowLabel = ((await place.textContent()) || "").replace(/\s+/g, " ").trim();
+      const btnTotal = (nowLabel.match(/\$[\d.,]+/) || [])[0];
+      const payTotal = (pay.text.match(/TOTAL PAYMENT\s*(\$[\d.,]+)/i) || [])[1];
+      if (btnTotal && payTotal && btnTotal !== payTotal) bad(W, `way "${w.name}": the button says ${btnTotal}, the payment window ${payTotal}`);
+      wayTotals[w.name] = payTotal;
       await shot(`10-payment-${slug(w.name)}`);
       // only its ✕
       const x = page.locator(".s--storefront-master-payment-dialog .v-toolbar .v-btn").last();
@@ -320,6 +328,13 @@ for (const W of WIDTHS) {
       else await page.keyboard.press("Escape");
       await page.waitForSelector(".s--storefront-master-payment-dialog .v-card", { state: "hidden", timeout: 10000 }).catch(() => bad(W, "the payment window did not close with its ✕"));
       await sleep(1500);
+    }
+
+    /* a free pickup costs no more than the free courier (both are free at Bakio): the shipping fee must not stay */
+    {
+      const pk0 = wayInfo.find((w) => w.pickup);
+      const free = wayInfo.find((w) => !w.pickup && /courier/i.test(w.name));
+      if (pk0 && free && wayTotals[pk0.name] && wayTotals[free.name] && wayTotals[pk0.name] !== wayTotals[free.name]) bad(W, `pickup costs ${wayTotals[pk0.name]}, the free courier ${wayTotals[free.name]}`);
     }
 
     // ── the detour (19 Nov 2026): pickup, then back to a delivery way. The buyer's address must still be on the

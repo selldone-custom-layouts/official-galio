@@ -25,7 +25,8 @@ const BASE = (process.argv[2] || "https://galio.selldone.shop").replace(/\/$/, "
 const OUT = path.resolve(process.argv[3] || ".shots/walk");
 const WIDTHS = (process.env.WIDTHS || "1440,390").split(",").map(Number);
 const MODE = process.env.MODE || "light";
-const PW = process.env.PW || "D:/Kalio Sample Shop Claude/kalio-marketplace/node_modules/playwright/index.js";
+/* PW=<playwright's index.js>; by default the project's shared copy beside this repo (no machine path in the repo) */
+const PW = process.env.PW || path.resolve(path.dirname(decodeURIComponent(new URL(import.meta.url).pathname).replace(/^\/([A-Za-z]:)/, "$1")), "../../kalio-marketplace/node_modules/playwright/index.js");
 fs.mkdirSync(OUT, { recursive: true });
 
 const pw = await import("file:///" + PW.replace(/\\/g, "/"));
@@ -54,6 +55,8 @@ for (const W of WIDTHS) {
     } catch {}
   }, MODE);
   const page = await ctx.newPage();
+  /* no step may wait forever: fail it and say where */
+  page.setDefaultTimeout(60000);
   const errors = [];
   const blocked = [];
   page.on("pageerror", (e) => errors.push(String(e).slice(0, 240)));
@@ -317,6 +320,46 @@ for (const W of WIDTHS) {
       else await page.keyboard.press("Escape");
       await page.waitForSelector(".s--storefront-master-payment-dialog .v-card", { state: "hidden", timeout: 10000 }).catch(() => bad(W, "the payment window did not close with its ✕"));
       await sleep(1500);
+    }
+
+    // ── the detour (19 Nov 2026): pickup, then back to a delivery way. The buyer's address must still be on the
+    //    card and Place order must open the payment window (before 1.0.6 the address was gone and Place order
+    //    opened the address sheet instead).
+    const pk = wayInfo.find((w) => w.pickup);
+    if (pk && home) {
+      for (const w of [pk, home]) {
+        await page.locator("#co-delivery .mcard").nth(w.i).scrollIntoViewIfNeeded();
+        await page.locator("#co-delivery .mcard").nth(w.i).click();
+        await sleep(3500);
+      }
+      const chip = page.locator("#co-delivery .wins .chip:not([disabled])").first();
+      if ((await chip.count()) && !(await page.locator("#co-delivery .wins .chip[aria-checked='true']").count())) {
+        await chip.click();
+        await sleep(2500);
+      }
+      const addr = await page.evaluate(() => (document.querySelector("#co-address .addr")?.textContent || "").replace(/\s+/g, " ").trim());
+      console.log(`  detour "${pk.name}" → "${home.name}": address "${addr || "(none)"}"`);
+      const place = page.locator("#co-pay .btn--big");
+      if (await place.count()) {
+        await place.scrollIntoViewIfNeeded();
+        await place.click();
+        const opened = await page
+          .waitForSelector(".s--storefront-master-payment-dialog .v-card", { state: "visible", timeout: 20000 })
+          .then(() => true)
+          .catch(() => false);
+        if (!opened) {
+          bad(W, `after the detour, Place order on "${home.name}" did not open the payment window`);
+          await shot("12-detour-noplace", true);
+        } else {
+          console.log(`  detour: Place order on "${home.name}" → payment window`);
+          await shot("12-detour-payment");
+          const x = page.locator(".s--storefront-master-payment-dialog .v-toolbar .v-btn").last();
+          if (await x.count()) await x.click();
+          else await page.keyboard.press("Escape");
+          await page.waitForSelector(".s--storefront-master-payment-dialog .v-card", { state: "hidden", timeout: 10000 }).catch(() => bad(W, "the payment window did not close with its ✕"));
+          await sleep(1500);
+        }
+      } else bad(W, `after the detour: no Place order button`);
     }
   } catch (e) {
     bad(W, "walk stopped: " + e.message.split("\n")[0]);
